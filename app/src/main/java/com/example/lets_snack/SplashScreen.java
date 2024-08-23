@@ -14,9 +14,6 @@ import com.example.lets_snack.databinding.ActivitySplashScreenBinding;
 public class SplashScreen extends AppCompatActivity {
 
     ImageView imgSplash;
-//    SharedPreferences sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
-//    String savedToken = sharedPreferences.getString("auth_token", null);
-
     ActivitySplashScreenBinding binding;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,15 +30,6 @@ public class SplashScreen extends AppCompatActivity {
         }, 3000);
     }
     public void openScreen(){
-//        if (savedToken != null) {
-////            Intent intent = new Intent(this, MainActivity.class); colocar a tela inicial aqui quando estiver pronta
-////            startActivity(intent);
-//            finish();
-//        } else {
-//            // Redirecionar o usuário para a tela de login
-////            Intent intent = new Intent(this, LoginActivity.class); colocar a tela de login aqui quando estiver pronta
-////            startActivity(intent);
-//            finish();
-//        }
+
     }
 }
