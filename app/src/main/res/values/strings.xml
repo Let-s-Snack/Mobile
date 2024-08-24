@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Let\'s-Snack</string>
+    <string name="search">Buscar</string>
+    <string name="chat_ia">Chat Ia</string>
+    <string name="home">Home</string>
+    <string name="hearth">Curtidos</string>
+    <string name="user">Perfil</string>
 </resources>
