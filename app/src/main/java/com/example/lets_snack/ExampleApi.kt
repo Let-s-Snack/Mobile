@@ -17,7 +17,7 @@ class ExampleApi : AppCompatActivity() {
 
         binding.button.setOnClickListener {
             //aqui fazemos a chamada após o botão ser clicado, aqui ele já irá trazer os dados
-            val call = exampleIRepositoryRest.getAll()
+            val call = exampleIRepositoryRest.exampleFunRepository()
             call.enqueue(object : retrofit2.Callback<List<ExampleDto>> {
                 override fun onResponse(
                     call: retrofit2.Call<List<ExampleDto>>,

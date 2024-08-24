@@ -10,7 +10,7 @@ class ExampleIRepositoryRest {
     val interfaceService = retrofit.create(LetsSnackService::class.java)
 
 
-    fun getAll() = interfaceService.exampleFunService()
-    //chama a função getall, que está no nosso service
+    //chama a função exampleFunService, que está no nosso service
+    fun exampleFunRepository() = interfaceService.exampleFunService()
 
 }
