@@ -15,6 +15,11 @@ class ExampleApi : AppCompatActivity() {
         binding = ActivityTesteApiBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // Adicionando o Fragment ao layout
+        supportFragmentManager.beginTransaction()
+            .replace(binding.fragmentContainer.id, NavFragment())
+            .commit()
+
         binding.button.setOnClickListener {
             //aqui fazemos a chamada após o botão ser clicado, aqui ele já irá trazer os dados
             val call = exampleIRepositoryRest.exampleFunRepository()
