@@ -11,8 +11,8 @@
     <!-- Ícone de Busca -->
     <LinearLayout
         android:id="@+id/icon_search_container"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="52dp"
+        android:layout_height="60dp"
         android:gravity="center"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -34,14 +34,14 @@
             android:layout_height="wrap_content"
             android:text="Buscar"
             android:textColor="@color/white"
-            android:textSize="12sp" />
+            android:textSize="16sp" />
     </LinearLayout>
 
     <!-- Ícone de Chat IA -->
     <LinearLayout
         android:id="@+id/icon_chat_ia_container"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:gravity="center"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -62,14 +62,14 @@
             android:layout_height="wrap_content"
             android:text="Chat IA"
             android:textColor="@color/white"
-            android:textSize="12sp" />
+            android:textSize="16sp" />
     </LinearLayout>
 
     <!-- Ícone de Home -->
     <LinearLayout
         android:id="@+id/icon_home_container"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:gravity="center"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -90,14 +90,14 @@
             android:layout_height="wrap_content"
             android:text="Home"
             android:textColor="@color/white"
-            android:textSize="12sp" />
+            android:textSize="16sp" />
     </LinearLayout>
 
     <!-- Ícone de Curtidos -->
     <LinearLayout
         android:id="@+id/icon_hearth_container"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:gravity="center"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -118,14 +118,14 @@
             android:layout_height="wrap_content"
             android:text="Curtidos"
             android:textColor="@color/white"
-            android:textSize="12sp" />
+            android:textSize="16sp" />
     </LinearLayout>
 
     <!-- Ícone de Perfil -->
     <LinearLayout
         android:id="@+id/icon_user_container"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:gravity="center"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -146,7 +146,7 @@
             android:layout_height="wrap_content"
             android:text="Perfil"
             android:textColor="@color/white"
-            android:textSize="12sp" />
+            android:textSize="16sp" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
