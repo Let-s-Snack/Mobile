@@ -5,4 +5,6 @@
     <string name="home">Home</string>
     <string name="hearth">Curtidos</string>
     <string name="user">Perfil</string>
+    <string name="link_esqueceu_senha"><u>Esqueceu a senha?</u></string>
+    <string name="link_cadastre_se"><u>Cadastre-se</u></string>
 </resources>
