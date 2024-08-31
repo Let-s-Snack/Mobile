@@ -4,12 +4,11 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import androidx.core.content.ContextCompat
 import com.example.lets_snack.data.remote.dto.ExampleDto
 import com.example.lets_snack.data.remote.repository.rest.ExampleIRepositoryRest
 import com.example.lets_snack.databinding.ActivityTesteApiBinding
 
-class ExampleApi : AppCompatActivity() {
+class ExampleImplementation : AppCompatActivity() {
     private lateinit var binding: ActivityTesteApiBinding
     private val exampleIRepositoryRest = ExampleIRepositoryRest()
     override fun onCreate(savedInstanceState: Bundle?) {

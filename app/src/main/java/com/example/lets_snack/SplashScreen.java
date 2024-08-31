@@ -2,6 +2,7 @@ package com.example.lets_snack;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
@@ -21,15 +22,17 @@ public class SplashScreen extends AppCompatActivity {
         binding = ActivitySplashScreenBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         imgSplash = binding.imgSplash;
-        String linkImg = "https://media1.giphy.com/media/j5gxrTMpUbjnRNX10h/giphy.gif?cid=6c09b9520pdvvqye1oi5g71fmttpw9ppmbhwcaz0b1rvfref&ep=v1_internal_gif_by_id&rid=giphy.gif&ct=g";
+//        String linkImg = R.drawable.gif_splash;
+
         Glide.with(this)
-                .load(linkImg).centerCrop().into(imgSplash);
+                .load(R.drawable.gif_splash).centerCrop().into(imgSplash);
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
             @Override
             public void run() { openScreen(); }
         }, 3000);
     }
     public void openScreen(){
-
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
     }
 }
