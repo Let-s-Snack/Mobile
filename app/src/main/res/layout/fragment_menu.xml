@@ -3,10 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="70dp"
+    android:layout_height="80dp"
     android:layout_gravity="bottom"
     android:background="@drawable/background_nav_bar"
-    android:paddingVertical="8dp">
+    android:paddingVertical="8dp"
+    app:layout_constraintBottom_toBottomOf="parent">
 
     <!-- Ícone de Busca -->
     <LinearLayout
@@ -34,7 +35,9 @@
             android:layout_height="wrap_content"
             android:text="Buscar"
             android:textColor="@color/white"
-            android:textSize="12sp" />
+            android:textSize="12sp"
+            android:fontFamily="@font/poppins_semi_bold"
+            android:visibility="invisible" />
     </LinearLayout>
 
     <!-- Ícone de Chat IA -->
@@ -62,7 +65,9 @@
             android:layout_height="wrap_content"
             android:text="Chat IA"
             android:textColor="@color/white"
-            android:textSize="12sp" />
+            android:textSize="12sp"
+            android:fontFamily="@font/poppins_semi_bold"
+            android:visibility="invisible" />
     </LinearLayout>
 
     <!-- Ícone de Home -->
@@ -90,7 +95,9 @@
             android:layout_height="wrap_content"
             android:text="Home"
             android:textColor="@color/white"
-            android:textSize="12sp" />
+            android:textSize="12sp"
+            android:fontFamily="@font/poppins_semi_bold"
+            android:visibility="invisible" />
     </LinearLayout>
 
     <!-- Ícone de Curtidos -->
@@ -118,7 +125,9 @@
             android:layout_height="wrap_content"
             android:text="Curtidos"
             android:textColor="@color/white"
-            android:textSize="12sp" />
+            android:textSize="12sp"
+            android:fontFamily="@font/poppins_semi_bold"
+            android:visibility="invisible" />
     </LinearLayout>
 
     <!-- Ícone de Perfil -->
@@ -146,7 +155,9 @@
             android:layout_height="wrap_content"
             android:text="Perfil"
             android:textColor="@color/white"
-            android:textSize="12sp" />
+            android:textSize="12sp"
+            android:fontFamily="@font/poppins_semi_bold"
+            android:visibility="invisible" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
