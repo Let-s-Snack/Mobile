@@ -7,4 +7,6 @@
     <string name="user">Perfil</string>
     <string name="link_esqueceu_senha"><u>Esqueceu a senha?</u></string>
     <string name="link_cadastre_se"><u>Cadastre-se</u></string>
+    <string name="entre_aqui"><u>Entre aqui</u></string>
+    <string name="termos"><u>Termos de uso</u></string>
 </resources>
