@@ -22,10 +22,10 @@
             android:name=".RegisterActivity"
             android:exported="false" />
         <activity
-            android:name=".ExampleApi"
+            android:name=".SplashScreen"
             android:exported="false" />
         <activity
-            android:name=".SplashScreen"
+            android:name=".ExampleImplementation"
             android:exported="true"
             android:screenOrientation="locked">
             <intent-filter>

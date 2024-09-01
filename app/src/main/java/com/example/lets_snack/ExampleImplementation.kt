@@ -3,11 +3,12 @@ package com.example.lets_snack
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import com.example.lets_snack.data.remote.dto.ExampleDto
 import com.example.lets_snack.data.remote.repository.rest.ExampleIRepositoryRest
 import com.example.lets_snack.databinding.ActivityTesteApiBinding
 
-class ExampleApi : AppCompatActivity() {
+class ExampleImplementation : AppCompatActivity() {
     private lateinit var binding: ActivityTesteApiBinding
     private val exampleIRepositoryRest = ExampleIRepositoryRest()
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -19,6 +20,12 @@ class ExampleApi : AppCompatActivity() {
         supportFragmentManager.beginTransaction()
             .replace(binding.fragmentContainer.id, NavFragment())
             .commit()
+
+        window.decorView.systemUiVisibility = (
+                View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                        or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                        or View.SYSTEM_UI_FLAG_FULLSCREEN
+                )
 
         binding.button.setOnClickListener {
             //aqui fazemos a chamada após o botão ser clicado, aqui ele já irá trazer os dados
