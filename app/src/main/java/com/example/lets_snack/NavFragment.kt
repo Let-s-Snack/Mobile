@@ -14,6 +14,16 @@ class NavFragment : Fragment() {
     private var _binding: FragmentMenuBinding? = null
     private val binding get() = _binding!!
 
+    private val chatIaFragment = ChatIaFragment()
+
+    private val homeFragment = HomeFragment();
+
+    private val likesFragment = LikesFragment();
+
+    private val profileFragment = ProfileFragment();
+
+    private val searchFragment = SearchFragment();
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -37,6 +47,7 @@ class NavFragment : Fragment() {
         val chatUserText = binding.iconUserText
         val listItens: MutableList<ImageView> = mutableListOf()
         val listNames: MutableList<TextView> = mutableListOf()
+
 
         fun animateTranslationY(view: View, startValue: Float, endValue: Float) {
             val animator = ObjectAnimator.ofFloat(view, "translationY", startValue, endValue)
@@ -62,34 +73,53 @@ class NavFragment : Fragment() {
             selectedBtn.setImageResource(getSelectedIcon(selectedBtn))
         }
 
+        listItens.addAll(listOf(chatIaBtn, searchBtn, hearthBtn, userBtn))
+        listNames.addAll(listOf(chatIaText, chatSearchText, chatHearthText, chatUserText))
+        updateUI(homeBtn, chatHomeText, listItens, listNames)
+
         chatIaBtn.setOnClickListener {
             listItens.addAll(listOf(homeBtn, searchBtn, hearthBtn, userBtn))
             listNames.addAll(listOf(chatHomeText, chatSearchText, chatHearthText, chatUserText))
             updateUI(chatIaBtn, chatIaText, listItens, listNames)
+            val transaction = parentFragmentManager.beginTransaction()
+            transaction.replace(R.id.mainContainer, chatIaFragment)
+            transaction.commit()
         }
 
         homeBtn.setOnClickListener {
             listItens.addAll(listOf(chatIaBtn, searchBtn, hearthBtn, userBtn))
             listNames.addAll(listOf(chatIaText, chatSearchText, chatHearthText, chatUserText))
             updateUI(homeBtn, chatHomeText, listItens, listNames)
+            val transaction = parentFragmentManager.beginTransaction()
+            transaction.replace(R.id.mainContainer, homeFragment)
+            transaction.commit()
         }
 
         searchBtn.setOnClickListener {
             listItens.addAll(listOf(homeBtn, chatIaBtn, hearthBtn, userBtn))
             listNames.addAll(listOf(chatHomeText, chatIaText, chatHearthText, chatUserText))
             updateUI(searchBtn, chatSearchText, listItens, listNames)
+            val transaction = parentFragmentManager.beginTransaction()
+            transaction.replace(R.id.mainContainer, searchFragment)
+            transaction.commit()
         }
 
         hearthBtn.setOnClickListener {
             listItens.addAll(listOf(homeBtn, searchBtn, chatIaBtn, userBtn))
             listNames.addAll(listOf(chatHomeText, chatSearchText, chatIaText, chatUserText))
             updateUI(hearthBtn, chatHearthText, listItens, listNames)
+            val transaction = parentFragmentManager.beginTransaction()
+            transaction.replace(R.id.mainContainer, likesFragment)
+            transaction.commit()
         }
 
         userBtn.setOnClickListener {
             listItens.addAll(listOf(homeBtn, searchBtn, hearthBtn, chatIaBtn))
             listNames.addAll(listOf(chatHomeText, chatSearchText, chatHearthText, chatIaText))
             updateUI(userBtn, chatUserText, listItens, listNames)
+            val transaction = parentFragmentManager.beginTransaction()
+            transaction.replace(R.id.mainContainer, profileFragment)
+            transaction.commit()
         }
     }
 

@@ -84,21 +84,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:textSize="12dp"
-        android:textColor="@color/azul_link"
         android:fontFamily="@font/poppins_light"
         android:text="@string/link_esqueceu_senha"
+        android:textColor="@color/azul_link"
+        android:textSize="12dp"
         app:layout_constraintEnd_toStartOf="@+id/guideline"
         app:layout_constraintStart_toStartOf="@+id/guideline2"
         app:layout_constraintTop_toBottomOf="@+id/textInputLayout2" />
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/login_enter"
+        android:id="@+id/login_enter_btn"
         android:layout_width="0dp"
         android:layout_height="40dp"
         android:layout_marginBottom="84dp"
         android:background="@drawable/background_principal_button_selector"
-        android:enabled="false"
         android:text="Entrar"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/guideline"
@@ -113,7 +112,7 @@
         android:text="Não possui conta?"
         app:layout_constraintEnd_toStartOf="@+id/guideline"
         app:layout_constraintStart_toStartOf="@+id/guideline2"
-        app:layout_constraintTop_toBottomOf="@+id/login_enter" />
+        app:layout_constraintTop_toBottomOf="@+id/login_enter_btn" />
 
     <TextView
         android:id="@+id/register_text"
@@ -128,5 +127,18 @@
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="@+id/guideline2"
         app:layout_constraintTop_toBottomOf="@+id/textView2" />
+
+    <TextView
+        android:id="@+id/error_txt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text=""
+        android:fontFamily="@font/poppins_semi_bold"
+        android:textColor="@color/laranja_erro"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toStartOf="@+id/guideline"
+        app:layout_constraintStart_toStartOf="@+id/guideline2"
+        app:layout_constraintTop_toBottomOf="@+id/forgot_password_text" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

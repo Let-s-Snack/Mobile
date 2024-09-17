@@ -22,7 +22,6 @@ public class SplashScreen extends AppCompatActivity {
         binding = ActivitySplashScreenBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         imgSplash = binding.imgSplash;
-//        String linkImg = R.drawable.gif_splash;
 
         Glide.with(this)
                 .load(R.drawable.gif_splash).centerCrop().into(imgSplash);
@@ -31,8 +30,11 @@ public class SplashScreen extends AppCompatActivity {
             public void run() { openScreen(); }
         }, 3000);
     }
+
+    //abrindo tela de login
     public void openScreen(){
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
+        finish();
     }
 }
