@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="80dp"
+    android:layout_height="70dp"
     android:layout_gravity="bottom"
     android:background="@drawable/background_nav_bar"
     android:paddingVertical="8dp"
@@ -33,10 +33,10 @@
             android:id="@+id/icon_search_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins_semi_bold"
             android:text="Buscar"
             android:textColor="@color/white"
             android:textSize="12sp"
-            android:fontFamily="@font/poppins_semi_bold"
             android:visibility="invisible" />
     </LinearLayout>
 
@@ -63,10 +63,10 @@
             android:id="@+id/icon_chat_ia_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins_semi_bold"
             android:text="Chat IA"
             android:textColor="@color/white"
             android:textSize="12sp"
-            android:fontFamily="@font/poppins_semi_bold"
             android:visibility="invisible" />
     </LinearLayout>
 
@@ -93,10 +93,10 @@
             android:id="@+id/icon_home_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins_semi_bold"
             android:text="Home"
             android:textColor="@color/white"
             android:textSize="12sp"
-            android:fontFamily="@font/poppins_semi_bold"
             android:visibility="invisible" />
     </LinearLayout>
 
@@ -123,10 +123,10 @@
             android:id="@+id/icon_hearth_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins_semi_bold"
             android:text="Curtidos"
             android:textColor="@color/white"
             android:textSize="12sp"
-            android:fontFamily="@font/poppins_semi_bold"
             android:visibility="invisible" />
     </LinearLayout>
 
@@ -153,10 +153,10 @@
             android:id="@+id/icon_user_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins_semi_bold"
             android:text="Perfil"
             android:textColor="@color/white"
             android:textSize="12sp"
-            android:fontFamily="@font/poppins_semi_bold"
             android:visibility="invisible" />
     </LinearLayout>
 
