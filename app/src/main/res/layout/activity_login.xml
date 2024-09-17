@@ -77,7 +77,8 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/guideline2"
         app:layout_constraintTop_toBottomOf="@+id/textInputLayout"
-        app:passwordToggleEnabled="true">
+        app:passwordToggleEnabled="true"
+      >
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/password_input"
@@ -85,8 +86,11 @@
             android:layout_height="wrap_content"
             android:hint="Senha"
             android:inputType="textPassword"
-            android:textSize="16dp" />
+            android:textSize="16dp"
+            android:textColor="@color/laranja"/>
     </com.google.android.material.textfield.TextInputLayout>
+
+
 
     <TextView
         android:id="@+id/forgot_password_text"
