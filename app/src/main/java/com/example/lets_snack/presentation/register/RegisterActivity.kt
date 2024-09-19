@@ -1,4 +1,4 @@
-package com.example.lets_snack
+package com.example.lets_snack.presentation.register
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
