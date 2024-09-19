@@ -2,6 +2,7 @@ package com.example.lets_snack;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -21,6 +22,7 @@ public class LoginActivity extends AppCompatActivity {
         // TextWatchers para os dois campos de input
         binding.emailInput.addTextChangedListener(loginTextWatcher);
         binding.passwordInput.addTextChangedListener(loginTextWatcher);
+        binding.registerText.setOnClickListener(view -> openScreen());
     }
 
     private final TextWatcher loginTextWatcher = new TextWatcher() {
@@ -45,9 +47,12 @@ public class LoginActivity extends AppCompatActivity {
     private void validateInputs() {
         String emailInput = binding.emailInput.getText().toString().trim();
         String passwordInput = binding.passwordInput.getText().toString().trim();
-
         // Ativa o botão se ambos os campos estiverem preenchidos
         binding.loginEnter.setEnabled(!emailInput.isEmpty() && !passwordInput.isEmpty());
     }
 
+    private void openScreen() {
+        Intent intent = new Intent(this, RegisterActivity.class);
+        startActivity(intent);
+    }
 }
