@@ -9,4 +9,7 @@
     <color name="cinza_claro">#868686</color>
     <color name="verde_chat">#028C41</color>
     <color name="laranja_erro">#FF0A0A</color>
+    <color name="background_app_color">#F8F8F8</color>
+    <color name="transparente">#00000000</color>
+    <color name="azul_link">#0066FF</color>
 </resources>

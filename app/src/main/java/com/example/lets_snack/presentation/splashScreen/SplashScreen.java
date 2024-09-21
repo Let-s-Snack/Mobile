@@ -1,15 +1,17 @@
-package com.example.lets_snack;
+package com.example.lets_snack.presentation.splashScreen;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.SharedPreferences;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.example.lets_snack.R;
 import com.example.lets_snack.databinding.ActivitySplashScreenBinding;
+import com.example.lets_snack.presentation.login.LoginActivity;
 
 public class SplashScreen extends AppCompatActivity {
 
@@ -21,15 +23,16 @@ public class SplashScreen extends AppCompatActivity {
         binding = ActivitySplashScreenBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         imgSplash = binding.imgSplash;
-        String linkImg = "https://media1.giphy.com/media/j5gxrTMpUbjnRNX10h/giphy.gif?cid=6c09b9520pdvvqye1oi5g71fmttpw9ppmbhwcaz0b1rvfref&ep=v1_internal_gif_by_id&rid=giphy.gif&ct=g";
-        Glide.with(this)
-                .load(linkImg).centerCrop().into(imgSplash);
-        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
-            @Override
-            public void run() { openScreen(); }
-        }, 3000);
-    }
-    public void openScreen(){
 
+        Glide.with(this)
+                .load(R.drawable.gif_splash).centerCrop().into(imgSplash);
+        new Handler(Looper.getMainLooper()).postDelayed(() -> openScreen(), 3000);
+    }
+
+    //abrindo tela de login
+    public void openScreen(){
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
+        finish();
     }
 }

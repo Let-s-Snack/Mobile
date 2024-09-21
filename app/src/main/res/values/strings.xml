@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">Let\'s-Snack</string>
+    <string name="search">Buscar</string>
+    <string name="chat_ia">Chat Ia</string>
+    <string name="home">Home</string>
+    <string name="hearth">Curtidos</string>
+    <string name="user">Perfil</string>
+    <string name="link_esqueceu_senha"><u>Esqueceu a senha?</u></string>
+    <string name="link_cadastre_se"><u>Cadastre-se</u></string>
+    <string name="entre_aqui"><u>Entre aqui</u></string>
+    <string name="termos"><u>Termos de uso</u></string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
