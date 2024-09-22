@@ -26,6 +26,10 @@
             android:exported="false"
             android:screenOrientation="locked" />
         <activity
+            android:name=".PersonDataRegisterActivity"
+            android:exported="false"
+            android:screenOrientation="locked" />
+        <activity
             android:name=".ExampleImplementation"
             android:exported="false" />
         <activity
