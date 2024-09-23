@@ -5,8 +5,9 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
 
-import com.example.lets_snack.R;
 import com.example.lets_snack.databinding.ActivityMainBinding;
+import com.example.lets_snack.presentation.itensNavBar.HomeFragment;
+import com.example.lets_snack.presentation.navBar.NavFragment;
 
 public class MainActivity extends AppCompatActivity {
 

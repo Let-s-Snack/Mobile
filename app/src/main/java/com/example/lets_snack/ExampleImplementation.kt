@@ -7,6 +7,7 @@ import android.view.View
 import com.example.lets_snack.data.remote.dto.ExampleDto
 import com.example.lets_snack.data.remote.repository.rest.ExampleIRepositoryRest
 import com.example.lets_snack.databinding.ActivityTesteApiBinding
+import com.example.lets_snack.presentation.navBar.NavFragment
 
 class ExampleImplementation : AppCompatActivity() {
     private lateinit var binding: ActivityTesteApiBinding
