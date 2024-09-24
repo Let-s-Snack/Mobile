@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.LetsSnack" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="Base.Theme.LetsSnack" parent="Theme.Material3.Light.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
         <item name="android:windowBackground">@color/background_app_color</item>
@@ -11,6 +11,22 @@
             @color/transparente
         </item>
     </style>
+    <style name="CustomTextInputTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Defina aqui a cor desejada para o accent -->
+        <item name="colorAccent">@color/cinza</item>
+        <item name="hintTextColor">@color/cinza</item>
+        <item name="android:textColorHint">@color/cinza</item>
 
+        <item name="boxStrokeColor">@color/cinza</item>
+        <!-- Defina aqui a cor de fundo -->
+        <item name="boxBackgroundColor">@color/laranja_pastel</item>
+        <!-- Defina aqui o raio do canto -->
+        <item name="boxCornerRadiusTopStart">10dp</item>
+        <item name="boxCornerRadiusTopEnd">10dp</item>
+        <item name="android:textCursorDrawable">@drawable/cursor_drawable</item>
+        <item name="cursorColor">@color/cinza</item>
+        <item name="boxCornerRadiusBottomStart">10dp</item>
+        <item name="boxCornerRadiusBottomEnd">10dp</item>
+    </style>
     <style name="Theme.LetsSnack" parent="Base.Theme.LetsSnack" />
 </resources>

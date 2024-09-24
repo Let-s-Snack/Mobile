@@ -1,4 +1,4 @@
-package com.example.lets_snack;
+package com.example.lets_snack.presentation.itensNavBar;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,7 +6,9 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import com.example.lets_snack.databinding.FragmentProfileBinding;
+import com.example.lets_snack.presentation.login.LoginActivity;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class ProfileFragment extends Fragment {

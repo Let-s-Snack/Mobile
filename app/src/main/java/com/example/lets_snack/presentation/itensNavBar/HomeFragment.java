@@ -1,4 +1,4 @@
-package com.example.lets_snack;
+package com.example.lets_snack.presentation.itensNavBar;
 
 import android.os.Bundle;
 
@@ -7,6 +7,8 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.example.lets_snack.R;
 
 /**
  * A simple {@link Fragment} subclass.
