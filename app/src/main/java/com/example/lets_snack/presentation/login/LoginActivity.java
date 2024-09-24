@@ -9,12 +9,10 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.lets_snack.ForgetPasswordActivity;
 import com.example.lets_snack.MainActivity;
 import com.example.lets_snack.databinding.ActivityLoginBinding;
+import com.example.lets_snack.presentation.login.forgetPassword.ForgetPasswordActivity;
 import com.example.lets_snack.presentation.register.RegisterActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
