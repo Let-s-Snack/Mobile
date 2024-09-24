@@ -15,6 +15,9 @@
         android:theme="@style/Theme.LetsSnack"
         tools:targetApi="31">
         <activity
+            android:name=".presentation.login.forgetPassword.ForgetPasswordActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="false" />
         <activity
