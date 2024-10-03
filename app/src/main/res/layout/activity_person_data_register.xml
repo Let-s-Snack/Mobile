@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".PersonDataRegisterActivity">
+    tools:context=".presentation.register.personData.PersonDataRegisterActivity">
 
     <ImageView
         android:id="@+id/imageView"
@@ -23,7 +23,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_end="32dp" />
+        app:layout_constraintGuide_percent="0.92214113" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline2"
@@ -87,6 +87,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textInputLayout">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/username_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Nome de usuário"
@@ -137,6 +138,7 @@
             android:textSize="16sp"
             android:padding="16dp"
             android:minHeight="56dp"
+            android:dropDownAnchor="@id/gender_input"
             android:dropDownHeight="wrap_content"
             android:dropDownWidth="match_parent"
         />
@@ -144,17 +146,15 @@
     </com.google.android.material.textfield.TextInputLayout>
 
 
-
-
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/login_enter"
         android:layout_width="0dp"
         android:layout_height="40dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="24dp"
         android:layout_marginBottom="84dp"
         android:background="@drawable/background_principal_button_selector"
         android:enabled="false"
-        android:text="Entrar"
+        android:text="Próximo"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/guideline"
@@ -166,7 +166,10 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        app:buttonIcon="@drawable/checkbox"
+        android:button="@drawable/checkbox"
+        android:checked="false"
+        app:buttonTint="@null"
+        android:background="@null"
         app:layout_constraintStart_toStartOf="@+id/guideline2"
         app:layout_constraintTop_toBottomOf="@+id/gender_input" />
 

@@ -22,12 +22,10 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        //iniciar na home
         FragmentTransaction transactionMain = getSupportFragmentManager().beginTransaction();
         transactionMain.replace(R.id.mainContainer, homeFragment);
         transactionMain.commit();
 
-        //iniciar navbar
         FragmentTransaction transactionNav = getSupportFragmentManager().beginTransaction();
         transactionNav.replace(R.id.navbarContainer, navFragment);
         transactionNav.commit();

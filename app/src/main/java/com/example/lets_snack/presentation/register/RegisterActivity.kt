@@ -1,10 +1,16 @@
 package com.example.lets_snack.presentation.register
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.lets_snack.presentation.register.personData.PersonDataRegisterActivity
+import com.example.lets_snack.R
 import com.example.lets_snack.databinding.ActivityRegisterBinding
+import com.google.firebase.auth.FirebaseAuth
 
 class RegisterActivity : AppCompatActivity() {
 
@@ -15,8 +21,31 @@ class RegisterActivity : AppCompatActivity() {
         binding = ActivityRegisterBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Adiciona TextWatchers a todos os campos
         setupTextWatchers()
+
+        setupPhoneFormatter()
+
+        binding.loginEnterBtn.setOnClickListener {
+            if (isAllFieldsValid()) {
+                insertUser(binding.emailInput.text.toString(), binding.passwordInput.text.toString()) { exists ->
+                    if(exists){
+                        val user = FirebaseAuth.getInstance().currentUser
+                        user?.delete()
+                            ?.addOnCompleteListener { task ->
+                                if (task.isSuccessful) {
+                                    println("Usuário excluído com sucesso.")
+                                    startPersonDataRegisterActivity()
+                                } else {
+                                    println("Erro ao excluir o usuário: ${task.exception?.message}")
+                                }
+                            }
+                    }
+                    else{
+                        Toast.makeText(this, "Usuário já existe", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        }
     }
 
     private fun setupTextWatchers() {
@@ -33,6 +62,12 @@ class RegisterActivity : AppCompatActivity() {
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                     updateButtonState()
+                    when (field.id) {
+                        R.id.email_input -> validateEmail()
+                        R.id.phone_input -> validatePhone()
+                        R.id.password_input -> validatePassword()
+                        R.id.confirm_password_input -> validateConfirmPassword()
+                    }
                 }
 
                 override fun afterTextChanged(s: Editable?) {}
@@ -45,35 +80,139 @@ class RegisterActivity : AppCompatActivity() {
         val phone = binding.phoneInput.text.toString()
         val password = binding.passwordInput.text.toString()
         val confirmPassword = binding.confirmPasswordInput.text.toString()
-
-        val isEmailValid = android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
-        val isPhoneValid = phone.length >= 10 // ou o número que você considera padrão
-        val isPasswordValid = password.length >= 8
+        val isEmailValid = isEmailValid(email)
+        val isPhoneValid = isPhoneValid(phone)
+        val isPasswordValid = isPasswordValid(password)
         val isPasswordsMatch = password == confirmPassword
 
-        // Exibe mensagens de erro, se necessário
-        binding.textInputLayout.error = if (!isEmailValid) {
-            "E-mail inválido"
-        } else null
+        binding.loginEnterBtn.isEnabled = isEmailValid && isPhoneValid && isPasswordValid && isPasswordsMatch
+    }
 
-        binding.textInputLayout3.error = if (!isPhoneValid) {
-            "Telefone inválido"
-        } else null
+    private fun validateEmail() {
+        val email = binding.emailInput.text.toString()
+        if (!isEmailValid(email)) {
+            binding.textInputLayout.error = "E-mail inválido"
+        } else {
+            binding.textInputLayout.error = null
+        }
+    }
 
-        binding.textInputLayout4.error = if (!isPasswordValid) {
-            "A senha deve ter pelo menos 8 caracteres"
-        } else null
+    private fun validatePhone() {
+        val phone = binding.phoneInput.text.toString()
+        if (!isPhoneValid(phone)) {
+            binding.textInputLayout3.error = "Telefone inválido"
+        } else {
+            binding.textInputLayout3.error = null
+        }
+    }
 
-        binding.textInputLayout5.error = if (!isPasswordsMatch) {
-            "As senhas não coincidem"
-        } else null
+    private fun validatePassword() {
+        val password = binding.passwordInput.text.toString()
+        if (!isPasswordValid(password)) {
+            binding.textInputLayout4.error = "A senha deve ter pelo menos 8 caracteres"
+        } else {
+            binding.textInputLayout4.error = null
+        }
+    }
 
-        // Verifica se todos os campos estão preenchidos corretamente
-        val isAllFieldsFilled = isEmailValid &&
-                isPhoneValid &&
-                isPasswordValid &&
-                isPasswordsMatch
+    private fun validateConfirmPassword() {
+        val password = binding.passwordInput.text.toString()
+        val confirmPassword = binding.confirmPasswordInput.text.toString()
+        if (password != confirmPassword) {
+            binding.textInputLayout5.error = "As senhas não coincidem"
+        } else {
+            binding.textInputLayout5.error = null
+        }
+    }
 
-        binding.loginEnterBtn.isEnabled = isAllFieldsFilled
+    private fun isAllFieldsValid(): Boolean {
+        val email = binding.emailInput.text.toString()
+        val phone = binding.phoneInput.text.toString()
+        val password = binding.passwordInput.text.toString()
+        val confirmPassword = binding.confirmPasswordInput.text.toString()
+
+        return isEmailValid(email) && isPhoneValid(phone) && isPasswordValid(password) && (password == confirmPassword)
+    }
+
+    private fun isEmailValid(email: String): Boolean {
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
+    }
+
+    private fun isPhoneValid(phone: String): Boolean {
+        return phone.length == 15
+    }
+
+    private fun isPasswordValid(password: String): Boolean {
+        return password.length >= 8
+    }
+
+    private fun setupPhoneFormatter() {
+        binding.phoneInput.addTextChangedListener(object : TextWatcher {
+            private var isUpdating: Boolean = false
+            private val mask = "(##) #####-####"
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                if (isUpdating) return
+
+                val currentCursorPosition = binding.phoneInput.selectionStart
+
+                val phone = s.toString().replace(Regex("[^0-9]"), "")
+                val maskedPhone = StringBuilder()
+
+                isUpdating = true
+
+                if (phone.length <= 11) {
+                    var i = 0
+                    for (char in mask.toCharArray()) {
+                        if (char != '#' && phone.length > i) {
+                            maskedPhone.append(char)
+                        } else if (phone.length > i) {
+                            maskedPhone.append(phone[i])
+                            i++
+                        }
+                    }
+                }
+
+                binding.phoneInput.setText(maskedPhone.toString())
+
+                val unmaskedLength = phone.length
+                var newCursorPosition = currentCursorPosition + (maskedPhone.length - unmaskedLength)
+
+                if (newCursorPosition > maskedPhone.length) newCursorPosition = maskedPhone.length
+
+                binding.phoneInput.setSelection(newCursorPosition)
+
+                isUpdating = false
+            }
+
+            override fun afterTextChanged(s: Editable?) {}
+        })
+    }
+
+
+    private fun startPersonDataRegisterActivity() {
+        val bundle = Bundle()
+        bundle.putString("email", binding.emailInput.text.toString())
+        bundle.putString("phone", binding.phoneInput.text.toString())
+        bundle.putString("password", binding.passwordInput.text.toString())
+        val intent = Intent(this, PersonDataRegisterActivity::class.java)
+        intent.putExtra("bundleRegister", bundle)
+        startActivity(intent)
+    }
+
+    private fun insertUser(email: String, password: String, callback: (Boolean) -> Unit) {
+        val authenticator = FirebaseAuth.getInstance()
+        Log.e("Restriction", "Email: $email Password: $password")
+
+        authenticator.createUserWithEmailAndPassword(email, password)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    callback(true)
+                } else {
+                    callback(false)
+                }
+            }
     }
 }
