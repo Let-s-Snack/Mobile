@@ -18,7 +18,7 @@
             android:name=".presentation.register.photo.PhotoRegister"
             android:exported="false" />
         <activity
-            android:name=".presentation.splashScreen.SplashScreen"
+            android:name=".presentation.register.RegisterActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustPan"
             />
@@ -40,7 +40,7 @@
             android:exported="false"
             android:screenOrientation="locked" />
         <activity
-            android:name=".presentation.register.RegisterActivity"
+            android:name=".presentation.splashScreen.SplashScreen"
             android:exported="true"
             android:screenOrientation="locked"
             android:windowSoftInputMode="adjustPan"
