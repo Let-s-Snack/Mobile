@@ -8,6 +8,7 @@
     app:cardCornerRadius="10dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/card_recipe"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="#FFF3E0">
@@ -45,6 +46,7 @@
             android:background="@null"
             android:button="@drawable/like_button"
             android:checked="false"
+            android:enabled="false"
             app:buttonTint="@null"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
