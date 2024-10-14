@@ -10,27 +10,30 @@ import com.bumptech.glide.Glide
 import java.io.ByteArrayOutputStream
 
 class DataBase {
-    fun uploadFoto(context: Context, foto: ImageView, docData: MutableMap<String, String>){
-        val bitmap = (foto.drawable as BitmapDrawable).bitmap
-        val baos = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 70, baos)
-        val dataByte = baos.toByteArray()
 
-        val storage = LetsSnackFirebaseBuilder.storage
-        storage.getReference("galeria").child("fotoLinda"+System.currentTimeMillis()+".jpg")
-            .putBytes(dataByte).addOnSuccessListener {
-                Toast.makeText(context, "Sucesso", Toast.LENGTH_SHORT).show()
-                it.metadata?.reference?.downloadUrl?.addOnSuccessListener {
-                    Toast.makeText(context, it.toString(), Toast.LENGTH_SHORT).show()
-                    docData.put("uri", it.toString())
+    fun uploadFotoToFirebaseStorage(
+        context: Context,
+        imageUri: Uri,
+        docData: MutableMap<String, String>,
+        onUploadSuccess: (String) -> Unit
+    ) {
+        val storageRef = LetsSnackFirebaseBuilder.storage
+            .getReference("galeria")
+            .child("fotoLinda" + System.currentTimeMillis() + ".jpg")
+
+        storageRef.putFile(imageUri)
+            .addOnSuccessListener { taskSnapshot ->
+                // Recupera a URL da imagem salva no Firebase Storage
+                taskSnapshot.metadata?.reference?.downloadUrl?.addOnSuccessListener { downloadUri ->
+                    // Adiciona a URL da imagem ao map docData
+                    val imageUrl = downloadUri.toString()
+                    docData["uri"] = imageUrl
+                    onUploadSuccess(imageUrl)  // Retorna a URL de sucesso
                 }
-            }.addOnFailureListener {
-                Toast.makeText(context, "Falha", Toast.LENGTH_SHORT).show()
             }
+            .addOnFailureListener {
+                Toast.makeText(context, "Falha ao salvar imagem no Firebase", Toast.LENGTH_SHORT).show()
+            }
+    }
 
-    }
-    fun downloadFoto(img: ImageView, urlFirebase: Uri){
-        img.rotation = 0f
-        Glide.with(img.context).asBitmap().load(urlFirebase).into(img)
-    }
 }

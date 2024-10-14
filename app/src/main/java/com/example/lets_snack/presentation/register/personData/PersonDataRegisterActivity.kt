@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.core.content.ContextCompat
@@ -65,6 +66,9 @@ class PersonDataRegisterActivity : AppCompatActivity() {
 
         binding.loginEnter.setOnClickListener {
             if (isAllFieldsValid) {
+                binding.progressBar.visibility = View.VISIBLE;
+                binding.loginEnter.text = ""
+                binding.loginEnter.isEnabled = false;
                 startPhotoRegister()
             }
         }

@@ -8,7 +8,7 @@
         <item name="android:dropDownListViewStyle">@style/CustomDropDownListViewStyle</item>
 
         <item name="android:statusBarColor">
-            @color/transparente
+            @color/laranja_forte
         </item>
     </style>
     <style name="CustomTextInputTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">

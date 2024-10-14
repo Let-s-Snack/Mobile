@@ -10,7 +10,9 @@ import android.view.ViewGroup;
 import com.example.lets_snack.R;
 import com.example.lets_snack.databinding.FragmentProfileBinding;
 import com.example.lets_snack.presentation.login.LoginActivity;
+import com.example.lets_snack.presentation.profile.EditData;
 import com.example.lets_snack.presentation.transform.RoundedTransformation;
+import com.example.lets_snack.presentation.useTerms.UseTerms;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.squareup.picasso.Picasso;
@@ -62,6 +64,24 @@ public class ProfileFragment extends Fragment {
                 getActivity().finish();
             }
         });
+
+        binding.useTermsIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), UseTerms.class);
+                startActivity(intent);
+            }
+        });
+
+        binding.editDataBlock.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(getContext(), EditData.class);
+                        startActivity(intent);
+                    }
+                }
+        );
     }
 
     @Override
