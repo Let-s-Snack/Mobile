@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import com.example.lets_snack.presentation.itensNavBar.ChatIaFragment
+//import com.example.lets_snack.presentation.itensNavBar.ChatIaFragment
 import com.example.lets_snack.presentation.itensNavBar.HomeFragment
 import com.example.lets_snack.presentation.itensNavBar.LikesFragment
 import com.example.lets_snack.presentation.itensNavBar.ProfileFragment
@@ -20,8 +20,8 @@ class NavFragment : Fragment() {
     private var _binding: FragmentMenuBinding? = null
     private val binding get() = _binding!!
 
-    private val chatIaFragment =
-        ChatIaFragment()
+//    private val chatIaFragment =
+//        ChatIaFragment()
 
     private val homeFragment =
         HomeFragment()
@@ -88,14 +88,14 @@ class NavFragment : Fragment() {
         listNames.addAll(listOf(chatIaText, chatSearchText, chatHearthText, chatUserText))
         updateUI(homeBtn, chatHomeText, listItens, listNames)
 
-        chatIaBtn.setOnClickListener {
-            listItens.addAll(listOf(homeBtn, searchBtn, hearthBtn, userBtn))
-            listNames.addAll(listOf(chatHomeText, chatSearchText, chatHearthText, chatUserText))
-            updateUI(chatIaBtn, chatIaText, listItens, listNames)
-            val transaction = parentFragmentManager.beginTransaction()
-            transaction.replace(R.id.mainContainer, chatIaFragment)
-            transaction.commit()
-        }
+//        chatIaBtn.setOnClickListener {
+//            listItens.addAll(listOf(homeBtn, searchBtn, hearthBtn, userBtn))
+//            listNames.addAll(listOf(chatHomeText, chatSearchText, chatHearthText, chatUserText))
+//            updateUI(chatIaBtn, chatIaText, listItens, listNames)
+//            val transaction = parentFragmentManager.beginTransaction()
+//            transaction.replace(R.id.mainContainer, chatIaFragment)
+//            transaction.commit()
+//        }
 
         homeBtn.setOnClickListener {
             listItens.addAll(listOf(chatIaBtn, searchBtn, hearthBtn, userBtn))
