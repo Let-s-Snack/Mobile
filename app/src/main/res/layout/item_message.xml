@@ -14,5 +14,5 @@
         android:textSize="14sp"
         android:padding="10dp"
         android:background="@drawable/message_send"
-        android:textColor="@color/cinza_claro"/>
+        android:textColor="@color/white"/>
 </LinearLayout>

@@ -51,6 +51,7 @@ dependencies {
     implementation ("com.squareup.retrofit2:converter-gson:2.11.0")
     implementation("com.google.firebase:firebase-storage:21.0.0")
     implementation("com.google.firebase:firebase-auth:23.0.0")
+    implementation("com.google.firebase:firebase-firestore:25.1.0")
     testImplementation("junit:junit:4.13.2")
     implementation("com.squareup.okhttp3:okhttp:4.11.0")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")

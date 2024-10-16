@@ -78,6 +78,12 @@ class MessageAdapter(private val messages: MutableList<MessageDto>, private val 
         notifyItemInserted(messages.size - 1)
     }
 
+    fun updateMessages(newMessages: List<MessageDto>) {
+        messages.clear()
+        messages.addAll(newMessages)
+        notifyDataSetChanged()
+    }
+
     private fun getColorFromString(text: String): Int {
         return Color.rgb(
             text.hashCode() and 0xFF,
