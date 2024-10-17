@@ -1,8 +1,6 @@
 package com.example.lets_snack.presentation.adapter;
 
 import android.annotation.SuppressLint;
-import android.os.Bundle;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,15 +11,11 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.example.lets_snack.MainActivity;
 import com.example.lets_snack.R;
-import com.example.lets_snack.data.remote.dto.CategoryDto;
 import com.example.lets_snack.data.remote.dto.RecipeDto;
-import com.example.lets_snack.presentation.recipesFeed.FragmentRecipesFeed;
 
 import java.util.List;
 
@@ -80,7 +74,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
             super(itemView);
             photoView = itemView.findViewById(R.id.recipe_photo);
             nameView = itemView.findViewById(R.id.recipe_name);
-            likeView = itemView.findViewById(R.id.recipe_like_button);
+            likeView = itemView.findViewById(R.id.recipe_screen_like_button);
             ratingBarView = itemView.findViewById(R.id.recipe_rating_bar);
             rateView = itemView.findViewById(R.id.recipe_rate);
             cardView = itemView.findViewById(R.id.card_recipe);

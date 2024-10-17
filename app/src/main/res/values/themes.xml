@@ -10,6 +10,9 @@
         <item name="android:statusBarColor">
             @color/transparente
         </item>
+        <item name="android:navigationBarColor">
+            @android:color/transparent
+        </item>
     </style>
     <style name="CustomTextInputTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Defina aqui a cor desejada para o accent -->

@@ -4,9 +4,7 @@ import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
 import static com.bumptech.glide.load.resource.drawable.DrawableDecoderCompat.getDrawable;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.core.content.ContextCompat;
@@ -22,14 +20,10 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.example.lets_snack.R;
-import com.example.lets_snack.data.remote.api.CategoriesService;
 import com.example.lets_snack.data.remote.api.PersonsService;
 import com.example.lets_snack.data.remote.api.RecipesService;
-import com.example.lets_snack.data.remote.dto.CategoryDto;
 import com.example.lets_snack.data.remote.dto.RecipeDto;
 import com.example.lets_snack.databinding.FragmentRecipesFeedBinding;
-import com.example.lets_snack.databinding.FragmentSearchBinding;
-import com.example.lets_snack.presentation.adapter.CategoryAdapter;
 import com.example.lets_snack.presentation.adapter.RecipeAdapter;
 
 import java.util.List;
@@ -39,16 +33,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link FragmentRecipesFeed#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class FragmentRecipesFeed extends Fragment {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 
     private FragmentRecipesFeedBinding binding;
     private RecyclerView recyclerView;
@@ -58,7 +43,7 @@ public class FragmentRecipesFeed extends Fragment {
         // Required empty public constructor
     }
 
-    public static FragmentRecipesFeed newInstance(String param1, String param2) {
+    public static FragmentRecipesFeed newInstance() {
         FragmentRecipesFeed fragment = new FragmentRecipesFeed();
         Bundle args = new Bundle();
         fragment.setArguments(args);
@@ -68,7 +53,6 @@ public class FragmentRecipesFeed extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
@@ -119,7 +103,7 @@ public class FragmentRecipesFeed extends Fragment {
         //Inicializar os componentes da caixaMsg
         TextView title = descriptionCard.findViewById(R.id.description_title_modal);
         TextView description = descriptionCard.findViewById(R.id.description_text_modal);
-        ImageButton closeModal = descriptionCard.findViewById(R.id.description_modal_close);
+        ImageButton closeModal = descriptionCard.findViewById(R.id.rating_modal_close);
 
         title.setText(getArguments().getString("category", "Sem nome"));
         description.setText(getArguments().getString("description", "Sem descrição"));

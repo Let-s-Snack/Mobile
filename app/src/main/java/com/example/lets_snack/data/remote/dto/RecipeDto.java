@@ -10,11 +10,14 @@ public class RecipeDto {
     private String name;
     private String description;
     private String urlPhoto;
-    private List<Object> ingredients;
-    private List<Object> coments;
+    private List<IngredientDto> ingredients;
+    private List<CommentDto> coments;
     private List<String> preparationMethods;
     private List<Object> brokenRestrictions;
     private Date creationDate;
+    private double rating;
+    private boolean isFavorite;
+
 
     private void RecipeDto(){}
 
@@ -50,19 +53,19 @@ public class RecipeDto {
         this.urlPhoto = urlPhoto;
     }
 
-    public List<Object> getIngredients() {
+    public List<IngredientDto> getIngredients() {
         return ingredients;
     }
 
-    public void setIngredients(List<Object> ingredients) {
+    public void setIngredients(List<IngredientDto> ingredients) {
         this.ingredients = ingredients;
     }
 
-    public List<Object> getComents() {
+    public List<CommentDto> getComents() {
         return coments;
     }
 
-    public void setComents(List<Object> coments) {
+    public void setComents(List<CommentDto> coments) {
         this.coments = coments;
     }
 
@@ -90,10 +93,26 @@ public class RecipeDto {
         this.creationDate = creationDate;
     }
 
+    public double getRating() {
+        return rating;
+    }
+
+    public void setRating(double rating) {
+        this.rating = rating;
+    }
+
+    public boolean isFavorite() {
+        return isFavorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        isFavorite = favorite;
+    }
+
     @Override
     public String toString() {
         return "RecipeDto{" +
-                "id=" + id +
+                "id='" + id + '\'' +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", urlPhoto='" + urlPhoto + '\'' +
@@ -102,6 +121,8 @@ public class RecipeDto {
                 ", preparationMethods=" + preparationMethods +
                 ", brokenRestrictions=" + brokenRestrictions +
                 ", creationDate=" + creationDate +
+                ", rating=" + rating +
+                ", isFavorite=" + isFavorite +
                 '}';
     }
 }
