@@ -46,28 +46,21 @@
         <item name="boxCornerRadiusBottomEnd">10dp</item>
     </style>
 
-    <style name="CustomTextInputSendMessage" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+    <style name="CustomTextInputSendMessage" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Cor da borda (sempre laranja) -->
         <item name="boxStrokeColor">@color/laranja_forte</item>
-        <item name="colorAccent">@color/laranja_forte</item>
 
-
-        <!-- Cor da borda quando o campo está em estado de erro -->
         <item name="boxStrokeErrorColor">@color/laranja_forte</item>
 
-        <!-- Cor de fundo -->
         <item name="boxBackgroundColor">@color/white</item>
-
-        <!-- Raio dos cantos da borda -->
+        <item name="hintTextColor">@color/cinza</item>
         <item name="boxCornerRadiusTopStart">10dp</item>
         <item name="boxCornerRadiusTopEnd">10dp</item>
         <item name="boxCornerRadiusBottomStart">10dp</item>
         <item name="boxCornerRadiusBottomEnd">10dp</item>
+        <item name="cursorColor">@color/cinza</item>
+        <item name="android:textColorHint">@color/cinza_claro</item>
 
-        <!-- Cor do hint (texto sugerido) -->
-        <item name="android:textColorHint">@color/laranja_forte</item>
-
-        <!-- Definição do cursor (caso esteja usando um personalizado) -->
         <item name="android:textCursorDrawable">@drawable/cursor_drawable</item>
     </style>
 

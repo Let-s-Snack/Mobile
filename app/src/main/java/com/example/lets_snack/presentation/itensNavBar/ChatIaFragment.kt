@@ -36,32 +36,29 @@ class ChatIaFragment : Fragment() {
 
     private val firestore = FirebaseFirestore.getInstance()
 
-    var currentUser = FirebaseAuth.getInstance().currentUser
+    private var currentUser = FirebaseAuth.getInstance().currentUser
 
     private val chatCollectionRef = firestore.collection(currentUser?.email!!)
 
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentChatIaBinding.inflate(inflater, container, false)
         messageAdapter = MessageAdapter(mutableListOf(), currentUser?.displayName!!)
         binding.recyclerView.layoutManager = LinearLayoutManager(context)
         binding.recyclerView.adapter = messageAdapter
 
-        // Carregar mensagens do Firestore
-        carregarMensagens()
+        loadMessages(false)
+
         binding.messageInput.setEndIconOnClickListener {
             val messageText = binding.messageInputText.text.toString()
             if (messageText.isNotEmpty()) {
-                salvarMensagem(MessageDto(currentUser?.displayName!!, messageText))
-                binding.messageInputText.text?.clear() // Limpa o campo de texto após enviar
-                enviar(messageText)
+                Log.d("NameUser", currentUser?.displayName.toString())
+                saveMessages(MessageDto(currentUser?.displayName.toString(), messageText),false)
+                binding.messageInputText.text?.clear()
+                send(messageText)
             }
         }
         return binding.root
@@ -72,12 +69,11 @@ class ChatIaFragment : Fragment() {
         _binding = null
     }
 
-    fun enviar(prompt: String) {
+    private fun send(prompt: String) {
         val url = "https://api.openai.com/v1/chat/completions"
         val apiKey = "sk-KCi9J_ZRAwbP0j7quEU7u-X3dPd85fHfykAr3YLkplT3BlbkFJIsDEI8JSuT2ztk6orRr9IoM6iu1wMX5kaSJltkNooA"
         Log.d("Prompt", prompt)
 
-        // Criar o JSON da requisição para o GPT
         val json = JSONObject()
         try {
             json.put("model", "gpt-3.5-turbo")
@@ -114,13 +110,12 @@ class ChatIaFragment : Fragment() {
         curl.newCall(request).enqueue(object : Callback {
             override fun onResponse(call: Call, response: Response) {
                 val jsonObject = JSONObject(response.body!!.string())
-                Log.d("Firestore", "json: "+jsonObject.toString())
+                Log.d("Firestore", "json: $jsonObject")
                 val content = jsonObject.getJSONArray("choices").getJSONObject(0).getJSONObject("message").getString("content")
                 Log.d("content",content)
                 Log.d("content", content)
-                // Salvar a resposta do GPT no Firestore
                 Handler(Looper.getMainLooper()).post {
-                    salvarMensagem(MessageDto("GPT", content))
+                    saveMessages(MessageDto("GPT", content),true)
                 }
             }
 
@@ -130,16 +125,16 @@ class ChatIaFragment : Fragment() {
         })
     }
 
-    private fun salvarMensagem(message: MessageDto) {
+    private fun saveMessages(message: MessageDto, isLast: Boolean) {
         chatCollectionRef.add(message)
             .addOnSuccessListener {
                 Log.d("Firestore", "Mensagem salva com sucesso!")
-                carregarMensagens() // Mova para aqui
+                loadMessages(isLast)
             }
             .addOnFailureListener { e -> Log.w("Firestore", "Erro ao salvar mensagem", e) }
     }
 
-    private fun carregarMensagens() {
+    private fun loadMessages(isLast: Boolean) {
         chatCollectionRef.orderBy("timestamp").addSnapshotListener { snapshots, e ->
             if (e != null) {
                 Log.w("Firestore", "Listen failed.", e)
@@ -152,9 +147,12 @@ class ChatIaFragment : Fragment() {
                 messagesList.add(message)
             }
 
-            Log.d("Firestore", "Mensagens carregadas: ${messagesList.size}") // Adicione esta linha
-            messageAdapter?.updateMessages(messagesList)
+            Log.d("Firestore", "Mensagens carregadas: ${messagesList.size}")
+            messageAdapter?.updateMessages(messagesList,isLast)
+
+            if (messagesList.isNotEmpty()) {
+                binding.recyclerView.scrollToPosition(messagesList.size - 1)
+            }
         }
     }
-
 }
