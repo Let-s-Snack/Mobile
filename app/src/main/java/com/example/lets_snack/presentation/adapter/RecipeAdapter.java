@@ -58,11 +58,6 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
             holder.rateView.setText("0.0");
         }
 
-        //adicionando margem apenas para items pares, para manter o espaçamento central
-//        if (position % 2 == 0) {ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) holder.itemView.getLayoutParams();
-//            layoutParams.setMarginEnd(64);
-//        }
-
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
