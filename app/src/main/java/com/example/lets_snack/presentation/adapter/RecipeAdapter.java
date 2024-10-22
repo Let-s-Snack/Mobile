@@ -48,11 +48,20 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
         String url = recipeDtoList.get(position).getUrlPhoto();
         Glide.with(holder.photoView.getContext())
                 .asBitmap()
-                .load(url)
-                .centerCrop()
-                .circleCrop()
+                .load("https://i.pinimg.com/control/564x/13/2c/ca/132ccab00cbe2774aa975c147c584aa8.jpg")
                 .into(holder.photoView);
-//        holder.rateView
+        holder.likeView.setChecked(recipeDtoList.get(position).isFavorite());
+        if(recipeDtoList.get(position).getRating() != null) {
+            holder.rateView.setText(String.valueOf(recipeDtoList.get(position).getRating()));
+        }
+        else{
+            holder.rateView.setText("0.0");
+        }
+
+        //adicionando margem apenas para items pares, para manter o espaçamento central
+//        if (position % 2 == 0) {ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) holder.itemView.getLayoutParams();
+//            layoutParams.setMarginEnd(64);
+//        }
 
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override

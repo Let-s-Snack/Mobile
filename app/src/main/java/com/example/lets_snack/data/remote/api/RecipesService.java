@@ -8,9 +8,10 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface RecipesService {
 
-    @GET("/recipes/listRecipesByRestrictions")
-    Call<List<RecipeDto>> findRecipesByRestrictions(@Body Object params);
+    @GET("/recipes/listRecipesByRestriction")
+    Call<List<RecipeDto>> findRecipesByRestrictions(@Query("restrictionsId") String recipesId, @Query("personsEmail") String personsId);
 }

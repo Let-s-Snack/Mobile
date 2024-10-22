@@ -4,18 +4,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_margin="16dp"
+    android:layout_gravity="clip_horizontal|fill_horizontal"
+    android:layout_marginBottom="16dp"
     app:cardCornerRadius="10dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/card_recipe"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="#FFF3E0">
+        android:layout_gravity="clip_horizontal|fill_horizontal"
+        android:background="#FFF3E0"
+        android:foregroundGravity="center">
 
         <ImageView
             android:id="@+id/recipe_photo"
-            android:layout_width="140dp"
+            android:layout_width="160dp"
             android:layout_height="110dp"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
@@ -32,7 +35,6 @@
             android:ellipsize="end"
             android:gravity="center"
             android:maxLines="2"
-            android:text=""
             android:textColor="@color/cinza"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

@@ -19,6 +19,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.lets_snack.R;
@@ -40,25 +42,20 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link FragmentRecipesFeed#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class FragmentRecipesFeed extends Fragment {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 
     private FragmentRecipesFeedBinding binding;
     private RecyclerView recyclerView;
     private Retrofit retrofit;
+    private ProgressBar loading;
+    private ImageView imageError;
+    private TextView textError;
 
     public FragmentRecipesFeed() {
         // Required empty public constructor
     }
 
-    public static FragmentRecipesFeed newInstance(String param1, String param2) {
+    public static FragmentRecipesFeed newInstance() {
         FragmentRecipesFeed fragment = new FragmentRecipesFeed();
         Bundle args = new Bundle();
         fragment.setArguments(args);
@@ -68,7 +65,6 @@ public class FragmentRecipesFeed extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
@@ -79,17 +75,25 @@ public class FragmentRecipesFeed extends Fragment {
         recyclerView = binding.recyclerRecipes;
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2, LinearLayoutManager.VERTICAL, false ));
 
+        loading = binding.loadingRecipesFeed;
+        loading.setVisibility(View.VISIBLE);
+
+        imageError = binding.imageErrorRecipesFeed;
+
+        textError = binding.textErrorRecipesFeed;
+
         //verificando se a tela é de curtidas
         if(getArguments().getString("id") == "like_screen"){
             binding.returnBtn.setVisibility(View.INVISIBLE);
             binding.infoCategory.setVisibility(View.INVISIBLE);
             TextView titleName = binding.recipesFeedTitle;
             titleName.setText("Curtidas");
+            likedScreenCall();
         }else{
             String categoryName = getArguments().getString("category", "Sem nome");
             binding.recipesFeedTitle.setText(categoryName);
             //chamando a API para pegar as receitas por categoria
-            categoryRecipesCall();
+            categoryRecipesCall(getArguments().getString("id"));
         }
 
         //botão de voltar para a tela anterior
@@ -143,7 +147,7 @@ public class FragmentRecipesFeed extends Fragment {
 
         //chamada da API
         PersonsService personsApi = retrofit.create(PersonsService.class);
-        Call<List<RecipeDto>> apiCall = personsApi.findWishlistByUser("id do user");
+        Call<List<RecipeDto>> apiCall = personsApi.findWishlistByUserEmail("leticia@gmail.com"); //mudar para pegar o email do user por email quando estiver completo o fluxo de cadastr
 
         //executar chamada
         apiCall.enqueue(new Callback<List<RecipeDto>>() {
@@ -151,16 +155,31 @@ public class FragmentRecipesFeed extends Fragment {
             public void onResponse(Call<List<RecipeDto>> call, Response<List<RecipeDto>> response) {
                 List<RecipeDto> recipes = response.body();
                 recyclerView.setAdapter(new RecipeAdapter(recipes));
+                loading.setVisibility(View.INVISIBLE);
+
+                if(recipes.isEmpty()) {
+                    imageError.setVisibility(View.VISIBLE);
+                    imageError.setImageResource(R.drawable.neneca_triste);
+                    textError.setVisibility(View.VISIBLE);
+                    textError.setText("Nenhuma receita encontrada!");
+                }
             }
 
             @Override
             public void onFailure(Call<List<RecipeDto>> call, Throwable throwable) {
-                //chamar modal de erro com o servidor
+                //chamar imagem de erro
+                loading.setVisibility(View.INVISIBLE);
+                imageError.setVisibility(View.VISIBLE);
+                imageError.setImageResource(R.drawable.neneca_triste);
+
+                //colocar no textView o erro
+                textError.setVisibility(View.VISIBLE);
+                textError.setText(throwable.getLocalizedMessage());
             }
         });
     }
 
-    public void categoryRecipesCall() {
+    public void categoryRecipesCall(String restrictionId) {
         String baseUrl = "https://spring-mongo-6c8h.onrender.com";
 
         //configurar acesso da API
@@ -171,11 +190,7 @@ public class FragmentRecipesFeed extends Fragment {
 
         //chamada da API
         RecipesService recipesApi = retrofit.create(RecipesService.class);
-        Object restrictionData = new Object() {
-            public String recipesId = "1"; //id da receita
-            public String personsId = "1"; //id do utilizador
-        };
-        Call<List<RecipeDto>> apiCall = recipesApi.findRecipesByRestrictions(restrictionData);
+        Call<List<RecipeDto>> apiCall = recipesApi.findRecipesByRestrictions(restrictionId,"leticia@gmail.com");
 
         //executar chamada
         apiCall.enqueue(new Callback<List<RecipeDto>>() {
@@ -183,11 +198,26 @@ public class FragmentRecipesFeed extends Fragment {
             public void onResponse(Call<List<RecipeDto>> call, Response<List<RecipeDto>> response) {
                 List<RecipeDto> recipes = response.body();
                 recyclerView.setAdapter(new RecipeAdapter(recipes));
+                loading.setVisibility(View.INVISIBLE);
+
+                if(recipes.isEmpty()) {
+                    imageError.setVisibility(View.VISIBLE);
+                    imageError.setImageResource(R.drawable.neneca_triste);
+                    textError.setVisibility(View.VISIBLE);
+                    textError.setText("Nenhuma receita encontrada!");
+                }
             }
 
             @Override
             public void onFailure(Call<List<RecipeDto>> call, Throwable throwable) {
-                //chamar modal de erro com o servidor
+                //chamar imagem de erro
+                loading.setVisibility(View.INVISIBLE);
+                imageError.setVisibility(View.VISIBLE);
+                imageError.setImageResource(R.drawable.neneca_triste);
+
+                //colocar no textView o erro
+                textError.setVisibility(View.VISIBLE);
+                textError.setText(throwable.getMessage());
             }
         });
     }

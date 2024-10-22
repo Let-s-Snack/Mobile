@@ -10,6 +10,6 @@ import retrofit2.http.GET;
 import retrofit2.http.Path;
 
 public interface PersonsService {
-    @GET("/persons/personWishlist/{id}")
-    Call<List<RecipeDto>> findWishlistByUser(@Path("id") String personId);
+    @GET("/persons/personWishlist/{email}")
+    Call<List<RecipeDto>> findWishlistByUserEmail(@Path("email") String personEmail);
 }

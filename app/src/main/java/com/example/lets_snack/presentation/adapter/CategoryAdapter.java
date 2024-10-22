@@ -77,7 +77,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
                 Bundle bundle = new Bundle();
                 bundle.putString("category", categoryDtoList.get(position).getName());
                 bundle.putString("description", categoryDtoList.get(position).getDescription());
-//                bundle.putString("id", categoryDtoList.get(position).getId().toHexString());
+                bundle.putString("id", categoryDtoList.get(position).getId());
 
                 //chamando fragment de recipe feed
                 FragmentTransaction transaction = ((MainActivity) v.getContext()).getSupportFragmentManager().beginTransaction();

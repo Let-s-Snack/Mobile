@@ -14,6 +14,8 @@ public class RecipeDto {
     private List<Object> coments;
     private List<String> preparationMethods;
     private List<Object> brokenRestrictions;
+    private boolean isFavorite;
+    private Float rating;
     private Date creationDate;
 
     private void RecipeDto(){}
@@ -82,6 +84,22 @@ public class RecipeDto {
         this.brokenRestrictions = brokenRestrictions;
     }
 
+    public boolean isFavorite() {
+        return isFavorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        isFavorite = favorite;
+    }
+
+    public Float getRating() {
+        return rating;
+    }
+
+    public void setRating(Float rating) {
+        this.rating = rating;
+    }
+
     public Date getCreationDate() {
         return creationDate;
     }
@@ -93,7 +111,7 @@ public class RecipeDto {
     @Override
     public String toString() {
         return "RecipeDto{" +
-                "id=" + id +
+                "id='" + id + '\'' +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", urlPhoto='" + urlPhoto + '\'' +
@@ -101,6 +119,8 @@ public class RecipeDto {
                 ", coments=" + coments +
                 ", preparationMethods=" + preparationMethods +
                 ", brokenRestrictions=" + brokenRestrictions +
+                ", isFavorite=" + isFavorite +
+                ", rating=" + rating +
                 ", creationDate=" + creationDate +
                 '}';
     }

@@ -1,27 +1,29 @@
 package com.example.lets_snack.presentation.itensNavBar;
 
-import android.content.Intent;
+import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+
+import android.app.Dialog;
 import android.os.Bundle;
 
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.example.lets_snack.R;
 import com.example.lets_snack.data.remote.api.CategoriesService;
 import com.example.lets_snack.data.remote.dto.CategoryDto;
-import com.example.lets_snack.databinding.FragmentProfileBinding;
 import com.example.lets_snack.databinding.FragmentSearchBinding;
 import com.example.lets_snack.presentation.adapter.CategoryAdapter;
-import com.example.lets_snack.presentation.login.LoginActivity;
-import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.List;
 
@@ -31,44 +33,22 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link SearchFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class SearchFragment extends Fragment {
 
     private FragmentSearchBinding binding;
     private RecyclerView recyclerView;
     private Retrofit retrofit;
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private ProgressBar loading;
+    private ImageView imageError;
+    private TextView textError;
 
     public SearchFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment SearchFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static SearchFragment newInstance(String param1, String param2) {
+    public static SearchFragment newInstance() {
         SearchFragment fragment = new SearchFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -76,10 +56,6 @@ public class SearchFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -91,7 +67,12 @@ public class SearchFragment extends Fragment {
         //chamar api para co    locar as categorias
         loadCategories();
 
+        loading = binding.loadingCategories;
+        loading.setVisibility(View.VISIBLE);
 
+        imageError = binding.imageErrorCategory;
+
+        textError = binding.textErrorCategory;
     }
 
     @Override
@@ -121,11 +102,26 @@ public class SearchFragment extends Fragment {
             public void onResponse(Call<List<CategoryDto>> call, Response<List<CategoryDto>> response) {
                 List<CategoryDto> categories = response.body();
                 recyclerView.setAdapter(new CategoryAdapter(categories));
+                loading.setVisibility(View.INVISIBLE);
+
+                if(categories.isEmpty()) {
+                    imageError.setVisibility(View.VISIBLE);
+                    imageError.setImageResource(R.drawable.neneca_triste);
+                    textError.setVisibility(View.VISIBLE);
+                    textError.setText("Nenhuma categoria encontrada!");
+                }
             }
 
             @Override
             public void onFailure(Call<List<CategoryDto>> call, Throwable throwable) {
-                //chamar modal de erro com o servidor
+                //chamar imagem de erro
+                loading.setVisibility(View.INVISIBLE);
+                imageError.setVisibility(View.VISIBLE);
+                imageError.setImageResource(R.drawable.neneca_triste);
+
+                //colocar no textView o erro
+                textError.setVisibility(View.VISIBLE);
+                textError.setText(throwable.getMessage());
             }
         });
     }
