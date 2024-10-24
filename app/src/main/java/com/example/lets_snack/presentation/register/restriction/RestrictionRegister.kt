@@ -167,7 +167,7 @@ class RestrictionRegister : AppCompatActivity() {
                     val formattedDate = formatDate(dateOfBirth!!)
                     Log.d("FormattedDate",formattedDate!!)
                     val objectPerson = PersonDto(gender!!,name!!,username!!,email!!,password!!,false,photo!!,
-                        formattedDate!!,phone!!,true,it!!)
+                        formattedDate,phone!!,true,it!!)
                     insertUserMongo(objectPerson)
                 }
 
@@ -221,6 +221,7 @@ class RestrictionRegister : AppCompatActivity() {
                 response: retrofit2.Response<String>
             ) {
                Log.d("CallPersons", response.code().toString())
+                Log.d("CallPersons", response.message().toString())
             }
 
             override fun onFailure(call: retrofit2.Call<String>, t: Throwable) {
@@ -235,7 +236,7 @@ class RestrictionRegister : AppCompatActivity() {
             val parsedDate: Date? = inputDateFormat.parse(dateOfBirth)
             if (parsedDate != null) {
                 // Define Locale.US para garantir que o mês não seja convertido em texto
-                val outputDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US)
+                val outputDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US)
                 outputDateFormat.timeZone = TimeZone.getTimeZone("UTC")
                 outputDateFormat.format(parsedDate)
             } else {
