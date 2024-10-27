@@ -1,6 +1,5 @@
 package com.example.lets_snack.presentation.itensNavBar.adapter
 
-
 import android.graphics.Color
 import android.os.Looper
 import android.text.Spannable
@@ -48,8 +47,7 @@ class MessageAdapter(private val messages: MutableList<MessageDto>, private val 
             layoutParams.gravity = Gravity.END
             holder.messageTextView.gravity = Gravity.START
             val marginLayoutParams = holder.messageTextView.layoutParams as ViewGroup.MarginLayoutParams
-            marginLayoutParams.marginEnd = 100
-            marginLayoutParams.topMargin = 13
+            marginLayoutParams.topMargin = 16
             holder.messageTextView.setBackgroundResource(R.drawable.message_send)
         }
         else {
@@ -83,8 +81,7 @@ class MessageAdapter(private val messages: MutableList<MessageDto>, private val 
 
             layoutParams.gravity = Gravity.START
             val marginLayoutParams = holder.messageTextView.layoutParams as ViewGroup.MarginLayoutParams
-            marginLayoutParams.marginStart = 100
-            marginLayoutParams.topMargin = 13
+            marginLayoutParams.topMargin = 16
             holder.messageTextView.setBackgroundResource(R.drawable.message)
         }
     }
@@ -126,7 +123,6 @@ class MessageAdapter(private val messages: MutableList<MessageDto>, private val 
                 }
             }
         }
-
         handler.post(runnable)
     }
 }
