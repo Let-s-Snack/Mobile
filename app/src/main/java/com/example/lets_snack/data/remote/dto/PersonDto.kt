@@ -1,6 +1,5 @@
 package com.example.lets_snack.data.remote.dto
 
-import java.util.Date
 
 data class PersonDto(
     val gender: String,
@@ -13,5 +12,7 @@ data class PersonDto(
     val birthDate: String,
     val cellphone: String,
     val registrationCompleted: Boolean,
-    val restrictions: List<RestrictionsDto>
+    val restrictions: MutableList<RestrcitionID?>
 )
+
+data class RestrcitionID(val restrictionId:String)

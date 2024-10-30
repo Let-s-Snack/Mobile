@@ -15,6 +15,7 @@ import androidx.core.view.children
 import com.example.lets_snack.MainActivity
 import com.example.lets_snack.R
 import com.example.lets_snack.data.remote.dto.PersonDto
+import com.example.lets_snack.data.remote.dto.RestrcitionID
 import com.example.lets_snack.data.remote.dto.RestrictionsDto
 import com.example.lets_snack.data.remote.repository.rest.PersonsRepository
 import com.example.lets_snack.data.remote.repository.rest.RestrictionsRepository
@@ -35,6 +36,7 @@ class RestrictionRegister : AppCompatActivity() {
     private var chipGroup: ChipGroup? = null
     private var restrictionsArray:  ArrayList<String> =  ArrayList()
     private var restrictionListObject: List<RestrictionsDto>? = listOf()
+    private var restrictionListId: MutableList<RestrcitionID?> = mutableListOf()
     private lateinit var adapterTypeRestrictions: ArrayAdapter<String>
 
 
@@ -70,13 +72,6 @@ class RestrictionRegister : AppCompatActivity() {
 
 
 
-        val ingredientsRestriction = binding.ingredientsInput
-        val ingredients = arrayOf("Arroz", "Feijão", "Carne", "Leite","Frango","Macarrão","Batata","Cenoura","Alface","Tomate")
-        val adapterIngredientsRestriction = ArrayAdapter(this, android.R.layout.simple_list_item_checked, ingredients)
-        ingredientsRestriction.setAdapter(adapterIngredientsRestriction)
-        val chipGroup2 = binding.chipGroup2
-        ingredientsRestriction.setTokenizer(MultiAutoCompleteTextView.CommaTokenizer())
-
         val checkbox = binding.checkBox
 
         val textWatcher = object : TextWatcher {
@@ -89,7 +84,6 @@ class RestrictionRegister : AppCompatActivity() {
         }
 
         typeRestriction.addTextChangedListener(textWatcher)
-        ingredientsRestriction.addTextChangedListener(textWatcher)
 
         checkbox.setOnCheckedChangeListener { _, _ ->
             updateButtonState()
@@ -101,15 +95,6 @@ class RestrictionRegister : AppCompatActivity() {
                 addChipToGroup(selectedItem, chipGroup!!)
             }
             typeRestriction.text.clear()
-            updateButtonState()
-        }
-
-        ingredientsRestriction.setOnItemClickListener { parent, _, position, _ ->
-            val selectedItem = parent.getItemAtPosition(position).toString()
-            if (!chipExists(selectedItem, chipGroup2)) {
-                addChipToGroup(selectedItem, chipGroup2)
-            }
-            ingredientsRestriction.text.clear()
             updateButtonState()
         }
     }
@@ -137,7 +122,7 @@ class RestrictionRegister : AppCompatActivity() {
     }
 
     private fun updateButtonState() {
-        val isFieldFilled = binding.chipGroup.childCount > 0 || binding.chipGroup2.childCount > 0
+        val isFieldFilled = binding.chipGroup.childCount > 0
         if(isFieldFilled) {
             val drawable = binding.checkBox.buttonDrawable
             drawable?.setTint(ContextCompat.getColor(this, R.color.cinza))
@@ -161,13 +146,19 @@ class RestrictionRegister : AppCompatActivity() {
                         ?.map {
                             it.text.toString()
                         }
-                    it?.filter {
-                        chipSelected?.contains(it.name) == true
+                    it?.filter { item ->
+                        if (chipSelected?.contains(item.name) == true) {
+                            restrictionListId.add(RestrcitionID(item.id))
+                            true  // Retorna `true` para manter esse item no filtro, caso você precise
+                        } else {
+                            false
+                        }
                     }
                     val formattedDate = formatDate(dateOfBirth!!)
                     Log.d("FormattedDate",formattedDate!!)
+                    Log.d("RestricitonRegister",restrictionListId.toString())
                     val objectPerson = PersonDto(gender!!,name!!,username!!,email!!,password!!,false,photo!!,
-                        formattedDate,phone!!,true,it!!)
+                        formattedDate!!,phone!!,true, restrictionListId!!)
                     insertUserMongo(objectPerson)
                 }
 
@@ -220,8 +211,7 @@ class RestrictionRegister : AppCompatActivity() {
                 call: retrofit2.Call<String>,
                 response: retrofit2.Response<String>
             ) {
-               Log.d("CallPersons", response.code().toString())
-                Log.d("CallPersons", response.message().toString())
+                Log.d("CallPersons", response.code().toString())
             }
 
             override fun onFailure(call: retrofit2.Call<String>, t: Throwable) {
