@@ -23,8 +23,17 @@
             android:windowSoftInputMode="adjustPan"
             />
         <activity
+            android:name=".presentation.useTerms.UseTerms"
+            android:exported="false"
+            android:screenOrientation="locked"/>
+        <activity
+            android:name=".presentation.login.forgetPassword.ForgetPasswordActivity"
+            android:exported="false"
+            android:screenOrientation="locked"/>
+        <activity
             android:name=".MainActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="locked"/>
         <activity
             android:name=".presentation.login.LoginActivity"
             android:exported="false"
