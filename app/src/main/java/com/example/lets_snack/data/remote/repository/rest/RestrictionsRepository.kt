@@ -3,7 +3,7 @@ package com.example.lets_snack.data.remote.repository.rest
 import com.example.lets_snack.data.remote.api.LetsSnackService
 import com.example.lets_snack.data.remote.retrofit.LetsSnackRetrofitBuilder
 
-class ExampleIRepositoryRest {
+class RestrictionsRepository {
     //aqui estamos criando uma instância do retrofit
     val retrofit = LetsSnackRetrofitBuilder.retrofit
     //agora estamos criando uma instância do nosso service
@@ -11,6 +11,6 @@ class ExampleIRepositoryRest {
 
 
     //chama a função exampleFunService, que está no nosso service
-    fun exampleFunRepository() = interfaceService.exampleFunService()
+    fun getRestrictions() = interfaceService.restrictions
 
 }
