@@ -15,4 +15,6 @@ class PersonsRepository {
     fun insertPerson(personDto: PersonDto) = interfaceService.insertPerson(personDto)
 
     fun listPersonByEmail(email: String) = interfaceService.listPersonByEmail(email)
+
+    fun listPersonByUsername(username: String) = interfaceService.listPersonByUsername(username)
 }

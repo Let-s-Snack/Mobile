@@ -13,13 +13,17 @@ import android.widget.ArrayAdapter
 import androidx.core.content.ContextCompat
 import com.example.lets_snack.presentation.register.photo.PhotoRegister
 import com.example.lets_snack.R
+import com.example.lets_snack.data.remote.dto.PersonDto
+import com.example.lets_snack.data.remote.dto.PersonDtoResponse
+import com.example.lets_snack.data.remote.repository.rest.PersonsRepository
 import com.example.lets_snack.databinding.ActivityPersonDataRegisterBinding
 import com.example.lets_snack.presentation.login.LoginActivity
+import okhttp3.ResponseBody
 import java.util.Calendar
 
 class PersonDataRegisterActivity : AppCompatActivity() {
     private lateinit var binding: ActivityPersonDataRegisterBinding
-
+    private var personsRepository = PersonsRepository()
     private var nameTouched = false
     private var usernameTouched = false
 
@@ -65,11 +69,17 @@ class PersonDataRegisterActivity : AppCompatActivity() {
         binding.loginEnter.isEnabled = isAllFieldsValid
 
         binding.loginEnter.setOnClickListener {
-            if (isAllFieldsValid) {
-                binding.progressBar.visibility = View.VISIBLE
-                binding.loginEnter.text = ""
-                binding.loginEnter.isEnabled = false
-                startPhotoRegister()
+            checkUsernameAvailability(binding.usernameInput.text.toString()) { isAvailable ->
+                if (isAvailable) {
+                    binding.textInputLayout3.error = "Já existe um usuário com esse nome de usuário."
+                } else {
+                    if (isAllFieldsValid) {
+                        binding.progressBar.visibility = View.VISIBLE
+                        binding.loginEnter.text = ""
+                        binding.loginEnter.isEnabled = false
+                        startPhotoRegister()
+                    }
+                }
             }
         }
     }
@@ -109,6 +119,36 @@ class PersonDataRegisterActivity : AppCompatActivity() {
             }
         }
     }
+
+    fun checkUsernameAvailability(username: String, callback: (Boolean) -> Unit) {
+        val call = personsRepository.listPersonByUsername(username)
+        call.enqueue(object : retrofit2.Callback<PersonDtoResponse> {
+            override fun onResponse(
+                call: retrofit2.Call<PersonDtoResponse>,
+                response: retrofit2.Response<PersonDtoResponse>
+            ) {
+                if (response.isSuccessful) {
+                    val apiResponse = response.body()
+
+                    // Verifica se a mensagem indica que o usuário não existe
+                    if (apiResponse?.message == "Apelido do usuário não existe") {
+                        callback(false) // Nome de usuário não existe
+                    } else {
+                        callback(true) // Nome de usuário já existe
+                    }
+                } else {
+                    Log.e("Username Check", "Erro na resposta: ${response.errorBody()?.string()}")
+                    callback(false) // Em caso de erro, pode considerar como não existente
+                }
+            }
+
+            override fun onFailure(call: retrofit2.Call<PersonDtoResponse>, t: Throwable) {
+                Log.e("Username Check", "Erro na chamada: ${t.message}")
+                callback(false) // Em caso de falha, pode considerar como não existente
+            }
+        })
+    }
+
 
     private fun validateUsername(username: String): Boolean {
         return when {
