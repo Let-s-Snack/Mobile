@@ -2,7 +2,6 @@ package com.example.lets_snack.presentation.register.personData
 
 import android.app.DatePickerDialog
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -14,9 +13,10 @@ import androidx.core.content.ContextCompat
 import com.example.lets_snack.presentation.register.photo.PhotoRegister
 import com.example.lets_snack.R
 import com.example.lets_snack.databinding.ActivityPersonDataRegisterBinding
+import com.example.lets_snack.presentation.BaseActivity
 import java.util.Calendar
 
-class PersonDataRegisterActivity : AppCompatActivity() {
+class PersonDataRegisterActivity : BaseActivity() {
     private lateinit var binding: ActivityPersonDataRegisterBinding
 
     // Variáveis para rastrear se o campo foi tocado

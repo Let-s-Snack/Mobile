@@ -1,14 +1,14 @@
 package com.example.lets_snack.presentation.profile
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.example.lets_snack.R
 import com.example.lets_snack.databinding.ActivityEditDataBinding
+import com.example.lets_snack.presentation.BaseActivity
 import com.example.lets_snack.presentation.transform.RoundedTransformation
 import com.google.firebase.auth.FirebaseAuth
 import com.squareup.picasso.Picasso
 
-class EditData : AppCompatActivity() {
+class EditData : BaseActivity() {
     private lateinit var binding: ActivityEditDataBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

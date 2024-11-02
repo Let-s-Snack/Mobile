@@ -9,7 +9,6 @@ import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.MultiAutoCompleteTextView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.children
 import com.example.lets_snack.MainActivity
@@ -19,6 +18,7 @@ import com.example.lets_snack.data.remote.dto.RestrictionsDto
 import com.example.lets_snack.data.remote.repository.rest.PersonsRepository
 import com.example.lets_snack.data.remote.repository.rest.RestrictionsRepository
 import com.example.lets_snack.databinding.ActivityRestrictionRegisterBinding
+import com.example.lets_snack.presentation.BaseActivity
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.firebase.auth.FirebaseAuth
@@ -28,7 +28,7 @@ import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
 
-class RestrictionRegister : AppCompatActivity() {
+class RestrictionRegister : BaseActivity() {
     private lateinit var binding: ActivityRestrictionRegisterBinding
     private val restrictionsRepository = RestrictionsRepository()
     private val personsRepository = PersonsRepository()

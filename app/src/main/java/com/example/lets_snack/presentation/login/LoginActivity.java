@@ -1,7 +1,6 @@
 package com.example.lets_snack.presentation.login;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,6 +11,7 @@ import android.widget.Button;
 
 import com.example.lets_snack.MainActivity;
 import com.example.lets_snack.databinding.ActivityLoginBinding;
+import com.example.lets_snack.presentation.BaseActivity;
 import com.example.lets_snack.presentation.login.forgetPassword.ForgetPasswordActivity;
 import com.example.lets_snack.presentation.register.RegisterActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -22,7 +22,7 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseUser;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends BaseActivity {
     ActivityLoginBinding binding;
     FirebaseAuth autentication = FirebaseAuth.getInstance();
     FirebaseUser user = autentication.getCurrentUser();

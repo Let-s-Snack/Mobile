@@ -25,7 +25,8 @@
         <item name="android:layout_width">30dp</item>
         <item name="android:width">30dp</item>
         <item name="android:background">@drawable/rounded_background</item>
-        <item name="android:layout_margin">240dp</item> <!-- Adiciona a margem ao redor do dropdown -->
+        <item name="android:layout_margin">240dp
+        </item> <!-- Adiciona a margem ao redor do dropdown -->
     </style>
 
     <style name="CustomTextInputTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">

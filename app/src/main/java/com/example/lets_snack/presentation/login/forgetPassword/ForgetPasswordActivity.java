@@ -1,7 +1,6 @@
 package com.example.lets_snack.presentation.login.forgetPassword;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.text.Editable;
@@ -11,11 +10,12 @@ import android.widget.Toast;
 
 import com.example.lets_snack.R;
 import com.example.lets_snack.databinding.ActivityForgetPasswordBinding;
+import com.example.lets_snack.presentation.BaseActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 
-public class ForgetPasswordActivity extends AppCompatActivity {
+public class ForgetPasswordActivity extends BaseActivity {
 
     ActivityForgetPasswordBinding binding;
     FirebaseAuth recover = FirebaseAuth.getInstance();

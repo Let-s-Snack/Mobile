@@ -6,7 +6,6 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
@@ -20,12 +19,13 @@ import com.example.lets_snack.R
 import com.example.lets_snack.data.remote.firebase.DataBase
 import com.example.lets_snack.presentation.register.restriction.RestrictionRegister
 import com.example.lets_snack.databinding.ActivityRegisterPhotoBinding
+import com.example.lets_snack.presentation.BaseActivity
 import java.io.File
 import java.io.FileOutputStream
 import java.io.OutputStream
 
 @Suppress("NAME_SHADOWING")
-class PhotoRegister : AppCompatActivity() {
+class PhotoRegister : BaseActivity() {
     private var docData: MutableMap<String, String> = mutableMapOf()
     private lateinit var binding: ActivityRegisterPhotoBinding
     private lateinit var photo: ImageView

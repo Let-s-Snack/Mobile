@@ -1,16 +1,16 @@
 package com.example.lets_snack;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
 import android.view.View;
 
 import com.example.lets_snack.databinding.ActivityMainBinding;
+import com.example.lets_snack.presentation.BaseActivity;
 import com.example.lets_snack.presentation.itensNavBar.HomeFragment;
 import com.example.lets_snack.presentation.navBar.NavFragment;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
 
     ActivityMainBinding binding;
 

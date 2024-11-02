@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.lets_snack.constants.LetsSnackConstants
 import com.example.lets_snack.data.remote.dto.MessageDto
 import com.example.lets_snack.databinding.FragmentChatIaBinding
 import com.example.lets_snack.presentation.itensNavBar.adapter.MessageAdapter
@@ -29,8 +30,6 @@ class ChatIaFragment : Fragment() {
 
     private var _binding: FragmentChatIaBinding? = null
     private val binding get() = _binding!!
-
-    private var eventos = "Você é um assistente"
 
     private var messageAdapter: MessageAdapter?=null
 
@@ -80,7 +79,7 @@ class ChatIaFragment : Fragment() {
 
             val system = JSONObject().apply {
                 put("role", "system")
-                put("content", eventos)
+                put("content", LetsSnackConstants.CONTEXT_CHAT)
             }
 
             val user = JSONObject().apply {
