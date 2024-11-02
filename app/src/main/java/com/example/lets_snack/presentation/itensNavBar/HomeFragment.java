@@ -51,9 +51,9 @@ public class HomeFragment extends Fragment {
                         .centerCrop() // Centraliza e corta a imagem
                         .placeholder(R.drawable.profile_default)
                         .transform(new RoundedTransformation(180, 0) )
-                        .into(binding.imageUser);
+                        .into(binding.imageUser2);
             } else {
-                binding.imageUser.setImageResource(R.drawable.profile_default);
+                binding.imageUser2.setImageResource(R.drawable.profile_default);
             }
         }
 

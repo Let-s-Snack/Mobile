@@ -13,4 +13,6 @@ class PersonsRepository {
 
     //chama a função exampleFunService, que está no nosso service
     fun insertPerson(personDto: PersonDto) = interfaceService.insertPerson(personDto)
+
+    fun listPersonByEmail(email: String) = interfaceService.listPersonByEmail(email)
 }

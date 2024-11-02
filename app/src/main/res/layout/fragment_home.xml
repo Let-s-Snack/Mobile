@@ -10,34 +10,25 @@
         android:id="@+id/nameUser"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="48dp"
         android:fontFamily="@font/poppins_semi_bold"
         android:text="Home screen"
         android:textColor="@color/black"
         android:textSize="12sp"
-        app:layout_constraintStart_toEndOf="@+id/frameLayout"
+        app:layout_constraintStart_toEndOf="@+id/imageUser2"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <FrameLayout
-        android:id="@+id/frameLayout"
+    <ImageView
+        android:id="@+id/imageUser2"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="32dp"
-        android:background="@drawable/background_dialog"
+        android:scaleType="centerCrop"
+        android:src="@drawable/gif_splash"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <ImageView
-            android:id="@+id/imageUser"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:src="@drawable/gif_splash" />
-    </FrameLayout>
-
-
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
