@@ -10,13 +10,14 @@ public class RecipeDto {
     private String name;
     private String description;
     private String urlPhoto;
-    private List<Object> ingredients;
-    private List<Object> coments;
+    private List<IngredientDto> ingredients;
+    private List<CommentDto> coments;
     private List<String> preparationMethods;
     private List<Object> brokenRestrictions;
     private boolean isFavorite;
     private Float rating;
     private Date creationDate;
+
 
     private void RecipeDto(){}
 
@@ -52,19 +53,19 @@ public class RecipeDto {
         this.urlPhoto = urlPhoto;
     }
 
-    public List<Object> getIngredients() {
+    public List<IngredientDto> getIngredients() {
         return ingredients;
     }
 
-    public void setIngredients(List<Object> ingredients) {
+    public void setIngredients(List<IngredientDto> ingredients) {
         this.ingredients = ingredients;
     }
 
-    public List<Object> getComents() {
+    public List<CommentDto> getComents() {
         return coments;
     }
 
-    public void setComents(List<Object> coments) {
+    public void setComents(List<CommentDto> coments) {
         this.coments = coments;
     }
 
@@ -84,7 +85,7 @@ public class RecipeDto {
         this.brokenRestrictions = brokenRestrictions;
     }
 
-    public boolean isFavorite() {
+    public boolean getIsFavorite() {
         return isFavorite;
     }
 
@@ -122,6 +123,8 @@ public class RecipeDto {
                 ", isFavorite=" + isFavorite +
                 ", rating=" + rating +
                 ", creationDate=" + creationDate +
+                ", rating=" + rating +
+                ", isFavorite=" + isFavorite +
                 '}';
     }
 }

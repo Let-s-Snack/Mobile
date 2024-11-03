@@ -7,6 +7,7 @@ import android.os.Bundle;
 
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -19,11 +20,13 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.example.lets_snack.MainActivity;
 import com.example.lets_snack.R;
 import com.example.lets_snack.data.remote.api.CategoriesService;
 import com.example.lets_snack.data.remote.dto.CategoryDto;
 import com.example.lets_snack.databinding.FragmentSearchBinding;
 import com.example.lets_snack.presentation.adapter.CategoryAdapter;
+import com.example.lets_snack.presentation.recipesFeed.FragmentRecipesFeed;
 
 import java.util.List;
 
@@ -73,6 +76,24 @@ public class SearchFragment extends Fragment {
         imageError = binding.imageErrorCategory;
 
         textError = binding.textErrorCategory;
+
+        binding.searchInputText.setOnEditorActionListener((v, actionId, event) -> {
+            // Captura o texto inserido e inicia a ação de busca
+            if(binding.searchInputText.getText().toString().isEmpty()) {
+                return false;
+            }
+            Bundle bundle = new Bundle();
+            bundle.putString("recipeName", binding.searchInputText.getText().toString());
+
+            //chamando fragment de recipe feed
+            FragmentTransaction transaction = ((MainActivity) binding.getRoot().getContext()).getSupportFragmentManager().beginTransaction();
+            FragmentRecipesFeed fragmentRecipesFeed = new FragmentRecipesFeed();
+            fragmentRecipesFeed.setArguments(bundle);
+            transaction.replace(R.id.mainContainer, fragmentRecipesFeed);
+            transaction.addToBackStack(null);
+            transaction.commit();
+            return true;
+        });
     }
 
     @Override

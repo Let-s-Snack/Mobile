@@ -12,6 +12,9 @@
         <item name="android:statusBarColor">
             @color/transparente
         </item>
+        <item name="android:navigationBarColor">
+            @android:color/transparent
+        </item>
     </style>
 
     <style name="CustomDropDownListViewStyle" parent="android:Widget.ListView">

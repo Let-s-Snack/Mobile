@@ -2,7 +2,6 @@ package com.example.lets_snack.presentation.adapter;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,8 +18,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.lets_snack.MainActivity;
 import com.example.lets_snack.R;
-import com.example.lets_snack.data.remote.dto.CategoryDto;
 import com.example.lets_snack.data.remote.dto.RecipeDto;
+import com.example.lets_snack.presentation.recipe.FragmentRecipe;
 import com.example.lets_snack.presentation.recipesFeed.FragmentRecipesFeed;
 
 import java.util.List;
@@ -45,23 +44,36 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     public void onBindViewHolder(@NonNull RecipeViewHolder holder, @SuppressLint("RecyclerView") int position) {
         //adicionando informações no card
         holder.nameView.setText(recipeDtoList.get(position).getName());
-        String url = recipeDtoList.get(position).getUrlPhoto();
         Glide.with(holder.photoView.getContext())
                 .asBitmap()
-                .load("https://i.pinimg.com/control/564x/13/2c/ca/132ccab00cbe2774aa975c147c584aa8.jpg")
+                .load(recipeDtoList.get(position).getUrlPhoto())
                 .into(holder.photoView);
-        holder.likeView.setChecked(recipeDtoList.get(position).isFavorite());
+
+        holder.likeView.setChecked(recipeDtoList.get(position).getIsFavorite());
+
         if(recipeDtoList.get(position).getRating() != null) {
-            holder.rateView.setText(String.valueOf(recipeDtoList.get(position).getRating()));
+            holder.rateView.setText(String.format("%.1f", recipeDtoList.get(position).getRating()));
         }
         else{
             holder.rateView.setText("0.0");
         }
 
+
+        //entrando na tela de busca de receitas pela categoria
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //adicionar lógica e parâmetros para ir na tela da receita selecionada
+                Bundle bundle = new Bundle();
+                bundle.putString("id", recipeDtoList.get(position).getId());
+
+                //chamando fragment de recipe feed
+                FragmentTransaction transaction = ((MainActivity) v.getContext()).getSupportFragmentManager().beginTransaction();
+                FragmentRecipe fragmentRecipe = new FragmentRecipe();
+                fragmentRecipe.setArguments(bundle);
+                transaction.replace(R.id.mainContainer, fragmentRecipe);
+                transaction.addToBackStack(null);
+                transaction.commit();
+
             }
         });
     }
