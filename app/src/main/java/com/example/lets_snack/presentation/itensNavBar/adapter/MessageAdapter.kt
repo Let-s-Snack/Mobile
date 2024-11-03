@@ -51,7 +51,6 @@ class MessageAdapter(private val messages: MutableList<MessageDto>, private val 
             holder.messageTextView.setBackgroundResource(R.drawable.message_send)
         }
         else {
-
             val username = message.username
             val usernameColor = usernameColorMap.getOrPut(username) {getColorFromString(username) }
 
@@ -62,11 +61,10 @@ class MessageAdapter(private val messages: MutableList<MessageDto>, private val 
                 username.length,
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
             )
-            holder.messageTextView.text = message.message
-
             Log.d("isLastMessage", "${isLast}")
             if (isLast) {
                 if (position == messages.size - 1) {
+                    holder.messageTextView.visibility = View.INVISIBLE
                     animateTextTyping(holder.recyclerView, holder.messageTextView, message.message)
                     isLast = false
                 }
@@ -76,7 +74,6 @@ class MessageAdapter(private val messages: MutableList<MessageDto>, private val 
             }
             else{
                 holder.messageTextView.text = message.message
-//                holder.recyclerView.scrollToPosition(messages.size - 1)
             }
 
             layoutParams.gravity = Gravity.START
@@ -106,19 +103,19 @@ class MessageAdapter(private val messages: MutableList<MessageDto>, private val 
         return Color.rgb(243, 140, 52)
     }
 
-    private fun animateTextTyping(recyclerView: RecyclerView, textView: TextView, message: String, delay: Long = 50) {
+    private fun animateTextTyping(recyclerView: RecyclerView, textView: TextView, message: String, delay: Long = 10) {
         textView.text = "" // Limpa o texto antes de iniciar
         val handler = android.os.Handler(Looper.getMainLooper())
         var index = 0
-
         val runnable = object : Runnable {
             override fun run() {
                 if (index < message.length) {
+                    Log.d("index", index.toString())
+                    textView.visibility = View.VISIBLE
                     textView.text = textView.text.toString() + message[index]
                     index++
 
                     recyclerView.scrollToPosition(messages.size - 1)
-
                     handler.postDelayed(this, delay)
                 }
             }

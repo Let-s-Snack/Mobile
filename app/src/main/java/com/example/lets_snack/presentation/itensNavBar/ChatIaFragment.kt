@@ -49,6 +49,10 @@ class ChatIaFragment : Fragment() {
         binding.recyclerView.layoutManager = LinearLayoutManager(context)
         binding.recyclerView.adapter = messageAdapter
 
+        binding.addChat.setOnClickListener {
+            Log.d("new Chat","criou")
+            createNewChat()
+        }
         loadMessages(false)
 
         binding.messageInput.setEndIconOnClickListener {
@@ -69,17 +73,23 @@ class ChatIaFragment : Fragment() {
     }
 
     private fun send(prompt: String) {
+        chatCollectionRef.get()
+            .addOnSuccessListener { querySnapshot ->
+                if(querySnapshot.size() == 0){
+                    createNewChat()
+                }
+            }
         val url = "https://api.openai.com/v1/chat/completions"
         val apiKey = "sk-KCi9J_ZRAwbP0j7quEU7u-X3dPd85fHfykAr3YLkplT3BlbkFJIsDEI8JSuT2ztk6orRr9IoM6iu1wMX5kaSJltkNooA"
         Log.d("Prompt", prompt)
 
         val json = JSONObject()
         try {
-            json.put("model", "gpt-3.5-turbo")
+            json.put("model", "gpt-4o-2024-08-06")
 
             val system = JSONObject().apply {
                 put("role", "system")
-                put("content", LetsSnackConstants.CONTEXT_CHAT)
+                put("content", LetsSnackConstants.CONTEXT_CHAT.value)
             }
 
             val user = JSONObject().apply {
@@ -98,6 +108,7 @@ class ChatIaFragment : Fragment() {
         }
 
         val body = json.toString().toRequestBody("application/json".toMediaType())
+        Log.d("api-gpt", "${json.toString()}")
         val request = Request.Builder()
             .url(url)
             .header("Content-Type", "application/json")
@@ -125,33 +136,49 @@ class ChatIaFragment : Fragment() {
     }
 
     private fun saveMessages(message: MessageDto, isLast: Boolean) {
-        chatCollectionRef.add(message)
-            .addOnSuccessListener {
-                Log.d("Firestore", "Mensagem salva com sucesso!")
-                loadMessages(isLast)
+        chatCollectionRef.get()
+            .addOnSuccessListener { querySnapshot ->
+                chatCollectionRef.document("chat${querySnapshot.size()+1}").collection("messages").add(message)
+                    .addOnSuccessListener {
+                        Log.d("Firestore", "Mensagem salva com sucesso!")
+                        loadMessages(isLast)
+                    }
+                    .addOnFailureListener { e -> Log.w("Firestore", "Erro ao salvar mensagem", e) }
             }
-            .addOnFailureListener { e -> Log.w("Firestore", "Erro ao salvar mensagem", e) }
     }
 
     private fun loadMessages(isLast: Boolean) {
-        chatCollectionRef.orderBy("timestamp").addSnapshotListener { snapshots, e ->
-            if (e != null) {
-                Log.w("Firestore", "Listen failed.", e)
-                return@addSnapshotListener
-            }
+        chatCollectionRef.get()
+            .addOnSuccessListener { querySnapshot ->
+                Log.d("Firestore", "${querySnapshot.size()}")
+                chatCollectionRef.document("chat${querySnapshot.size()+1}").collection("messages").orderBy("timestamp").addSnapshotListener { snapshots, e ->
+                    if (e != null) {
+                        Log.w("Firestore", "Listen failed.", e)
+                        return@addSnapshotListener
+                    }
 
-            val messagesList = mutableListOf<MessageDto>()
-            for (doc in snapshots!!) {
-                val message = doc.toObject(MessageDto::class.java)
-                messagesList.add(message)
-            }
+                    val messagesList = mutableListOf<MessageDto>()
+                    for (doc in snapshots!!) {
+                        val message = doc.toObject(MessageDto::class.java)
+                        messagesList.add(message)
+                    }
 
-            Log.d("Firestore", "Mensagens carregadas: ${messagesList.size}")
-            messageAdapter?.updateMessages(messagesList,isLast)
+                    Log.d("Firestore", "Mensagens carregadas: ${messagesList.size}")
+                    messageAdapter?.updateMessages(messagesList, isLast)
 
-            if (messagesList.isNotEmpty()) {
-                binding.recyclerView.scrollToPosition(messagesList.size - 1)
+                    if (messagesList.isNotEmpty()) {
+                        binding.recyclerView.scrollToPosition(messagesList.size - 1)
+                    }
+                }
             }
-        }
+    }
+
+    fun createNewChat() {
+        chatCollectionRef.get()
+            .addOnSuccessListener { querySnapshot ->
+                val chatCount = querySnapshot.size()
+                val newChatName = "chat${chatCount + 1}"
+                chatCollectionRef.document(newChatName).collection("messages")
+            }
     }
 }
