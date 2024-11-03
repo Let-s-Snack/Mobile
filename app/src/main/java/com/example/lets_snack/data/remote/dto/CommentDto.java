@@ -38,7 +38,7 @@ public class CommentDto {
         Date today = new Date();
         long diffInMillies = today.getTime() - creationDate.getTime();
         // convertendo a diferença de milissegundos para dias
-        long diffInDays = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+        long diffInDays = diffInMillies / 1000 / 60 / 60 / 24;
         return String.valueOf(diffInDays);
     }
 

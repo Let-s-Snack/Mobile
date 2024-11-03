@@ -43,10 +43,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
 
         //adicionando margem apenas para o primeiro e último item
         if (position == 0) {ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) holder.itemView.getLayoutParams();
-            layoutParams.setMargins(80, 0, 24, 0);
-        }
-        if (position == getItemCount() - 1) {ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) holder.itemView.getLayoutParams();
-            layoutParams.setMargins(24, 0, 80, 0);
+            layoutParams.setMargins(56, 0, 56, 0);
         }
     }
 

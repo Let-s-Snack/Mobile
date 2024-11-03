@@ -11,37 +11,39 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.text.Editable;
-import android.text.TextWatcher;
+import android.os.Handler;
+import android.util.JsonReader;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RatingBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.lets_snack.R;
-import com.example.lets_snack.data.remote.api.CategoriesService;
+import com.example.lets_snack.data.remote.api.PersonsService;
 import com.example.lets_snack.data.remote.api.RecipesService;
-import com.example.lets_snack.data.remote.dto.CategoryDto;
 import com.example.lets_snack.data.remote.dto.CommentDto;
-import com.example.lets_snack.data.remote.dto.FindRecipeByIdDto;
 import com.example.lets_snack.data.remote.dto.IngredientDto;
+import com.example.lets_snack.data.remote.dto.MessageDto;
 import com.example.lets_snack.data.remote.dto.RecipeDto;
 import com.example.lets_snack.data.remote.dto.SendCommentDto;
-import com.example.lets_snack.data.remote.dto.StepDto;
 import com.example.lets_snack.databinding.FragmentRecipeBinding;
-import com.example.lets_snack.databinding.FragmentRecipesFeedBinding;
-import com.example.lets_snack.presentation.adapter.CategoryAdapter;
 import com.example.lets_snack.presentation.adapter.CommentAdapter;
 import com.example.lets_snack.presentation.adapter.IngredientsAdapter;
-import com.example.lets_snack.presentation.adapter.RecipeAdapter;
 import com.example.lets_snack.presentation.adapter.StepAdapter;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.gson.Gson;
 
+import java.io.StringReader;
 import java.util.List;
 
 import retrofit2.Call;
@@ -56,7 +58,16 @@ public class FragmentRecipe extends Fragment {
     private RecyclerView recyclerViewIngredients;
     private RecyclerView recyclerViewSteps;
     private RecyclerView recyclerViewComments;
-    private boolean verifyComment = false;
+    private Handler handler = new Handler();
+    private Runnable apiCallRunnable;
+    private static final int DELAY_MILLIS = 1000; // 1 segundos de atraso
+    private ScrollView scrollView;
+    private ProgressBar loading;
+    private View whiteOverlayScreen;
+    private ImageView imageError;
+    private TextView textError;
+    FirebaseAuth autentication = FirebaseAuth.getInstance();
+    FirebaseUser user = autentication.getCurrentUser();
 
     private Retrofit retrofit;
     public FragmentRecipe() {
@@ -78,6 +89,7 @@ public class FragmentRecipe extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        //inicializando recyclers
         recyclerViewIngredients = binding.recipeIngredientsRecycle;
         recyclerViewIngredients.setLayoutManager(new GridLayoutManager(getContext(), 2, LinearLayoutManager.VERTICAL, false ));
         recyclerViewIngredients.setNestedScrollingEnabled(false);
@@ -89,14 +101,29 @@ public class FragmentRecipe extends Fragment {
         recyclerViewComments = binding.recipeComentsRecycle;
         recyclerViewComments.setLayoutManager(new GridLayoutManager(getContext(), 1, LinearLayoutManager.HORIZONTAL, false ));
 
-        loadRecipe();
+        scrollView = binding.recipeScrollview;
+
+        loading = binding.loadingRecipe;
+        whiteOverlayScreen = binding.overlayWhiteScreen;
+
+        imageError = binding.imageErrorRecipe;
+        textError = binding.textErrorRecipe;
+
+        //definindo camada de visualização
+        whiteOverlayScreen.setTranslationZ(10);
+        loading.setTranslationZ(11);
+        binding.recipeReturnBtn.setTranslationZ(11);
+        imageError.setTranslationZ(11);
+        textError.setTranslationZ(11);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        //criando binding
         binding = FragmentRecipeBinding.inflate(inflater, container, false);
 
+        //setando botão de voltar
         binding.recipeReturnBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -104,10 +131,17 @@ public class FragmentRecipe extends Fragment {
             }
         });
 
+        //verificando se o id da receita foi passado
+        if(getArguments().getString("id") != null){
+            //chamando api para pegar receita
+            loadRecipe(getArguments().getString("id"));
+        }
+
         return binding.getRoot();
     }
 
-    public void loadRecipe() {
+    //carregando receita
+    public void loadRecipe(String recipeId) {
         String baseUrl = "https://spring-mongo-6c8h.onrender.com";
 
         // Configurar acesso da API
@@ -119,19 +153,54 @@ public class FragmentRecipe extends Fragment {
         // Chamada da API
         RecipesService recipesApi = retrofit.create(RecipesService.class);
 
-        Call<RecipeDto> apiCall = recipesApi.findRecipeById("6711242585b86ea5e7e4d30b", "leticia@gmail.com");
+        Call<RecipeDto> apiCall = recipesApi.findRecipeById(recipeId, user.getEmail());
         apiCall.enqueue(new Callback<RecipeDto>() {
             @Override
             public void onResponse(Call<RecipeDto> call, Response<RecipeDto> response) {
                 RecipeDto recipes = response.body();
+                whiteOverlayScreen.setVisibility(View.INVISIBLE);
+                loading.setVisibility(View.INVISIBLE);
+                scrollView.setSmoothScrollingEnabled(true);
                 //carregar os dados
                 binding.recipeScreenName.setText(recipes.getName());
                 Glide.with(getContext())
                         .load(recipes.getUrlPhoto()).centerCrop().into(binding.recipeScreenImage);
-                binding.recipeScreenRatingbar.setRating(Float.parseFloat(String.valueOf(recipes.getRating())));
+                if(recipes.getRating() != null) {
+                    binding.recipeScreenRatingbar.setRating(recipes.getRating());
+                }
+                binding.recipeScreenLikeButton.setChecked(recipes.getIsFavorite());
                 binding.recipeDescription.setText(recipes.getDescription());
                 binding.recipeBtnEvaluate.setOnClickListener(v -> evaluationModal());
 
+                binding.recipeScreenLikeButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //cancela qualquer chamada de API agendada anterior
+                        if (apiCallRunnable != null) {
+                            handler.removeCallbacks(apiCallRunnable);
+                        }
+
+                        //define a nova tarefa para ser executada após 5 segundos
+                        apiCallRunnable = new Runnable() {
+                            @Override
+                            public void run() {
+                                if(recipes.getIsFavorite() != binding.recipeScreenLikeButton.isChecked()) {
+                                    likeRecipe();
+                                }
+                            }
+                        };
+
+                        // Agenda a tarefa após o atraso definido
+                        handler.postDelayed(apiCallRunnable, DELAY_MILLIS);
+                    }
+                });
+
+                binding.recipeBtnSaveIngredients.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        saveRecipeIngredients();
+                    }
+                });
 
                 List<String> steps = recipes.getPreparationMethods();
                 if(steps != null && steps.size() > 0) {
@@ -140,11 +209,15 @@ public class FragmentRecipe extends Fragment {
 
                 List<CommentDto> comments = recipes.getComents();
                 if(comments != null && comments.size() > 0) {
-                    binding.recipeRateText.setText(String.valueOf(recipes.getRating()) + "/5" + " (" + comments.size() + " avaliações)");
+                    binding.recipeRateText.setText(String.format("%.1f", recipes.getRating()) + "/5" + " (" + comments.size() + " avaliações)");
                     recyclerViewComments.setAdapter(new CommentAdapter(comments));
+                    binding.imageEmptyComments.setVisibility(View.INVISIBLE);
+                    binding.textEmptyComment.setVisibility(View.INVISIBLE);
                 }
                 else{
                     binding.recipeRateText.setText("0/5" + " (0 avaliações)");
+                    binding.imageEmptyComments.setVisibility(View.VISIBLE);
+                    binding.textEmptyComment.setVisibility(View.VISIBLE);
                 }
 
                 List<IngredientDto> ingredients = recipes.getIngredients();
@@ -156,7 +229,10 @@ public class FragmentRecipe extends Fragment {
 
             @Override
             public void onFailure(Call<RecipeDto> call, Throwable throwable) {
-                System.out.println("Ocorreu um erro no servidor: " + throwable.getMessage());
+                loading.setVisibility(View.INVISIBLE);
+                imageError.setVisibility(View.VISIBLE);
+                imageError.setImageResource(R.drawable.neneca_triste);
+                textError.setVisibility(View.VISIBLE);
             }
         });
     }
@@ -177,7 +253,6 @@ public class FragmentRecipe extends Fragment {
         ImageButton closeModal = evaluationCard.findViewById(R.id.rating_modal_close);
         Button submit = evaluationCard.findViewById(R.id.rating_btn_modal);
 
-        if(verifyComment) { evaluationCard.dismiss(); }
 
         rate.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
@@ -200,15 +275,14 @@ public class FragmentRecipe extends Fragment {
             public void onClick(View v) {
                 //envio da avaliação
                 sendComment(Math.round(rate.getRating()), commentDescription.getText().toString());
+                evaluationCard.dismiss();
             }
         });
-
         evaluationCard.show();
     }
 
     public void sendComment(int rate, String commentDescription) {
         String baseUrl = "https://spring-mongo-6c8h.onrender.com";
-
         // Configurar acesso da API
         retrofit = new Retrofit.Builder()
                 .baseUrl(baseUrl)
@@ -218,22 +292,104 @@ public class FragmentRecipe extends Fragment {
         // Chamada da API
         RecipesService recipesApi = retrofit.create(RecipesService.class);
 
-        SendCommentDto comment = new SendCommentDto(rate, commentDescription);
+        SendCommentDto comment = new SendCommentDto(user.getEmail(), rate, commentDescription);
 
-        Call<Object> apiCall = recipesApi.insertComent("670eb19c9a2fbfeda8b1d417", comment);
-        apiCall.enqueue(new Callback<Object>() {
+        Call<MessageDto> apiCall = recipesApi.insertComment(getArguments().getString("id"), comment);
+        apiCall.enqueue(new Callback<MessageDto>() {
             @Override
-            public void onResponse(Call<Object> call, Response<Object> response) {
-                Object recipes = response.body();
-                Toast.makeText(getContext(), "Enviadooooo", Toast.LENGTH_SHORT).show();
-                verifyComment = true;
+            public void onResponse(Call<MessageDto> call, Response<MessageDto> response) {
+                MessageDto responses = response.body();
+                if(responses != null) {
+                    Toast.makeText(getContext(), responses.getMessage(), Toast.LENGTH_SHORT).show();
+                    loadRecipe(getArguments().getString("id"));
+                }
+                else {
+                    warningModal("Erro", "Ocorreu um erro ao enviar a avaliação");
+                }
             }
 
             @Override
-            public void onFailure(Call<Object> call, Throwable throwable) {
-                System.out.println("Ocorreu um erro no servidor: " + throwable.getMessage());
-                Toast.makeText(getContext(), "erroooooooooo", Toast.LENGTH_SHORT).show();
+            public void onFailure(Call<MessageDto> call, Throwable throwable) {
+                warningModal("Erro", throwable.getMessage());
             }
         });
+    }
+
+    public void likeRecipe() {
+        String baseUrl = "https://spring-mongo-6c8h.onrender.com";
+
+        // Configurar acesso da API
+        retrofit = new Retrofit.Builder()
+                .baseUrl(baseUrl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        // Chamada da API
+        PersonsService personsApi = retrofit.create(PersonsService.class);
+
+        Call<MessageDto> apiCall = personsApi.likeRecipe(getArguments().getString("id"), user.getEmail());
+        apiCall.enqueue(new Callback<MessageDto>() {
+            @Override
+            public void onResponse(Call<MessageDto> call, Response<MessageDto> response) {
+            }
+
+            @Override
+            public void onFailure(Call<MessageDto> call, Throwable throwable) {
+                warningModal("Erro", throwable.getMessage());
+            }
+        });
+    }
+
+    public void saveRecipeIngredients() {
+        String baseUrl = "https://spring-mongo-6c8h.onrender.com";
+
+        // Configurar acesso da API
+        retrofit = new Retrofit.Builder()
+                .baseUrl(baseUrl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        // Chamada da API
+        PersonsService personsApi = retrofit.create(PersonsService.class);
+
+        Call<MessageDto> apiCall = personsApi.saveRecipeIngredients(getArguments().getString("id"), "leticia@gmail.com");
+        apiCall.enqueue(new Callback<MessageDto>() {
+            @Override
+            public void onResponse(Call<MessageDto> call, Response<MessageDto> response) {
+                MessageDto recipes = response.body();
+                warningModal("Aviso", recipes.getMessage() + "\nOs ingredientes foram salvos em\n Perfil -> Ingredientes salvos");
+            }
+
+            @Override
+            public void onFailure(Call<MessageDto> call, Throwable throwable) {
+                warningModal("Erro", throwable.getMessage());
+            }
+        });
+    }
+
+    public void warningModal(String titleText, String descriptionText) {
+        // Usando Dialog
+        Dialog descriptionCard = new Dialog(getContext());
+        descriptionCard.setContentView(R.layout.description_modal);
+        descriptionCard.getWindow().setLayout(WRAP_CONTENT, WRAP_CONTENT);
+        descriptionCard.getWindow().setBackgroundDrawable(
+                ContextCompat.getDrawable(getContext(), R.drawable.background_dialog)
+        );
+
+
+        //Inicializar os componentes da caixaMsg
+        TextView title = descriptionCard.findViewById(R.id.description_title_modal);
+        TextView description = descriptionCard.findViewById(R.id.description_text_modal);
+        ImageButton closeModal = descriptionCard.findViewById(R.id.description_modal_close);
+
+        title.setText(titleText);
+        description.setText(descriptionText);
+        closeModal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                descriptionCard.dismiss();
+            }
+        });
+        descriptionCard.show();
     }
 }
