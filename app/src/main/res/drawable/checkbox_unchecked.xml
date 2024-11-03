@@ -9,7 +9,6 @@
     <path
         android:pathData="M5,1L19,1A4,4 0,0 1,23 5L23,19A4,4 0,0 1,19 23L5,23A4,4 0,0 1,1 19L1,5A4,4 0,0 1,5 1z"
         android:strokeWidth="2"
-        android:fillColor="#00000000"
-        android:strokeColor="#EF5B23"/>
+        android:strokeColor="@color/laranja_forte"/>
   </group>
 </vector>

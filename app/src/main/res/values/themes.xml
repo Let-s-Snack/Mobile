@@ -7,6 +7,8 @@
         <item name="android:windowTranslucentStatus">
             false
         </item>
+        <item name="android:dropDownListViewStyle">@style/CustomDropDownListViewStyle</item>
+
         <item name="android:statusBarColor">
             @color/transparente
         </item>
@@ -14,6 +16,17 @@
             @android:color/transparent
         </item>
     </style>
+
+    <style name="CustomDropDownListViewStyle" parent="android:Widget.ListView">
+        <item name="android:dividerHeight">0dp</item>
+        <item name="android:elevation">4dp</item>
+        <item name="android:padding">12dp</item>
+        <item name="android:layout_width">30dp</item>
+        <item name="android:width">30dp</item>
+        <item name="android:background">@drawable/rounded_background</item>
+        <item name="android:layout_margin">240dp</item> <!-- Adiciona a margem ao redor do dropdown -->
+    </style>
+
     <style name="CustomTextInputTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Defina aqui a cor desejada para o accent -->
         <item name="colorAccent">@color/cinza</item>
@@ -31,5 +44,12 @@
         <item name="boxCornerRadiusBottomStart">10dp</item>
         <item name="boxCornerRadiusBottomEnd">10dp</item>
     </style>
+
+    <style name="CustomDatePickerDialog" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorAccent">@color/laranja</item>
+        <item name="android:textColor">@color/laranja</item>
+    </style>
+
+
     <style name="Theme.LetsSnack" parent="Base.Theme.LetsSnack" />
 </resources>
