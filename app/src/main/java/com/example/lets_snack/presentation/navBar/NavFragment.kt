@@ -15,6 +15,7 @@ import com.example.lets_snack.presentation.itensNavBar.ProfileFragment
 import com.example.lets_snack.R
 import com.example.lets_snack.presentation.itensNavBar.SearchFragment
 import com.example.lets_snack.databinding.FragmentMenuBinding
+import com.example.lets_snack.presentation.recipesFeed.FragmentRecipesFeed
 
 class NavFragment : Fragment() {
     private var _binding: FragmentMenuBinding? = null
@@ -26,8 +27,8 @@ class NavFragment : Fragment() {
     private val homeFragment =
         HomeFragment()
 
-    private val likesFragment =
-        LikesFragment()
+    private val recipesFeedFragment =
+        FragmentRecipesFeed()
 
     private val profileFragment =
         ProfileFragment()
@@ -119,8 +120,15 @@ class NavFragment : Fragment() {
             listItens.addAll(listOf(homeBtn, searchBtn, chatIaBtn, userBtn))
             listNames.addAll(listOf(chatHomeText, chatSearchText, chatIaText, chatUserText))
             updateUI(hearthBtn, chatHearthText, listItens, listNames)
+            val bundle = Bundle().apply {
+                //pegar o id do user atual
+                 putString("id", "like_screen")
+            }
+            recipesFeedFragment.apply {
+                arguments = bundle
+            }
             val transaction = parentFragmentManager.beginTransaction()
-            transaction.replace(R.id.mainContainer, likesFragment)
+            transaction.replace(R.id.mainContainer, recipesFeedFragment)
             transaction.commit()
         }
 

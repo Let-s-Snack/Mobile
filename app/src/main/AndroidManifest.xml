@@ -24,14 +24,11 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name=".presentation.profile.photo.PhotoEditData"
-            android:exported="false" />
-        <activity
-            android:name=".presentation.profile.EditData"
-            android:exported="false" />
-        <activity
-            android:name=".presentation.register.restriction.RestrictionRegister"
-            android:exported="false" />
+            android:name=".presentation.register.photo.PhotoRegister"
+            android:exported="false"
+            android:screenOrientation="locked"
+            android:windowSoftInputMode="adjustPan"
+            />
         <activity
             android:name=".presentation.register.RegisterActivity"
             android:exported="false"
@@ -39,19 +36,24 @@
         <activity
             android:name=".presentation.useTerms.UseTerms"
             android:exported="false"
-            android:windowSoftInputMode="adjustPan" />
+            android:windowSoftInputMode="adjustPan"
+            android:screenOrientation="locked"
+            />
+        <activity
+            android:name=".presentation.login.forgetPassword.ForgetPasswordActivity"
+            android:exported="false"
+            android:screenOrientation="locked"
+            android:windowSoftInputMode="adjustPan"
+            />
         <activity
             android:name=".MainActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan"
+            android:screenOrientation="locked"/>
         <activity
             android:name=".presentation.login.LoginActivity"
             android:exported="false"
             android:screenOrientation="locked" />
-        <activity
-            android:name=".presentation.register.photo.PhotoRegister"
-            android:exported="false"
-            android:screenOrientation="locked"
-            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".presentation.register.personData.PersonDataRegisterActivity"
             android:exported="false"
