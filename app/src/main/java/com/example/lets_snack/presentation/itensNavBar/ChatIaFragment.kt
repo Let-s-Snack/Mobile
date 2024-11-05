@@ -177,8 +177,9 @@ class ChatIaFragment : Fragment() {
         chatCollectionRef.get()
             .addOnSuccessListener { querySnapshot ->
                 val chatCount = querySnapshot.size()
+                val message = MessageDto("GPT", "Ola, eu sou o GPT. Como posso ajuda-lo(a)?")
                 val newChatName = "chat${chatCount + 1}"
-                chatCollectionRef.document(newChatName).collection("messages")
+                chatCollectionRef.document(newChatName).collection("messages").add(message)
             }
     }
 }
