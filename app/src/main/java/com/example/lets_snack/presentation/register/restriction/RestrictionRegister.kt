@@ -11,6 +11,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.MultiAutoCompleteTextView
 import android.widget.Toast
@@ -42,7 +43,7 @@ import java.util.TimeZone
 class RestrictionRegister : AppCompatActivity() {
     private lateinit var binding: ActivityRestrictionRegisterBinding
     private val restrictionsRepository = RestrictionsRepository()
-    private val personsRepository = PersonsRepository()
+    private val personsRepository = PersonsRepository(this)
     private var chipGroup: ChipGroup? = null
     private var restrictionsArray:  ArrayList<String> =  ArrayList()
     private var restrictionListObject: List<RestrictionsDto>? = listOf()
@@ -141,6 +142,9 @@ class RestrictionRegister : AppCompatActivity() {
         val isCheckboxChecked = binding.checkBox.isChecked
         binding.loginEnter.isEnabled = isFieldFilled || isCheckboxChecked
         binding.loginEnter.setOnClickListener {
+            binding.progressBar.visibility = View.VISIBLE
+            binding.loginEnter.text = ""
+            binding.loginEnter.isEnabled = false
             val bundle = intent.getBundleExtra("bundleRegister")
             if (bundle != null) {
                 val name = bundle.getString("name")
@@ -222,7 +226,7 @@ class RestrictionRegister : AppCompatActivity() {
                 response: retrofit2.Response<ResponseBody>
             ) {
                 if(response.code() == 200) {
-                    notification()
+                    notification(personDto.nickname)
                 }
                 Log.d("CallPersons", response.code().toString())
             }
@@ -238,7 +242,6 @@ class RestrictionRegister : AppCompatActivity() {
         return try {
             val parsedDate: Date? = inputDateFormat.parse(dateOfBirth)
             if (parsedDate != null) {
-                // Define Locale.US para garantir que o mês não seja convertido em texto
                 val outputDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US)
                 outputDateFormat.timeZone = TimeZone.getTimeZone("UTC")
                 outputDateFormat.format(parsedDate)
@@ -251,13 +254,13 @@ class RestrictionRegister : AppCompatActivity() {
         }
     }
 
-    private fun notification(){
+    private fun notification(username: String){
         val intentAndroid = Intent(this, Notification::class.java)
         val pendingIntent = PendingIntent.getBroadcast(this,0,intentAndroid, PendingIntent.FLAG_IMMUTABLE)
         val builder = NotificationCompat.Builder(this,"channel_id")
             .setSmallIcon(R.drawable.icontext_lets_snack)
             .setContentTitle("Let's Snack")
-            .setContentText("Parabés user, seu cadastro foi realizado com sucesso!")
+            .setContentText("Parabéns ${username}, seu cadastro foi realizado com sucesso!")
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(true)
             .setContentIntent(pendingIntent)

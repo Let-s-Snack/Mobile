@@ -53,7 +53,7 @@ class RegisterActivity : AppCompatActivity() {
                             }
                     }
                     else{
-                        Toast.makeText(this, "Usuário já existe", Toast.LENGTH_SHORT).show()
+                        binding.textInputLayoutEmailLogin.error = "Esse e-mail está em uso"
                     }
                 }
             }

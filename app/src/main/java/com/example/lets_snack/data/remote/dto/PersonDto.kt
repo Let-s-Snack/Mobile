@@ -15,6 +15,15 @@ data class PersonDto(
     val restrictions: MutableList<RestrcitionID?>
 )
 
+data class PersonDtoUpdate(
+    val gender: String,
+    val name: String,
+    val nickname: String,
+    val email: String,
+    val urlPhoto: String,
+    val restrictions: MutableList<RestrcitionID?>
+)
+
 data class PersonDtoResponseEmail(
     val gender: String,
     val name: String,

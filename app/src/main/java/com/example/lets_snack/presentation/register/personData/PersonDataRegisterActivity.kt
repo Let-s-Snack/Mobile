@@ -13,17 +13,15 @@ import android.widget.ArrayAdapter
 import androidx.core.content.ContextCompat
 import com.example.lets_snack.presentation.register.photo.PhotoRegister
 import com.example.lets_snack.R
-import com.example.lets_snack.data.remote.dto.PersonDto
 import com.example.lets_snack.data.remote.dto.PersonDtoResponse
 import com.example.lets_snack.data.remote.repository.rest.PersonsRepository
 import com.example.lets_snack.databinding.ActivityPersonDataRegisterBinding
 import com.example.lets_snack.presentation.login.LoginActivity
-import okhttp3.ResponseBody
 import java.util.Calendar
 
 class PersonDataRegisterActivity : AppCompatActivity() {
     private lateinit var binding: ActivityPersonDataRegisterBinding
-    private var personsRepository = PersonsRepository()
+    private var personsRepository = PersonsRepository(this)
     private var nameTouched = false
     private var usernameTouched = false
 
