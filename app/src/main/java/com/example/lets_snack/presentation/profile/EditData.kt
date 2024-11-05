@@ -86,7 +86,7 @@ class EditData : AppCompatActivity() {
             }
             typeRestriction.text.clear()
         }
-
+        Log.d("CallEditData", "email: "+FirebaseAuth.getInstance().currentUser?.email.toString())
         val callPersons = personsRepository.listPersonByEmail(FirebaseAuth.getInstance().currentUser?.email.toString())
         callPersons.enqueue(object : retrofit2.Callback<PersonDtoResponseEmail> {
             override fun onResponse(
