@@ -141,6 +141,7 @@ class EditData : AppCompatActivity() {
 
         }
 
+
         binding.loginEnterBtn.setOnClickListener {
             binding.progressBar.visibility = View.VISIBLE
             binding.loginEnterBtn.text = ""
