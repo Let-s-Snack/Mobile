@@ -118,6 +118,9 @@ class EditData : AppCompatActivity() {
             }
 
             override fun onFailure(call: retrofit2.Call <PersonDtoResponseEmail>, t: Throwable) {
+                runOnUiThread {
+                    Toast.makeText(this@EditData, "${t.message}", Toast.LENGTH_SHORT).show()
+                }
                 Log.e("CallEditDataError", t.message.toString())
             }
         })
@@ -241,7 +244,7 @@ class EditData : AppCompatActivity() {
     }
 
     private fun updateMongo(personDto: PersonDtoUpdate, callback: (Boolean) -> Unit) {
-        val call = personsRepository.updatePerson(personDto.email, personDto)
+        val call = personsRepository.updatePerson(FirebaseAuth.getInstance().currentUser!!.email!!, personDto)
         call.enqueue(object : retrofit2.Callback<PersonDtoResponse> {
             override fun onResponse(
                 call: retrofit2.Call<PersonDtoResponse>,
@@ -249,7 +252,7 @@ class EditData : AppCompatActivity() {
             ) {
                 if (response.isSuccessful) {
                     val apiResponse = response.body()
-
+                    Log.d("CallEditData","Resposta: ${apiResponse}")
                     if (apiResponse?.message == "Atualização feita com sucesso!") {
                         callback(true)
                     } else {
@@ -273,7 +276,7 @@ class EditData : AppCompatActivity() {
         val user = auth.currentUser
 
         if (user != null) {
-            user.updateEmail(personDto.email)
+            user.updateEmail(user?.email!!)
                 .addOnCompleteListener { emailTask ->
                     if (emailTask.isSuccessful) {
                         val profileUpdates = UserProfileChangeRequest.Builder()

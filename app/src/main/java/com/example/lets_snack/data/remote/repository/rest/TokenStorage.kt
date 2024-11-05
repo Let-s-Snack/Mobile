@@ -33,7 +33,7 @@ class TokenStorage(private val context: Context) {
         }
 
         val currentTimeMillis = System.currentTimeMillis()
-        val threeMinutesInMillis = 3 * 60 * 1000
+        val threeMinutesInMillis = 2 * 60 * 1000
 
         return (currentTimeMillis - tokenTimestamp) > threeMinutesInMillis
     }
