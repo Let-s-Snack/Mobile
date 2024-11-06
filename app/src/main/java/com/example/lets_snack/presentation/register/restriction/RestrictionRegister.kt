@@ -280,4 +280,8 @@ class RestrictionRegister : AppCompatActivity() {
         }
         notificationManagerCompat.notify(1, builder.build())
     }
+
+    fun finishScreen(view: View) {
+        finish()
+    }
 }

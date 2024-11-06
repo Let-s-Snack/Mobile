@@ -265,4 +265,8 @@ class PersonDataRegisterActivity : AppCompatActivity() {
         intent.putExtra("bundleRegister", bundle)
         startActivity(intent)
     }
+
+    fun finishScreen(view: View) {
+        finish()
+    }
 }

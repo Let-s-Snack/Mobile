@@ -79,9 +79,9 @@ class NavFragment : Fragment() {
             }
 
             // Apply animation and margin to the selected button and text
-            animateTranslationY(selectedBtn, selectedBtn.translationY, -14f)
+            animateTranslationY(selectedBtn, selectedBtn.translationY, -12f)
             selectedText.visibility = View.VISIBLE
-            animateTranslationY(selectedText, selectedText.translationY, -14f)
+            animateTranslationY(selectedText, selectedText.translationY, -12f)
             selectedBtn.setImageResource(getSelectedIcon(selectedBtn))
         }
 

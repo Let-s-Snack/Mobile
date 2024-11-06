@@ -3,12 +3,14 @@ package com.example.lets_snack.presentation.login.forgetPassword;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.lets_snack.MainActivity;
 import com.example.lets_snack.R;
 import com.example.lets_snack.databinding.ActivityForgetPasswordBinding;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -83,5 +85,9 @@ public class ForgetPasswordActivity extends AppCompatActivity {
                         });
             }
         });
+    }
+
+    public void finishScreen(View view) {
+        finish();
     }
 }

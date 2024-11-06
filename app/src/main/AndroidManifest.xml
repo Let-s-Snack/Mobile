@@ -65,7 +65,7 @@
             android:windowSoftInputMode="adjustPan"
             />
         <activity
-            android:name=".presentation.splashScreen.SplashScreen"
+            android:name=".MainActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustPan"
             android:screenOrientation="locked"/>
@@ -78,7 +78,7 @@
             android:exported="false"
             android:screenOrientation="locked" />
         <activity
-            android:name=".MainActivity"
+            android:name=".presentation.splashScreen.SplashScreen"
             android:exported="true"
             android:screenOrientation="locked"
             android:windowSoftInputMode="adjustPan">
@@ -89,5 +89,4 @@
             </intent-filter>
         </activity>
     </application>
-
 </manifest>
