@@ -18,6 +18,7 @@ import com.bumptech.glide.Glide;
 import com.example.lets_snack.MainActivity;
 import com.example.lets_snack.R;
 import com.example.lets_snack.data.remote.dto.CategoryDto;
+import com.example.lets_snack.data.remote.dto.RestrictionsDto;
 import com.example.lets_snack.presentation.recipesFeed.FragmentRecipesFeed;
 
 import java.util.List;
@@ -77,7 +78,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
                 Bundle bundle = new Bundle();
                 bundle.putString("category", categoryDtoList.get(position).getName());
                 bundle.putString("description", categoryDtoList.get(position).getDescription());
-                bundle.putString("id", categoryDtoList.get(position).getId());
+                bundle.putString("id", String.valueOf(categoryDtoList.get(position).getId()));
 
                 //chamando fragment de recipe feed
                 FragmentTransaction transaction = ((MainActivity) v.getContext()).getSupportFragmentManager().beginTransaction();

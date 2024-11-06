@@ -18,6 +18,7 @@
             android:layout_marginTop="40dp"
             android:layout_marginEnd="32dp"
             android:numStars="5"
+            android:stepSize="1.0"
             android:backgroundTint="@color/black"
             android:progressTint="#FFCA00"
             app:layout_constraintEnd_toEndOf="parent"

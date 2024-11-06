@@ -91,9 +91,9 @@ class RegisterActivity : AppCompatActivity() {
     private fun validateEmail() {
         val email = binding.emailInput.text.toString()
         if (!isEmailValid(email)) {
-            binding.textInputLayout.error = "E-mail inválido"
+            binding.emailInput.error = "E-mail inválido"
         } else {
-            binding.textInputLayout.error = null
+            binding.emailInput.error = null
         }
     }
 
