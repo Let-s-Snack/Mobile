@@ -34,7 +34,6 @@ class TokenRepository(private val context: Context) {
 
     // Verifique se o token é válido
     fun verifyTokenIsValid(): String? {
-        Log.d("tokenRepository", tokenStorage.verifyTokenIsValid(this)!!)
         return tokenStorage.verifyTokenIsValid(this)
     }
 
