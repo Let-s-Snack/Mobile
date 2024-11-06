@@ -40,13 +40,14 @@ import retrofit2.Response;
 public class HomeFragment extends Fragment {
 
     private FragmentHomeBinding binding;
+
     private FirebaseAuth autentication = FirebaseAuth.getInstance();
     private FirebaseUser user = autentication.getCurrentUser();
     private RecyclerView recyclerViewTrendingRecipes;
     private RecyclerView recyclerViewRecommendedRecipes;
     private RecyclerView recyclerViewMoreCommentsRecipes;
     private PersonsRepository personsRepository = null;
-    private RecipesRepository recipesRepository = new RecipesRepository();
+    private RecipesRepository recipesRepository = null;
 
     public HomeFragment() {
     }
@@ -66,6 +67,7 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        recipesRepository = new RecipesRepository(requireContext());
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         personsRepository = new PersonsRepository(requireContext());
         recyclerViewTrendingRecipes = binding.recyclerTrendingRecipes;

@@ -44,9 +44,6 @@ public interface LetsSnackService {
     @POST("auth/login")
     Call<TokenResponseDto> generateToken(@Body TokenRequestDto tokenRequestDto);
 
-    @GET("administrator/findAdministratorByEmailAndPassword")
-    Call<UserDto> findAdministradorByEmailAndPassword(@Header("Authorization") String token, @Query("email") String email, @Query("password") String password);
-
     @GET("restrictions/listAllRestrictions")
     Call<ResponseBody> getRestrictions2();
 
@@ -60,16 +57,16 @@ public interface LetsSnackService {
     Call<ResponseBody> findRecipesByName(@Query("recipesName") String recipesName, @Query("personsEmail") String personsEmail);
 
     @PUT("recipes/insertComent/{recipesId}")
-    Call<MessageDto> insertComment(@Path("recipesId") String recipesId, @Body SendCommentDto comment);
+    Call<MessageDto> insertComment(@Header("Authorization") String token, @Header("personsEmail")@Path("recipesId") String recipesId, @Body SendCommentDto comment);
 
     @GET("persons/personWishlist/{email}")
     Call<ResponseBody> findWishlistByUserEmail(@Path("email") String personEmail);
 
     @PUT("persons/likeRecipes")
-    Call<MessageDto> likeRecipe(@Query("recipesId") String recipesId, @Query("personsEmail") String personsEmail);
+    Call<MessageDto> likeRecipe(@Header("Authorization") String token, @Query("recipesId") String recipesId, @Query("personsEmail") String personsEmail);
 
     @PUT("persons/saveRecipesIngredients")
-    Call<MessageDto> saveRecipeIngredients(@Query("recipesId") String recipesId, @Query("personsEmail") String personsEmail);
+    Call<MessageDto> saveRecipeIngredients(@Header("Authorization") String token, @Query("recipesId") String recipesId, @Query("personsEmail") String personsEmail);
 
     @GET("persons/personDirectionWeek/{email}")
     Call<RecipeDto> getWeekRecipeByEmail(@Path("email") String personEmail);
@@ -82,4 +79,7 @@ public interface LetsSnackService {
 
     @GET("recipes/personMostCommentedRecipes/{email}")
     Call<ResponseBody> getMostCommentedRecipesByEmail(@Path("email") String personEmail);
+
+    @GET("adm/listAdmByEmail/{email}")
+    Call<UserDto> findAdmByEmail(@Header("Authorization") String token,@Path("email") String email);
 }
