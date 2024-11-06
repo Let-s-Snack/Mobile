@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.lets_snack.BuildConfig
 import com.example.lets_snack.constants.LetsSnackConstants
 import com.example.lets_snack.data.remote.dto.MessageDto
 import com.example.lets_snack.databinding.FragmentChatIaBinding
@@ -104,7 +105,7 @@ class ChatIaFragment : Fragment() {
     }
     private fun send(prompt: String) {
         val url = "https://api.openai.com/v1/chat/completions"
-        val apiKey = "sk-KCi9J_ZRAwbP0j7quEU7u-X3dPd85fHfykAr3YLkplT3BlbkFJIsDEI8JSuT2ztk6orRr9IoM6iu1wMX5kaSJltkNooA"
+        val apiKey = BuildConfig.API_KEY
         Log.d("Prompt", prompt)
 
         val json = JSONObject()

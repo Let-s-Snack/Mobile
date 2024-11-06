@@ -17,13 +17,22 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    buildFeatures {
+        buildConfig = true
+        viewBinding = true
+    }
+
     buildTypes {
-        release {
+        getByName("release") {
+            buildConfigField("String", "API_KEY", project.findProperty("API_KEY") as String)
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+        }
+        getByName("debug") {
+            buildConfigField("String", "API_KEY", project.findProperty("API_KEY") as String)
         }
     }
     compileOptions {
@@ -32,10 +41,6 @@ android {
     }
     kotlinOptions {
         jvmTarget = "1.8"
-    }
-
-    buildFeatures {
-        viewBinding = true
     }
 }
 
