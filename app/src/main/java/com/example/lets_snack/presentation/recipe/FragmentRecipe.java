@@ -151,69 +151,72 @@ public class FragmentRecipe extends Fragment {
                 loading.setVisibility(View.INVISIBLE);
                 scrollView.setSmoothScrollingEnabled(true);
                 //carregar os dados
-                binding.recipeScreenName.setText(recipes.getName());
-                Glide.with(getContext())
-                        .load(recipes.getUrlPhoto()).centerCrop().into(binding.recipeScreenImage);
-                if(recipes.getRating() != null) {
-                    binding.recipeScreenRatingbar.setRating(recipes.getRating());
-                }
-                binding.recipeScreenLikeButton.setChecked(recipes.getIsFavorite());
-                binding.recipeDescription.setText(recipes.getDescription());
-                binding.recipeBtnEvaluate.setOnClickListener(v -> evaluationModal());
+                if (recipes != null) {
 
-                binding.recipeScreenLikeButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        //cancela qualquer chamada de API agendada anterior
-                        if (apiCallRunnable != null) {
-                            handler.removeCallbacks(apiCallRunnable);
-                        }
 
-                        //define a nova tarefa para ser executada após 1 segundo
-                        apiCallRunnable = new Runnable() {
-                            @Override
-                            public void run() {
-                                if(recipes.getIsFavorite() != binding.recipeScreenLikeButton.isChecked()) {
-                                    likeRecipe();
-                                }
+                    binding.recipeScreenName.setText(recipes.getName());
+                    Glide.with(getContext())
+                            .load(recipes.getUrlPhoto()).centerCrop().into(binding.recipeScreenImage);
+                    if (recipes.getRating() != null) {
+                        binding.recipeScreenRatingbar.setRating(recipes.getRating());
+                    }
+                    binding.recipeScreenLikeButton.setChecked(recipes.getIsFavorite());
+                    binding.recipeDescription.setText(recipes.getDescription());
+                    binding.recipeBtnEvaluate.setOnClickListener(v -> evaluationModal());
+
+                    binding.recipeScreenLikeButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            //cancela qualquer chamada de API agendada anterior
+                            if (apiCallRunnable != null) {
+                                handler.removeCallbacks(apiCallRunnable);
                             }
-                        };
 
-                        //agenda a tarefa após o atraso definido
-                        handler.postDelayed(apiCallRunnable, DELAY_MILLIS);
+                            //define a nova tarefa para ser executada após 1 segundo
+                            apiCallRunnable = new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (recipes.getIsFavorite() != binding.recipeScreenLikeButton.isChecked()) {
+                                        likeRecipe();
+                                    }
+                                }
+                            };
+
+                            //agenda a tarefa após o atraso definido
+                            handler.postDelayed(apiCallRunnable, DELAY_MILLIS);
+                        }
+                    });
+
+                    binding.recipeBtnSaveIngredients.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            saveRecipeIngredients();
+                        }
+                    });
+
+                    List<String> steps = recipes.getPreparationMethods();
+                    if (steps != null && steps.size() > 0) {
+                        recyclerViewSteps.setAdapter(new StepAdapter(steps));
                     }
-                });
 
-                binding.recipeBtnSaveIngredients.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        saveRecipeIngredients();
+                    List<CommentDto> comments = recipes.getComents();
+                    if (comments != null && comments.size() > 0) {
+                        binding.recipeRateText.setText(String.format("%.1f", recipes.getRating()) + "/5" + " (" + comments.size() + " avaliações)");
+                        recyclerViewComments.setAdapter(new CommentAdapter(comments));
+                        binding.imageEmptyComments.setVisibility(View.INVISIBLE);
+                        binding.textEmptyComment.setVisibility(View.INVISIBLE);
+                    } else {
+                        binding.recipeRateText.setText("0/5" + " (0 avaliações)");
+                        binding.imageEmptyComments.setVisibility(View.VISIBLE);
+                        binding.textEmptyComment.setVisibility(View.VISIBLE);
                     }
-                });
 
-                List<String> steps = recipes.getPreparationMethods();
-                if(steps != null && steps.size() > 0) {
-                    recyclerViewSteps.setAdapter(new StepAdapter(steps));
-                }
+                    List<IngredientDto> ingredients = recipes.getIngredients();
+                    if (ingredients != null && ingredients.size() > 0) {
+                        recyclerViewIngredients.setAdapter(new IngredientsAdapter(ingredients));
+                    }
 
-                List<CommentDto> comments = recipes.getComents();
-                if(comments != null && comments.size() > 0) {
-                    binding.recipeRateText.setText(String.format("%.1f", recipes.getRating()) + "/5" + " (" + comments.size() + " avaliações)");
-                    recyclerViewComments.setAdapter(new CommentAdapter(comments));
-                    binding.imageEmptyComments.setVisibility(View.INVISIBLE);
-                    binding.textEmptyComment.setVisibility(View.INVISIBLE);
                 }
-                else{
-                    binding.recipeRateText.setText("0/5" + " (0 avaliações)");
-                    binding.imageEmptyComments.setVisibility(View.VISIBLE);
-                    binding.textEmptyComment.setVisibility(View.VISIBLE);
-                }
-
-                List<IngredientDto> ingredients = recipes.getIngredients();
-                if (ingredients != null && ingredients.size() > 0) {
-                    recyclerViewIngredients.setAdapter(new IngredientsAdapter(ingredients));
-                }
-
             }
 
             @Override

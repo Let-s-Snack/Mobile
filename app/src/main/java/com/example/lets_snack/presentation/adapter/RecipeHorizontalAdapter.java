@@ -58,6 +58,14 @@ public class RecipeHorizontalAdapter extends RecyclerView.Adapter<RecipeHorizont
             holder.rateView.setText("0.0");
         }
 
+        if (position == 0) {
+            ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) holder.itemView.getLayoutParams();
+            layoutParams.setMargins(40, 0, 40, 0);
+        }
+        else {
+            ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) holder.itemView.getLayoutParams();
+            layoutParams.setMargins(0, 0, 40, 0);
+        }
 
         //entrando na tela de busca de receitas pela categoria
         holder.cardView.setOnClickListener(new View.OnClickListener() {

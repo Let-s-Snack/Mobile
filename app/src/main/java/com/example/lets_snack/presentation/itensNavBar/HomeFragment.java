@@ -94,15 +94,15 @@ public class HomeFragment extends Fragment {
             }
         }
         weekRecipeCall(new RecipeCallback() {
-
             @Override
             public void onSuccess(RecipeDto recipes) {
-                Log.d("WeekRecipeCall", "Receitas da semana carregadas: " + recipes.getName());
+                Log.d("WeekRecipeCall", "Receitas da semana carregadas: " + recipes.getId());
                 binding.weekRecipeCard.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Bundle bundle = new Bundle();
                         bundle.putString("id", recipes.getId());
+                        Log.d("WeekRecipeCall", "Receitas da semana carregadas: " + recipes.getId());
 
                         // Chama o fragment de recipe feed
                         FragmentTransaction transaction = ((MainActivity) v.getContext()).getSupportFragmentManager().beginTransaction();
