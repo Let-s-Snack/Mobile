@@ -21,6 +21,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.children
+import androidx.lifecycle.lifecycleScope
 import com.example.lets_snack.MainActivity
 import com.example.lets_snack.R
 import com.example.lets_snack.data.remote.dto.PersonDto
@@ -34,6 +35,7 @@ import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.UserProfileChangeRequest
+import kotlinx.coroutines.launch
 import okhttp3.ResponseBody
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -173,7 +175,9 @@ class RestrictionRegister : AppCompatActivity() {
                     Log.d("RestricitonRegister",restrictionListId.toString())
                     val objectPerson = PersonDto(gender!!,name!!,username!!,email!!,password!!,false,photo!!,
                         formattedDate!!,phone!!,true, restrictionListId!!)
-                    insertUserMongo(objectPerson)
+                    lifecycleScope.launch {
+                        insertUserMongo(objectPerson)
+                    }
                 }
 
                 insertUser(email!!, password!!, name!!, username!!, photo!!)
@@ -217,7 +221,7 @@ class RestrictionRegister : AppCompatActivity() {
         startActivity(intent)
     }
 
-    private fun insertUserMongo(personDto: PersonDto){
+    suspend private fun insertUserMongo(personDto: PersonDto){
         Log.d("CallPersons", personDto.toString())
         val call = personsRepository.insertPerson(personDto)
         call.enqueue(object : retrofit2.Callback<ResponseBody> {

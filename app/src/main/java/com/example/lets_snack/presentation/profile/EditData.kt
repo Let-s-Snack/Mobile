@@ -18,6 +18,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.view.children
+import androidx.lifecycle.lifecycleScope
 import com.example.lets_snack.R
 import com.example.lets_snack.data.remote.dto.PersonDtoResponse
 import com.example.lets_snack.data.remote.dto.PersonDtoResponseEmail
@@ -35,6 +36,7 @@ import com.google.android.material.chip.ChipGroup
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.squareup.picasso.Picasso
+import kotlinx.coroutines.launch
 
 class EditData : AppCompatActivity() {
     private lateinit var binding: ActivityEditDataBinding
@@ -177,31 +179,38 @@ class EditData : AppCompatActivity() {
             )
             valideAll(personDto.name, personDto.nickname) { isValid ->
                 if (isValid) {
-                    // Se todos os dados são válidos, tenta atualizar o MongoDB
-                    updateMongo(personDto) { mongoSuccess ->
-                        if (mongoSuccess) {
-                            // Se a atualização no MongoDB foi bem-sucedida, atualiza o Firebase
-                            updateFirebase(personDto) { firebaseSuccess ->
-                                if (firebaseSuccess) {
-                                    // Se a atualização no Firebase foi bem-sucedida, envia a notificação
-                                    notification(personDto.nickname)
-                                    binding.progressBar.visibility = View.INVISIBLE
-                                    binding.loginEnterBtn.text = "Salvar"
-                                    binding.loginEnterBtn.isEnabled = true
-                                } else {
-                                    binding.progressBar.visibility = View.INVISIBLE
-                                    binding.loginEnterBtn.text = "Salvar"
-                                    binding.loginEnterBtn.isEnabled = true
-                                    Toast.makeText(this, "Ops! Algo deu errado", Toast.LENGTH_SHORT).show()
-                                    Log.d("FirebaseUpdate", "Erro na atualização no Firebase.")
+                    lifecycleScope.launch {
+                        // Se todos os dados são válidos, tenta atualizar o MongoDB
+                        updateMongo(personDto) { mongoSuccess ->
+                            if (mongoSuccess) {
+                                // Se a atualização no MongoDB foi bem-sucedida, atualiza o Firebase
+                                updateFirebase(personDto) { firebaseSuccess ->
+                                    if (firebaseSuccess) {
+                                        // Se a atualização no Firebase foi bem-sucedida, envia a notificação
+                                        notification(personDto.nickname)
+                                        binding.progressBar.visibility = View.INVISIBLE
+                                        binding.loginEnterBtn.text = "Salvar"
+                                        binding.loginEnterBtn.isEnabled = true
+                                    } else {
+                                        binding.progressBar.visibility = View.INVISIBLE
+                                        binding.loginEnterBtn.text = "Salvar"
+                                        binding.loginEnterBtn.isEnabled = true
+                                        Toast.makeText(
+                                            this@EditData,
+                                            "Ops! Algo deu errado",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                        Log.d("FirebaseUpdate", "Erro na atualização no Firebase.")
+                                    }
                                 }
+                            } else {
+                                binding.progressBar.visibility = View.INVISIBLE
+                                binding.loginEnterBtn.text = "Salvar"
+                                binding.loginEnterBtn.isEnabled = true
+                                Toast.makeText(this@EditData, "Ops! Algo deu errado", Toast.LENGTH_SHORT)
+                                    .show()
+                                Log.d("MongoUpdate", "Erro na atualização no MongoDB.")
                             }
-                        } else {
-                            binding.progressBar.visibility = View.INVISIBLE
-                            binding.loginEnterBtn.text = "Salvar"
-                            binding.loginEnterBtn.isEnabled = true
-                            Toast.makeText(this, "Ops! Algo deu errado", Toast.LENGTH_SHORT).show()
-                            Log.d("MongoUpdate", "Erro na atualização no MongoDB.")
                         }
                     }
                 } else {
@@ -244,7 +253,7 @@ class EditData : AppCompatActivity() {
         startActivity(intent)
     }
 
-    private fun updateMongo(personDto: PersonDtoUpdate, callback: (Boolean) -> Unit) {
+    suspend private fun updateMongo(personDto: PersonDtoUpdate, callback: (Boolean) -> Unit) {
         val call = personsRepository.updatePerson(FirebaseAuth.getInstance().currentUser!!.email!!, personDto)
         call.enqueue(object : retrofit2.Callback<PersonDtoResponse> {
             override fun onResponse(
