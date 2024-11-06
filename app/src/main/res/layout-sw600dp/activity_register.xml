@@ -48,10 +48,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="@string/entre_aqui"
         android:fontFamily="@font/poppins_light"
+        android:text="@string/entre_aqui"
         android:textColor="@color/azul_link"
-        android:textSize="12dp"
+        android:textSize="14dp"
         app:layout_constraintEnd_toStartOf="@+id/guideline"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="@+id/guideline2"
@@ -148,14 +148,14 @@
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/login_enter_btn"
         android:layout_width="0dp"
-        android:layout_height="40dp"
+        android:layout_height="50dp"
         android:layout_marginTop="32dp"
         android:layout_marginBottom="84dp"
         android:background="@drawable/background_principal_button_selector"
         android:enabled="false"
         android:text="Próximo"
-        app:errorEnabled="false"
         android:textColor="@color/white"
+        app:errorEnabled="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/guideline"
         app:layout_constraintStart_toStartOf="@+id/guideline2"
@@ -196,5 +196,12 @@
         android:textSize="20sp"
         app:layout_constraintEnd_toStartOf="@+id/guideline"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="32dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
