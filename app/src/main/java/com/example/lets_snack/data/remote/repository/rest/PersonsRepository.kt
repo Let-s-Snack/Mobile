@@ -19,4 +19,12 @@ class PersonsRepository(context: Context) {
     fun listPersonByUsername(username: String) = interfaceService.listPersonByUsername(username)
 
     fun updatePerson(email: String, personDto: PersonDtoUpdate) = interfaceService.updatePerson(tokenRepository.verifyTokenIsValid(),email, personDto)
+
+    fun findWishlistByUserEmail(personEmail: String) = interfaceService.findWishlistByUserEmail(personEmail)
+
+    fun likeRecipe(recipesId: String, personsEmail: String) = interfaceService.likeRecipe(recipesId, personsEmail)
+
+    fun saveRecipeIngredients(recipesId: String, personsEmail: String) = interfaceService.saveRecipeIngredients(recipesId, personsEmail)
+
+    fun getWeekRecipeByEmail(personEmail: String) = interfaceService.getWeekRecipeByEmail(personEmail)
 }

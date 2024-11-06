@@ -44,7 +44,6 @@
             android:windowSoftInputMode="adjustPan"
             android:screenOrientation="locked"
             />
-
         <activity
             android:name=".presentation.profile.photo.PhotoEditData"
             android:exported="false"
@@ -68,6 +67,7 @@
             android:name=".MainActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustPan"
+
             android:screenOrientation="locked"/>
         <activity
             android:name=".presentation.login.LoginActivity"

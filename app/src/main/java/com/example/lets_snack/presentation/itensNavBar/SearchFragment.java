@@ -1,11 +1,7 @@
 package com.example.lets_snack.presentation.itensNavBar;
 
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-
-import android.app.Dialog;
 import android.os.Bundle;
 
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -15,21 +11,27 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.lets_snack.MainActivity;
 import com.example.lets_snack.R;
-import com.example.lets_snack.data.remote.api.CategoriesService;
 import com.example.lets_snack.data.remote.dto.CategoryDto;
+import com.example.lets_snack.data.remote.dto.MessageDto;
+import com.example.lets_snack.data.remote.dto.RecipeDto;
+import com.example.lets_snack.data.remote.dto.RestrictionsDto;
+import com.example.lets_snack.data.remote.repository.rest.RestrictionsRepository;
 import com.example.lets_snack.databinding.FragmentSearchBinding;
 import com.example.lets_snack.presentation.adapter.CategoryAdapter;
+import com.example.lets_snack.presentation.adapter.RecipeAdapter;
 import com.example.lets_snack.presentation.recipesFeed.FragmentRecipesFeed;
+import com.google.gson.Gson;
 
+import java.util.Arrays;
 import java.util.List;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -44,6 +46,7 @@ public class SearchFragment extends Fragment {
     private ProgressBar loading;
     private ImageView imageError;
     private TextView textError;
+    private RestrictionsRepository restrictionsRepository = new RestrictionsRepository();
 
     public SearchFragment() {
         // Required empty public constructor
@@ -105,44 +108,60 @@ public class SearchFragment extends Fragment {
     }
 
     public void loadCategories() {
-        String baseUrl = "https://spring-mongo-6c8h.onrender.com";
 
-        //configurar acesso da API
-        retrofit = new Retrofit.Builder()
-                .baseUrl(baseUrl)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+        // Chamada da API
+        Call<ResponseBody> apiCall = restrictionsRepository.getRestrictions2();
 
-        //chamada da API
-        CategoriesService categoriesApi = retrofit.create(CategoriesService.class);
-        Call<List<CategoryDto>> apiCall = categoriesApi.findAllCategories();
-
-        //executar chamada
-        apiCall.enqueue(new Callback<List<CategoryDto>>() {
+        // Executar chamada
+        apiCall.enqueue(new Callback<ResponseBody>() {
             @Override
-            public void onResponse(Call<List<CategoryDto>> call, Response<List<CategoryDto>> response) {
-                List<CategoryDto> categories = response.body();
-                recyclerView.setAdapter(new CategoryAdapter(categories));
-                loading.setVisibility(View.INVISIBLE);
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    try {
+                        // Analisar a resposta com Gson
+                        Gson gson = new Gson();
+                        String responseBodyString = response.body().string();
 
-                if(categories.isEmpty()) {
-                    imageError.setVisibility(View.VISIBLE);
-                    imageError.setImageResource(R.drawable.neneca_triste);
-                    textError.setVisibility(View.VISIBLE);
-                    textError.setText("Nenhuma categoria encontrada!");
+                        // Tentar parsear como um array
+                        if (responseBodyString.startsWith("[")) {
+                            List<CategoryDto> categories = Arrays.asList(gson.fromJson(responseBodyString, CategoryDto[].class));
+                            recyclerView.setAdapter(new CategoryAdapter(categories));
+                            loading.setVisibility(View.INVISIBLE);
+
+                            if (categories.isEmpty()) {
+                                imageError.setVisibility(View.VISIBLE);
+                                imageError.setImageResource(R.drawable.neneca_confusa);
+                                textError.setVisibility(View.VISIBLE);
+                                textError.setText("Nenhuma categoria encontrada!");
+                            }
+                        } else {
+                            // Caso contrário, parsear como um objeto com mensagem
+                            MessageDto messageResponse = gson.fromJson(responseBodyString, MessageDto.class);
+                            loading.setVisibility(View.INVISIBLE);
+                            imageError.setVisibility(View.VISIBLE);
+                            imageError.setImageResource(R.drawable.neneca_confusa);
+                            textError.setVisibility(View.VISIBLE);
+                            textError.setText(messageResponse.getMessage());
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        loading.setVisibility(View.INVISIBLE);
+                        imageError.setVisibility(View.VISIBLE);
+                        imageError.setImageResource(R.drawable.neneca_triste);
+                        textError.setVisibility(View.VISIBLE);
+                        textError.setText("Erro ao processar resposta.");
+                    }
                 }
             }
 
             @Override
-            public void onFailure(Call<List<CategoryDto>> call, Throwable throwable) {
-                //chamar imagem de erro
+            public void onFailure(Call<ResponseBody> call, Throwable throwable) {
+                // Chamar imagem de erro
                 loading.setVisibility(View.INVISIBLE);
                 imageError.setVisibility(View.VISIBLE);
                 imageError.setImageResource(R.drawable.neneca_triste);
-
-                //colocar no textView o erro
                 textError.setVisibility(View.VISIBLE);
-                textError.setText(throwable.getMessage());
+                textError.setText(throwable.getLocalizedMessage());
             }
         });
     }
