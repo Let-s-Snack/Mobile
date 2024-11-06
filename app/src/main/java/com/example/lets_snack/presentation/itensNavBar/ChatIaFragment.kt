@@ -55,7 +55,9 @@ class ChatIaFragment : Fragment() {
 
         binding.addChat.setOnClickListener {
             Log.d("new Chat","criou")
-            createNewChat()
+            createNewChat(){
+                loadMessages(true)
+            }
         }
         loadMessages(false)
 
@@ -77,12 +79,6 @@ class ChatIaFragment : Fragment() {
     }
 
     private fun send(prompt: String) {
-        chatCollectionRef.get()
-            .addOnSuccessListener { querySnapshot ->
-                if(querySnapshot.size() == 0){
-                    createNewChat()
-                }
-            }
         val url = "https://api.openai.com/v1/chat/completions"
         val apiKey = "sk-KCi9J_ZRAwbP0j7quEU7u-X3dPd85fHfykAr3YLkplT3BlbkFJIsDEI8JSuT2ztk6orRr9IoM6iu1wMX5kaSJltkNooA"
         Log.d("Prompt", prompt)
@@ -139,55 +135,113 @@ class ChatIaFragment : Fragment() {
         })
     }
 
-    private fun saveMessages(message: MessageDto, isLast: Boolean) {
-        chatCollectionRef.get()
-            .addOnSuccessListener { querySnapshot ->
-                chatCollectionRef.document("chat${querySnapshot.size()+1}").collection("messages").add(message)
-                    .addOnSuccessListener {
-                        Log.d("Firestore", "Mensagem salva com sucesso!")
-                        loadMessages(isLast)
-                    }
-                    .addOnFailureListener { e -> Log.w("Firestore", "Erro ao salvar mensagem", e) }
+
+    private fun saveMessageToChat(currentCount: Long, message: MessageDto, isLast: Boolean) {
+        // Salva a mensagem no chat com base no contador atual
+        chatCollectionRef.document("chat${currentCount - 1}").collection("messages")
+            .add(message)
+            .addOnSuccessListener {
+                Log.d("Firestore", "Mensagem salva com sucesso!")
+                loadMessages(isLast)
+            }
+            .addOnFailureListener { e ->
+                Log.w("Firestore", "Erro ao salvar mensagem", e)
             }
     }
 
     private fun loadMessages(isLast: Boolean) {
-        chatCollectionRef.get()
-            .addOnSuccessListener { querySnapshot ->
-                Log.d("Firestore", "${querySnapshot.size()}")
-                chatCollectionRef.document("chat${querySnapshot.size()+1}").collection("messages").orderBy("timestamp").addSnapshotListener { snapshots, e ->
-                    if (e != null) {
-                        Log.w("Firestore", "Listen failed.", e)
-                        return@addSnapshotListener
-                    }
+        // Acessa o documento de contador na coleção 'counters'
+        val counterDocRef = firestore.collection("counters").document(currentUser?.email!!)
 
-                    val messagesList = mutableListOf<MessageDto>()
-                    for (doc in snapshots!!) {
-                        val message = doc.toObject(MessageDto::class.java)
-                        messagesList.add(message)
-                    }
+        counterDocRef.get()
+            .addOnSuccessListener { documentSnapshot ->
+                if (documentSnapshot.exists()) {
+                    // Obtém o valor do contador
+                    val currentCount = documentSnapshot.getLong("count") ?: 0
 
-                    Log.d("Firestore", "Mensagens carregadas: ${messagesList.size}")
-                    messageAdapter?.updateMessages(messagesList, isLast)
+                    // Acessa o documento correto do chat com base no valor do contador
+                    chatCollectionRef.document("chat${currentCount - 1}").collection("messages")
+                        .orderBy("timestamp")
+                        .addSnapshotListener { snapshots, e ->
+                            if (e != null) {
+                                Log.w("Firestore", "Listen failed.", e)
+                                return@addSnapshotListener
+                            }
 
-                    if (messagesList.isNotEmpty()) {
-                        binding.recyclerView.scrollToPosition(messagesList.size - 1)
-                    }
+                            val messagesList = mutableListOf<MessageDto>()
+                            for (doc in snapshots!!) {
+                                val message = doc.toObject(MessageDto::class.java)
+                                messagesList.add(message)
+                            }
+
+                            Log.d("Firestore", "Mensagens carregadas: ${messagesList.size}")
+                            messageAdapter?.updateMessages(messagesList, isLast)
+
+                            // Atualiza o RecyclerView com a nova lista de mensagens
+                            if (messagesList.isNotEmpty()) {
+                                // Garante que a rolagem para a última posição ocorra apenas se for a última mensagem
+                                if (isLast) {
+                                    binding.recyclerView.scrollToPosition(messagesList.size - 1)
+                                }
+                            }
+                        }
+                } else {
+                    Log.w("Firestore", "Documento de contador não encontrado.")
                 }
+            }
+            .addOnFailureListener { exception ->
+                Log.e("Firestore", "Erro ao acessar o documento do contador: ", exception)
             }
     }
 
-    fun createNewChat() {
-        // Acessa a coleção do usuário
-        val chatCollectionRef = FirebaseFirestore.getInstance().collection("arturnascimentosousa@gmail.com")
+    private fun saveMessages(message: MessageDto, isLast: Boolean) {
+        val counterDocRef = firestore.collection("counters").document(currentUser?.email!!)
 
-        chatCollectionRef.get()
-            .addOnSuccessListener { result ->
-                val documentCount = result.size()
-                Log.d("Firestore", "Número de documentos: $documentCount")
+        // Verifica se o documento do contador existe
+        counterDocRef.get()
+            .addOnSuccessListener { documentSnapshot ->
+                if (documentSnapshot.exists()) {
+                    // Se o contador existir, obtemos o valor e salvamos a mensagem no chat
+                    val currentCount = documentSnapshot.getLong("count") ?: 0
+                    saveMessageToChat(currentCount, message, isLast)
+                } else {
+                    // Caso o contador não exista, cria um novo chat e aguarda a criação antes de carregar as mensagens
+                    createNewChat {
+                        loadMessages(isLast)
+                    }
+                }
             }
             .addOnFailureListener { exception ->
-                Log.e("Firestore", "Erro ao contar documentos: ", exception)
+                Log.e("Firestore", "Erro ao acessar o documento do contador: ", exception)
+            }
+    }
+
+    private fun createNewChat(onChatCreated: () -> Unit) {
+        val counterDocRef = firestore.collection("counters").document(currentUser?.email!!)
+
+        firestore.runTransaction { transaction ->
+            val snapshot = transaction.get(counterDocRef)
+            val currentCount = snapshot.getLong("count") ?: 0
+            if (snapshot.exists()) {
+                transaction.update(counterDocRef, "count", currentCount + 1)
+            } else {
+                transaction.set(counterDocRef, mapOf("count" to 1))
+            }
+
+            if (currentCount != 0L) {
+                firestore.collection(currentUser?.email!!).document("chat${currentCount}")
+                    .collection("messages").add(
+                        MessageDto("GPT", "Seja bem-vindo!")
+                    )
+            }
+            currentCount + 1
+        }
+            .addOnSuccessListener {
+                Log.d("Firestore", "Contador incrementado e chat criado com sucesso.")
+                onChatCreated() // Chama o callback após a criação do chat
+            }
+            .addOnFailureListener { exception ->
+                Log.e("Firestore", "Erro ao criar chat e atualizar contador: ", exception)
             }
     }
 
