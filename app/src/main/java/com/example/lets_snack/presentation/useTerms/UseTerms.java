@@ -1,13 +1,13 @@
 package com.example.lets_snack.presentation.useTerms;
 
-import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.widget.ImageButton;
 
 import com.example.lets_snack.R;
+import com.example.lets_snack.presentation.BaseActivity;
 
-public class UseTerms extends AppCompatActivity {
+public class UseTerms extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

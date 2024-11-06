@@ -15,16 +15,13 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.example.lets_snack.MainActivity;
+import com.example.lets_snack.presentation.MainActivity;
 import com.example.lets_snack.R;
 import com.example.lets_snack.data.remote.dto.CategoryDto;
 import com.example.lets_snack.data.remote.dto.MessageDto;
-import com.example.lets_snack.data.remote.dto.RecipeDto;
-import com.example.lets_snack.data.remote.dto.RestrictionsDto;
 import com.example.lets_snack.data.remote.repository.rest.RestrictionsRepository;
 import com.example.lets_snack.databinding.FragmentSearchBinding;
 import com.example.lets_snack.presentation.adapter.CategoryAdapter;
-import com.example.lets_snack.presentation.adapter.RecipeAdapter;
 import com.example.lets_snack.presentation.recipesFeed.FragmentRecipesFeed;
 import com.google.gson.Gson;
 
@@ -36,7 +33,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class SearchFragment extends Fragment {
 

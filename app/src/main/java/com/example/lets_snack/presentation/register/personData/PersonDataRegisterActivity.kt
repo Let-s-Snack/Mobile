@@ -7,18 +7,21 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.core.content.ContextCompat
 import com.example.lets_snack.presentation.register.photo.PhotoRegister
 import com.example.lets_snack.R
+import com.example.lets_snack.data.remote.dto.PersonDtoResponse
+import com.example.lets_snack.data.remote.repository.rest.PersonsRepository
 import com.example.lets_snack.databinding.ActivityPersonDataRegisterBinding
+import com.example.lets_snack.presentation.login.LoginActivity
 import java.util.Calendar
 
 class PersonDataRegisterActivity : AppCompatActivity() {
     private lateinit var binding: ActivityPersonDataRegisterBinding
-
-    // Variáveis para rastrear se o campo foi tocado
+    private var personsRepository = PersonsRepository(this)
     private var nameTouched = false
     private var usernameTouched = false
 
@@ -27,7 +30,6 @@ class PersonDataRegisterActivity : AppCompatActivity() {
         binding = ActivityPersonDataRegisterBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Configuração do Dropdown de Gênero
         val genderInput = binding.genderInputText
         val genders = arrayOf("feminino", "masculino", "outro", "prefiro não dizer")
         val adapter = ArrayAdapter(this, R.layout.drop_down_item, R.id.dropdownText, genders)
@@ -44,12 +46,14 @@ class PersonDataRegisterActivity : AppCompatActivity() {
             updateButtonState()
         }
 
-        // Picker de Data
+        binding.registerText.setOnClickListener {
+            startLoginActivity()
+        }
+
         binding.textInputLayout4.setEndIconOnClickListener {
             showDatePicker()
         }
 
-        // Listener para o Checkbox
         binding.checkBox.setOnCheckedChangeListener { _, _ ->
             updateButtonState()
         }
@@ -57,20 +61,27 @@ class PersonDataRegisterActivity : AppCompatActivity() {
         setupTextWatchers()
     }
 
-    // Função para atualizar o estado do botão
     private fun updateButtonState() {
         val isAllFieldsValid = isAllFieldsValid()
 
         binding.loginEnter.isEnabled = isAllFieldsValid
 
         binding.loginEnter.setOnClickListener {
-            if (isAllFieldsValid) {
-                startPhotoRegister()
+            checkUsernameAvailability(binding.usernameInput.text.toString()) { isAvailable ->
+                if (isAvailable) {
+                    binding.textInputLayout3.error = "Já existe um usuário com esse nome de usuário."
+                } else {
+                    if (isAllFieldsValid) {
+                        binding.progressBar.visibility = View.VISIBLE
+                        binding.loginEnter.text = ""
+                        binding.loginEnter.isEnabled = false
+                        startPhotoRegister()
+                    }
+                }
             }
         }
     }
 
-    // Função para checar se todos os campos são válidos
     private fun isAllFieldsValid(): Boolean {
         val name = binding.nameInput.text.toString()
         val username = binding.usernameInput.text.toString()
@@ -86,7 +97,6 @@ class PersonDataRegisterActivity : AppCompatActivity() {
                 gender.isNotEmpty() && dateOfBirth.isNotEmpty() && checkbox
     }
 
-    // Função de validação para o nome
     private fun validateName(name: String): Boolean {
         return when {
             name.isEmpty() -> {
@@ -108,7 +118,36 @@ class PersonDataRegisterActivity : AppCompatActivity() {
         }
     }
 
-    // Função de validação para o username
+    fun checkUsernameAvailability(username: String, callback: (Boolean) -> Unit) {
+        val call = personsRepository.listPersonByUsername(username)
+        call.enqueue(object : retrofit2.Callback<PersonDtoResponse> {
+            override fun onResponse(
+                call: retrofit2.Call<PersonDtoResponse>,
+                response: retrofit2.Response<PersonDtoResponse>
+            ) {
+                if (response.isSuccessful) {
+                    val apiResponse = response.body()
+
+                    // Verifica se a mensagem indica que o usuário não existe
+                    if (apiResponse?.message == "Apelido do usuário não existe") {
+                        callback(false) // Nome de usuário não existe
+                    } else {
+                        callback(true) // Nome de usuário já existe
+                    }
+                } else {
+                    Log.e("Username Check", "Erro na resposta: ${response.errorBody()?.string()}")
+                    callback(false) // Em caso de erro, pode considerar como não existente
+                }
+            }
+
+            override fun onFailure(call: retrofit2.Call<PersonDtoResponse>, t: Throwable) {
+                Log.e("Username Check", "Erro na chamada: ${t.message}")
+                callback(false) // Em caso de falha, pode considerar como não existente
+            }
+        })
+    }
+
+
     private fun validateUsername(username: String): Boolean {
         return when {
             username.isEmpty() -> {
@@ -130,9 +169,7 @@ class PersonDataRegisterActivity : AppCompatActivity() {
         }
     }
 
-    // Função para configurar os TextWatchers e o foco
     private fun setupTextWatchers() {
-        // Monitorando se o campo de nome foi tocado
         binding.nameInput.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
                 nameTouched = true
@@ -141,7 +178,6 @@ class PersonDataRegisterActivity : AppCompatActivity() {
             }
         }
 
-        // Monitorando se o campo de username foi tocado
         binding.usernameInput.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
                 usernameTouched = true
@@ -170,14 +206,17 @@ class PersonDataRegisterActivity : AppCompatActivity() {
         }
     }
 
-    // Função para exibir o DatePicker
+    private fun startLoginActivity(){
+        val intent = Intent(this, LoginActivity::class.java)
+        startActivity(intent)
+    }
+
     private fun showDatePicker() {
         val calendar = Calendar.getInstance()
         val year = calendar.get(Calendar.YEAR)
         val month = calendar.get(Calendar.MONTH)
         val day = calendar.get(Calendar.DAY_OF_MONTH)
 
-        // Definir data máxima (12 anos atrás)
         val maxCalendar = Calendar.getInstance()
         maxCalendar.set(Calendar.YEAR, year - 12)
 
@@ -190,7 +229,6 @@ class PersonDataRegisterActivity : AppCompatActivity() {
 
         datePickerDialog.datePicker.maxDate = maxCalendar.timeInMillis
 
-        // Personalizar cores dos botões do DatePicker
         datePickerDialog.setOnShowListener {
             val positiveButton = datePickerDialog.getButton(DatePickerDialog.BUTTON_POSITIVE)
             val negativeButton = datePickerDialog.getButton(DatePickerDialog.BUTTON_NEGATIVE)
@@ -202,7 +240,6 @@ class PersonDataRegisterActivity : AppCompatActivity() {
         datePickerDialog.show()
     }
 
-    // Função para iniciar a atividade de registro de foto
     private fun startPhotoRegister() {
         val bundle = intent.getBundleExtra("bundleRegister")
         val intent = Intent(this, PhotoRegister::class.java)
@@ -227,5 +264,9 @@ class PersonDataRegisterActivity : AppCompatActivity() {
 
         intent.putExtra("bundleRegister", bundle)
         startActivity(intent)
+    }
+
+    fun finishScreen(view: View) {
+        finish()
     }
 }

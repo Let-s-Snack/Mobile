@@ -11,8 +11,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
-import com.example.lets_snack.MainActivity;
+import com.example.lets_snack.presentation.MainActivity;
 import com.example.lets_snack.R;
 import com.example.lets_snack.data.remote.callbacks.RecipeCallback;
 import com.example.lets_snack.data.remote.callbacks.RecipesCallback;
@@ -47,13 +46,14 @@ import retrofit2.Response;
 public class HomeFragment extends Fragment {
 
     private FragmentHomeBinding binding;
+
     private FirebaseAuth autentication = FirebaseAuth.getInstance();
     private FirebaseUser user = autentication.getCurrentUser();
     private RecyclerView recyclerViewTrendingRecipes;
     private RecyclerView recyclerViewRecommendedRecipes;
     private RecyclerView recyclerViewMoreCommentsRecipes;
-    private PersonsRepository personsRepository = new PersonsRepository();
-    private RecipesRepository recipesRepository = new RecipesRepository();
+    private PersonsRepository personsRepository = null;
+    private RecipesRepository recipesRepository = null;
 
     public HomeFragment() {
     }
@@ -73,8 +73,9 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        recipesRepository = new RecipesRepository(requireContext());
         binding = FragmentHomeBinding.inflate(inflater, container, false);
-
+        personsRepository = new PersonsRepository(requireContext());
         recyclerViewTrendingRecipes = binding.recyclerTrendingRecipes;
         recyclerViewTrendingRecipes.setLayoutManager(new GridLayoutManager(getContext(), 1, LinearLayoutManager.HORIZONTAL, false ));
 

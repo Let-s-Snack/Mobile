@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.lets_snack.R;
+import com.example.lets_snack.data.remote.callbacks.MessageCallback;
 import com.example.lets_snack.data.remote.dto.CommentDto;
 import com.example.lets_snack.data.remote.dto.IngredientDto;
 import com.example.lets_snack.data.remote.dto.MessageDto;
@@ -66,8 +67,8 @@ public class FragmentRecipe extends Fragment {
     private
     FirebaseAuth autentication = FirebaseAuth.getInstance();
     private FirebaseUser user = autentication.getCurrentUser();
-    private RecipesRepository recipesRepository = new RecipesRepository();
-    private PersonsRepository personsRepository = new PersonsRepository();
+    private RecipesRepository recipesRepository = null;
+    private PersonsRepository personsRepository = null;
 
     private Retrofit retrofit;
     public FragmentRecipe() {
@@ -89,6 +90,8 @@ public class FragmentRecipe extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        recipesRepository = new RecipesRepository(requireContext());
+        personsRepository = new PersonsRepository(requireContext());
         //inicializando recyclers
         recyclerViewIngredients = binding.recipeIngredientsRecycle;
         recyclerViewIngredients.setLayoutManager(new GridLayoutManager(getContext(), 2, LinearLayoutManager.VERTICAL, false ));
@@ -275,55 +278,76 @@ public class FragmentRecipe extends Fragment {
 
     public void sendComment(int rate, String commentDescription) {
         SendCommentDto comment = new SendCommentDto(user.getEmail(), rate, commentDescription);
-        Call<MessageDto> apiCall = recipesRepository.insertComment(getArguments().getString("id"), comment);
-        apiCall.enqueue(new Callback<MessageDto>() {
-            @Override
-            public void onResponse(Call<MessageDto> call, Response<MessageDto> response) {
-                MessageDto responses = response.body();
-                if(responses != null) {
-                    Toast.makeText(getContext(), responses.getMessage(), Toast.LENGTH_SHORT).show();
-                    loadRecipe(getArguments().getString("id"));
-                }
-                else {
-                    warningModal("Erro", "Ocorreu um erro ao enviar a avaliação");
-                }
-            }
+        recipesRepository.insertComment(
+                getArguments().getString("id"),
+                comment,
+                new MessageCallback() {
+                    @Override
+                    public void onSuccess(MessageDto message) {
+                        // Exibe o modal de sucesso com a mensagem recebida
+                        warningModal("Sucesso", message.getMessage() + "\nComentário inserido com sucesso.");
+                    }
 
-            @Override
-            public void onFailure(Call<MessageDto> call, Throwable throwable) {
-                warningModal("Erro", throwable.getMessage());
-            }
-        });
+                    @Override
+                    public void onFailure(Throwable throwable) {
+                        // Exibe o modal de erro com a mensagem de erro
+                        warningModal("Erro", throwable.getMessage());
+                    }
+
+                    @Override
+                    public void onMessage(String message) {
+                        // Exibe o modal de erro com a mensagem personalizada (caso tenha)
+                        warningModal("Erro", message);
+                    }
+                }
+        );
     }
+
 
     public void likeRecipe() {
-        Call<MessageDto> apiCall = personsRepository.likeRecipe(getArguments().getString("id"), user.getEmail());
-        apiCall.enqueue(new Callback<MessageDto>() {
-            @Override
-            public void onResponse(Call<MessageDto> call, Response<MessageDto> response) {
-            }
+        personsRepository.likeRecipe(
+                getArguments().getString("id"),
+                user.getEmail(),
+                new MessageCallback() {
+                    @Override
+                    public void onSuccess(MessageDto message) {
+                    }
 
-            @Override
-            public void onFailure(Call<MessageDto> call, Throwable throwable) {
-                warningModal("Erro", throwable.getMessage());
-            }
-        });
+                    @Override
+                    public void onFailure(Throwable throwable) {
+
+                    }
+
+                    @Override
+                    public void onMessage(String message) {
+
+                    }
+                }
+        );
     }
 
-    public void saveRecipeIngredients() {
-        Call<MessageDto> apiCall = personsRepository.saveRecipeIngredients(getArguments().getString("id"), "leticia@gmail.com");
-        apiCall.enqueue(new Callback<MessageDto>() {
-            @Override
-            public void onResponse(Call<MessageDto> call, Response<MessageDto> response) {
-                MessageDto recipes = response.body();
-                warningModal("Aviso", recipes.getMessage() + "\nOs ingredientes foram salvos em\n Perfil -> Ingredientes salvos");
-            }
 
-            @Override
-            public void onFailure(Call<MessageDto> call, Throwable throwable) {
-                warningModal("Erro", throwable.getMessage());
-            }
-        });
+
+    public void saveRecipeIngredients() {
+        personsRepository.saveRecipeIngredients(
+                getArguments().getString("id"),
+                user.getEmail(),
+                new MessageCallback() {
+                    @Override
+                    public void onSuccess(MessageDto message) {
+                    }
+
+                    @Override
+                    public void onFailure(Throwable throwable) {
+
+                    }
+
+                    @Override
+                    public void onMessage(String message) {
+
+                    }
+                }
+        );
     }
 
     public void warningModal(String titleText, String descriptionText) {

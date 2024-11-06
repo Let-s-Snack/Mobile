@@ -8,13 +8,14 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import com.example.lets_snack.presentation.itensNavBar.ChatIaFragment
+//import com.example.lets_snack.presentation.itensNavBar.ChatIaFragment
 import com.example.lets_snack.presentation.itensNavBar.HomeFragment
 import com.example.lets_snack.presentation.itensNavBar.LikesFragment
 import com.example.lets_snack.presentation.itensNavBar.ProfileFragment
 import com.example.lets_snack.R
 import com.example.lets_snack.presentation.itensNavBar.SearchFragment
 import com.example.lets_snack.databinding.FragmentMenuBinding
+import com.example.lets_snack.presentation.itensNavBar.ChatIaFragment
 import com.example.lets_snack.presentation.recipesFeed.FragmentRecipesFeed
 
 class NavFragment : Fragment() {
@@ -79,9 +80,9 @@ class NavFragment : Fragment() {
             }
 
             // Apply animation and margin to the selected button and text
-            animateTranslationY(selectedBtn, selectedBtn.translationY, -14f)
+            animateTranslationY(selectedBtn, selectedBtn.translationY, -12f)
             selectedText.visibility = View.VISIBLE
-            animateTranslationY(selectedText, selectedText.translationY, -14f)
+            animateTranslationY(selectedText, selectedText.translationY, -12f)
             selectedBtn.setImageResource(getSelectedIcon(selectedBtn))
         }
 
