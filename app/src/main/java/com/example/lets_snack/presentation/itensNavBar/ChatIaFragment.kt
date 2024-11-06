@@ -13,8 +13,12 @@ import com.example.lets_snack.constants.LetsSnackConstants
 import com.example.lets_snack.data.remote.dto.MessageDto
 import com.example.lets_snack.databinding.FragmentChatIaBinding
 import com.example.lets_snack.presentation.itensNavBar.adapter.MessageAdapter
+import com.google.android.gms.tasks.Task
+import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.QuerySnapshot
+import com.google.firebase.firestore.Source
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.MediaType.Companion.toMediaType
@@ -173,29 +177,19 @@ class ChatIaFragment : Fragment() {
             }
     }
 
-     fun createNewChat() {
-//        chatCollectionRef.get()
-//            .addOnSuccessListener { querySnapshot ->
-//                val chatCount = querySnapshot.documents.size
-//                val message = MessageDto("GPT", "Olá, eu sou o GPT. Como posso ajuda-lo(a)?")
-//                val newChatName = "chat${chatCount+1}"
-//                Log.d("newChatName","${newChatName}")
-//                chatCollectionRef.document(newChatName).collection("messages").add(message)
-//            }
-         FirebaseFirestore.getInstance().clearPersistence()
-         FirebaseFirestore.getInstance().collection("arturnascimentosousa@gmail.com")
-             .get()
-             .addOnSuccessListener { querySnapshot ->
-                 if (!querySnapshot.isEmpty) {
-                     querySnapshot.documents.forEach { document ->
-                         Log.d("FirestoreDocument", "ID: ${document.id}, Data: ${document.data}")
-                     }
-                 } else {
-                     Log.d("FirestoreDocument", "A coleção está vazia.")
-                 }
-             }
-             .addOnFailureListener { e ->
-                 Log.e("FirestoreError", "Erro ao buscar documentos: ${e.message}")
-             }
+    fun createNewChat() {
+        // Acessa a coleção do usuário
+        val chatCollectionRef = FirebaseFirestore.getInstance().collection("arturnascimentosousa@gmail.com")
+
+        chatCollectionRef.get()
+            .addOnSuccessListener { result ->
+                val documentCount = result.size()
+                Log.d("Firestore", "Número de documentos: $documentCount")
+            }
+            .addOnFailureListener { exception ->
+                Log.e("Firestore", "Erro ao contar documentos: ", exception)
+            }
     }
+
+
 }
