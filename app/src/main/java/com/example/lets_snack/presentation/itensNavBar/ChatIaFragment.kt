@@ -173,13 +173,29 @@ class ChatIaFragment : Fragment() {
             }
     }
 
-    fun createNewChat() {
-        chatCollectionRef.get()
-            .addOnSuccessListener { querySnapshot ->
-                val chatCount = querySnapshot.size()
-                val message = MessageDto("GPT", "Ola, eu sou o GPT. Como posso ajuda-lo(a)?")
-                val newChatName = "chat${chatCount + 1}"
-                chatCollectionRef.document(newChatName).collection("messages").add(message)
-            }
+     fun createNewChat() {
+//        chatCollectionRef.get()
+//            .addOnSuccessListener { querySnapshot ->
+//                val chatCount = querySnapshot.documents.size
+//                val message = MessageDto("GPT", "Olá, eu sou o GPT. Como posso ajuda-lo(a)?")
+//                val newChatName = "chat${chatCount+1}"
+//                Log.d("newChatName","${newChatName}")
+//                chatCollectionRef.document(newChatName).collection("messages").add(message)
+//            }
+         FirebaseFirestore.getInstance().clearPersistence()
+         FirebaseFirestore.getInstance().collection("arturnascimentosousa@gmail.com")
+             .get()
+             .addOnSuccessListener { querySnapshot ->
+                 if (!querySnapshot.isEmpty) {
+                     querySnapshot.documents.forEach { document ->
+                         Log.d("FirestoreDocument", "ID: ${document.id}, Data: ${document.data}")
+                     }
+                 } else {
+                     Log.d("FirestoreDocument", "A coleção está vazia.")
+                 }
+             }
+             .addOnFailureListener { e ->
+                 Log.e("FirestoreError", "Erro ao buscar documentos: ${e.message}")
+             }
     }
 }
