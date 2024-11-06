@@ -48,7 +48,7 @@ public class FragmentRecipesFeed extends Fragment {
     private TextView textError;
     private FirebaseAuth autentication = FirebaseAuth.getInstance();
     private FirebaseUser user = autentication.getCurrentUser();
-    private RecipesRepository recipesRepository = new RecipesRepository();
+    private RecipesRepository recipesRepository = null;
     private PersonsRepository personsRepository = null;
 
     public FragmentRecipesFeed() {
@@ -70,6 +70,7 @@ public class FragmentRecipesFeed extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        recipesRepository = new RecipesRepository(requireContext());
         personsRepository = new PersonsRepository(requireContext());
         // Inflate the layout for this fragment
         binding = FragmentRecipesFeedBinding.inflate(inflater, container, false);
