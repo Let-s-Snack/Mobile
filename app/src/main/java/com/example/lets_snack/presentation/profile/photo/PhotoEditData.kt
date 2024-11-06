@@ -1,4 +1,4 @@
-package com.example.lets_snack.presentation.register.photo
+package com.example.lets_snack.presentation.profile.photo
 
 import android.content.ContentValues
 import android.content.Context
@@ -18,16 +18,17 @@ import androidx.activity.result.contract.ActivityResultContracts
 import com.bumptech.glide.Glide
 import com.example.lets_snack.R
 import com.example.lets_snack.data.remote.firebase.DataBase
-import com.example.lets_snack.presentation.register.restriction.RestrictionRegister
+import com.example.lets_snack.databinding.ActivityPhotoEditDataBinding
 import com.example.lets_snack.databinding.ActivityRegisterPhotoBinding
+import com.example.lets_snack.presentation.profile.EditData
+import com.example.lets_snack.presentation.register.restriction.RestrictionRegister
 import java.io.File
 import java.io.FileOutputStream
 import java.io.OutputStream
 
-@Suppress("NAME_SHADOWING")
-class PhotoRegister : AppCompatActivity() {
+class PhotoEditData : AppCompatActivity() {
     private var docData: MutableMap<String, String> = mutableMapOf()
-    private lateinit var binding: ActivityRegisterPhotoBinding
+    private lateinit var binding: ActivityPhotoEditDataBinding
     private lateinit var photo: ImageView
     private lateinit var buttonRegister: Button
     private val database = DataBase()
@@ -35,7 +36,7 @@ class PhotoRegister : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityRegisterPhotoBinding.inflate(layoutInflater)
+        binding = ActivityPhotoEditDataBinding.inflate(layoutInflater)
         setContentView(binding.root)
         buttonRegister = binding.loginEnterBtn
         photo = binding.photo
@@ -69,8 +70,11 @@ class PhotoRegister : AppCompatActivity() {
                     binding.loginEnterBtn.text = "PRÓXIMO"
                     binding.loginEnterBtn.isEnabled = true;
                     Log.d("FirebaseURL", "Imagem salva com sucesso: $downloadUrl")
-                    startRestrictionRegister(Uri.parse(downloadUrl)) // Passa a URL para a próxima tela
-                }
+                    val intent = Intent(this, EditData::class.java)
+                    intent.putExtra("imageUrl", downloadUrl)
+                    intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP // Permite que a Activity existente receba a Intent
+                    startActivity(intent)
+                    finish()                 }
             }
         }
     }

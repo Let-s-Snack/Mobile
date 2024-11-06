@@ -49,7 +49,7 @@ public class FragmentRecipesFeed extends Fragment {
     private FirebaseAuth autentication = FirebaseAuth.getInstance();
     private FirebaseUser user = autentication.getCurrentUser();
     private RecipesRepository recipesRepository = new RecipesRepository();
-    private PersonsRepository personsRepository = new PersonsRepository();
+    private PersonsRepository personsRepository = null;
 
     public FragmentRecipesFeed() {
         // Required empty public constructor
@@ -70,6 +70,7 @@ public class FragmentRecipesFeed extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        personsRepository = new PersonsRepository(requireContext());
         // Inflate the layout for this fragment
         binding = FragmentRecipesFeedBinding.inflate(inflater, container, false);
         recyclerView = binding.recyclerRecipes;

@@ -5,11 +5,12 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import android.widget.Toast
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.example.lets_snack.presentation.register.personData.PersonDataRegisterActivity
 import com.example.lets_snack.R
 import com.example.lets_snack.databinding.ActivityRegisterBinding
+import com.example.lets_snack.presentation.login.LoginActivity
 import com.google.firebase.auth.FirebaseAuth
 
 class RegisterActivity : AppCompatActivity() {
@@ -25,9 +26,19 @@ class RegisterActivity : AppCompatActivity() {
 
         setupPhoneFormatter()
 
+        binding.registerText.setOnClickListener {
+            startLoginActivity()
+        }
+
         binding.loginEnterBtn.setOnClickListener {
             if (isAllFieldsValid()) {
+                binding.progressBar.visibility = View.VISIBLE;
+                binding.loginEnterBtn.text = ""
+                binding.loginEnterBtn.isEnabled = false;
                 insertUser(binding.emailInput.text.toString(), binding.passwordInput.text.toString()) { exists ->
+                    binding.progressBar.visibility = View.GONE;
+                    binding.loginEnterBtn.text = "PRÓXIMO"
+                    binding.loginEnterBtn.isEnabled = true;
                     if(exists){
                         val user = FirebaseAuth.getInstance().currentUser
                         user?.delete()
@@ -41,7 +52,7 @@ class RegisterActivity : AppCompatActivity() {
                             }
                     }
                     else{
-                        Toast.makeText(this, "Usuário já existe", Toast.LENGTH_SHORT).show()
+                        binding.textInputLayoutEmailLogin.error = "Esse e-mail está em uso"
                     }
                 }
             }
@@ -75,6 +86,10 @@ class RegisterActivity : AppCompatActivity() {
         }
     }
 
+    private fun startLoginActivity(){
+        val intent = Intent(this, LoginActivity::class.java)
+        startActivity(intent)
+    }
     private fun updateButtonState() {
         val email = binding.emailInput.text.toString()
         val phone = binding.phoneInput.text.toString()
@@ -91,9 +106,9 @@ class RegisterActivity : AppCompatActivity() {
     private fun validateEmail() {
         val email = binding.emailInput.text.toString()
         if (!isEmailValid(email)) {
-            binding.emailInput.error = "E-mail inválido"
+            binding.textInputLayoutEmailLogin.error = "E-mail inválido"
         } else {
-            binding.emailInput.error = null
+            binding.textInputLayoutEmailLogin.error = null
         }
     }
 
@@ -190,7 +205,6 @@ class RegisterActivity : AppCompatActivity() {
             override fun afterTextChanged(s: Editable?) {}
         })
     }
-
 
     private fun startPersonDataRegisterActivity() {
         val bundle = Bundle()

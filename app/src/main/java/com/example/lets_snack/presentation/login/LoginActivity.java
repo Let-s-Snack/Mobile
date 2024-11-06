@@ -103,6 +103,9 @@ public class LoginActivity extends AppCompatActivity {
         binding.loginEnterBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                binding.progressBar.setVisibility(View.VISIBLE);
+                binding.loginEnterBtn.setText("");
+                binding.loginEnterBtn.setEnabled(false);
                 String email = binding.emailInput.getText().toString().trim();
                 String password = binding.passwordInput.getText().toString().trim();
                 if(email != null && password != null){

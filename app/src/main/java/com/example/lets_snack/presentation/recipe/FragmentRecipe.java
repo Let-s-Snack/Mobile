@@ -67,7 +67,7 @@ public class FragmentRecipe extends Fragment {
     FirebaseAuth autentication = FirebaseAuth.getInstance();
     private FirebaseUser user = autentication.getCurrentUser();
     private RecipesRepository recipesRepository = new RecipesRepository();
-    private PersonsRepository personsRepository = new PersonsRepository();
+    private PersonsRepository personsRepository = null;
 
     private Retrofit retrofit;
     public FragmentRecipe() {
@@ -89,6 +89,7 @@ public class FragmentRecipe extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        personsRepository = new PersonsRepository(requireContext());
         //inicializando recyclers
         recyclerViewIngredients = binding.recipeIngredientsRecycle;
         recyclerViewIngredients.setLayoutManager(new GridLayoutManager(getContext(), 2, LinearLayoutManager.VERTICAL, false ));

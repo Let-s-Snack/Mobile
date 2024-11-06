@@ -1,18 +1,25 @@
 package com.example.lets_snack.data.remote.repository.rest
 
+import android.content.Context
 import com.example.lets_snack.data.remote.api.LetsSnackService
-import com.example.lets_snack.data.remote.dto.SendCommentDto
+import com.example.lets_snack.data.remote.dto.PersonDto
+import com.example.lets_snack.data.remote.dto.PersonDtoUpdate
 import com.example.lets_snack.data.remote.retrofit.LetsSnackRetrofitBuilder
-import retrofit2.http.Query
 
-class PersonsRepository {
-    //aqui estamos criando uma instância do retrofit
+class PersonsRepository(context: Context) {
+    val tokenRepository = TokenRepository(context)
+
     val retrofit = LetsSnackRetrofitBuilder.retrofit
-    //agora estamos criando uma instância do nosso service
+
     val interfaceService = retrofit.create(LetsSnackService::class.java)
+    fun insertPerson(personDto: PersonDto) = interfaceService.insertPerson(tokenRepository.verifyTokenIsValid(),personDto)
 
+    fun listPersonByEmail(email: String) = interfaceService.listPersonByEmail(email)
 
-    //chama a função exampleFunService, que está no nosso service
+    fun listPersonByUsername(username: String) = interfaceService.listPersonByUsername(username)
+
+    fun updatePerson(email: String, personDto: PersonDtoUpdate) = interfaceService.updatePerson(tokenRepository.verifyTokenIsValid(),email, personDto)
+
     fun findWishlistByUserEmail(personEmail: String) = interfaceService.findWishlistByUserEmail(personEmail)
 
     fun likeRecipe(recipesId: String, personsEmail: String) = interfaceService.likeRecipe(recipesId, personsEmail)

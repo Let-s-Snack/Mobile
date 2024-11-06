@@ -10,11 +10,15 @@
         <item name="android:dropDownListViewStyle">@style/CustomDropDownListViewStyle</item>
 
         <item name="android:statusBarColor">
-            @color/transparente
+            @color/laranja_forte
         </item>
         <item name="android:navigationBarColor">
             @android:color/transparent
         </item>
+    </style>
+
+    <style name="FullScrren" parent="Base.Theme.LetsSnack">
+        <item name="android:windowFullscreen">true</item>
     </style>
 
     <style name="CustomDropDownListViewStyle" parent="android:Widget.ListView">

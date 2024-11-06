@@ -12,4 +12,5 @@
     <color name="background_app_color">#F8F8F8</color>
     <color name="transparente">#00000000</color>
     <color name="azul_link">#0066FF</color>
+    <color name="linha_cinza">#EAEAEA</color>
 </resources>

@@ -1,30 +1,53 @@
 package com.example.lets_snack.presentation.register.restriction
 
+import android.Manifest
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.MultiAutoCompleteTextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
+import androidx.core.view.children
 import com.example.lets_snack.MainActivity
 import com.example.lets_snack.R
+import com.example.lets_snack.data.remote.dto.PersonDto
+import com.example.lets_snack.data.remote.dto.RestrcitionID
 import com.example.lets_snack.data.remote.dto.RestrictionsDto
+import com.example.lets_snack.data.remote.repository.rest.PersonsRepository
 import com.example.lets_snack.data.remote.repository.rest.RestrictionsRepository
 import com.example.lets_snack.databinding.ActivityRestrictionRegisterBinding
+import com.example.lets_snack.presentation.Notification
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.UserProfileChangeRequest
+import okhttp3.ResponseBody
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+import java.util.TimeZone
 
 class RestrictionRegister : AppCompatActivity() {
     private lateinit var binding: ActivityRestrictionRegisterBinding
     private val restrictionsRepository = RestrictionsRepository()
+    private val personsRepository = PersonsRepository(this)
+    private var chipGroup: ChipGroup? = null
     private var restrictionsArray:  ArrayList<String> =  ArrayList()
+    private var restrictionListObject: List<RestrictionsDto>? = listOf()
+    private var restrictionListId: MutableList<RestrcitionID?> = mutableListOf()
     private lateinit var adapterTypeRestrictions: ArrayAdapter<String>
 
 
@@ -34,7 +57,7 @@ class RestrictionRegister : AppCompatActivity() {
         setContentView(binding.root)
         updateButtonState()
         val typeRestriction = binding.typeRestrictionInput
-        val chipGroup = binding.chipGroup
+        chipGroup = binding.chipGroup
         adapterTypeRestrictions = ArrayAdapter(this, android.R.layout.simple_list_item_checked, restrictionsArray)
         typeRestriction.setAdapter(adapterTypeRestrictions)
         typeRestriction.setTokenizer(MultiAutoCompleteTextView.CommaTokenizer())
@@ -44,6 +67,7 @@ class RestrictionRegister : AppCompatActivity() {
                 call: retrofit2.Call<List<RestrictionsDto>>,
                 response: retrofit2.Response<List<RestrictionsDto>>
             ) {
+                restrictionListObject = response.body()
                 val restrictionsList: List<String>? = response.body()?.map { it.name }
                 restrictionsList?.let {
                     restrictionsArray.clear()
@@ -59,13 +83,6 @@ class RestrictionRegister : AppCompatActivity() {
 
 
 
-        val ingredientsRestriction = binding.ingredientsInput
-        val ingredients = arrayOf("Arroz", "Feijão", "Carne", "Leite","Frango","Macarrão","Batata","Cenoura","Alface","Tomate")
-        val adapterIngredientsRestriction = ArrayAdapter(this, android.R.layout.simple_list_item_checked, ingredients)
-        ingredientsRestriction.setAdapter(adapterIngredientsRestriction)
-        val chipGroup2 = binding.chipGroup2
-        ingredientsRestriction.setTokenizer(MultiAutoCompleteTextView.CommaTokenizer())
-
         val checkbox = binding.checkBox
 
         val textWatcher = object : TextWatcher {
@@ -78,7 +95,6 @@ class RestrictionRegister : AppCompatActivity() {
         }
 
         typeRestriction.addTextChangedListener(textWatcher)
-        ingredientsRestriction.addTextChangedListener(textWatcher)
 
         checkbox.setOnCheckedChangeListener { _, _ ->
             updateButtonState()
@@ -86,19 +102,10 @@ class RestrictionRegister : AppCompatActivity() {
 
         typeRestriction.setOnItemClickListener { parent, _, position, _ ->
             val selectedItem = parent.getItemAtPosition(position).toString()
-            if (!chipExists(selectedItem, chipGroup)) {
-                addChipToGroup(selectedItem, chipGroup)
+            if (!chipExists(selectedItem, chipGroup!!)) {
+                addChipToGroup(selectedItem, chipGroup!!)
             }
             typeRestriction.text.clear()
-            updateButtonState()
-        }
-
-        ingredientsRestriction.setOnItemClickListener { parent, _, position, _ ->
-            val selectedItem = parent.getItemAtPosition(position).toString()
-            if (!chipExists(selectedItem, chipGroup2)) {
-                addChipToGroup(selectedItem, chipGroup2)
-            }
-            ingredientsRestriction.text.clear()
             updateButtonState()
         }
     }
@@ -126,7 +133,7 @@ class RestrictionRegister : AppCompatActivity() {
     }
 
     private fun updateButtonState() {
-        val isFieldFilled = binding.chipGroup.childCount > 0 || binding.chipGroup2.childCount > 0
+        val isFieldFilled = binding.chipGroup.childCount > 0
         if(isFieldFilled) {
             val drawable = binding.checkBox.buttonDrawable
             drawable?.setTint(ContextCompat.getColor(this, R.color.cinza))
@@ -135,6 +142,9 @@ class RestrictionRegister : AppCompatActivity() {
         val isCheckboxChecked = binding.checkBox.isChecked
         binding.loginEnter.isEnabled = isFieldFilled || isCheckboxChecked
         binding.loginEnter.setOnClickListener {
+            binding.progressBar.visibility = View.VISIBLE
+            binding.loginEnter.text = ""
+            binding.loginEnter.isEnabled = false
             val bundle = intent.getBundleExtra("bundleRegister")
             if (bundle != null) {
                 val name = bundle.getString("name")
@@ -145,6 +155,27 @@ class RestrictionRegister : AppCompatActivity() {
                 val phone = bundle.getString("phone")
                 val password = bundle.getString("password")
                 val photo = bundle.getString("photo")
+                restrictionListObject.let {
+                    val chipSelected =chipGroup?.children?.filterIsInstance<Chip>()
+                        ?.map {
+                            it.text.toString()
+                        }
+                    it?.filter { item ->
+                        if (chipSelected?.contains(item.name) == true) {
+                            restrictionListId.add(RestrcitionID(item.id))
+                            true  // Retorna `true` para manter esse item no filtro, caso você precise
+                        } else {
+                            false
+                        }
+                    }
+                    val formattedDate = formatDate(dateOfBirth!!)
+                    Log.d("FormattedDate",formattedDate!!)
+                    Log.d("RestricitonRegister",restrictionListId.toString())
+                    val objectPerson = PersonDto(gender!!,name!!,username!!,email!!,password!!,false,photo!!,
+                        formattedDate!!,phone!!,true, restrictionListId!!)
+                    insertUserMongo(objectPerson)
+                }
+
                 insertUser(email!!, password!!, name!!, username!!, photo!!)
                 Log.e("BundleRestriction", "Name: $name, Gender: $gender, Date of Birth: $dateOfBirth, Username: $username, Email: $email, Phone: $phone, Password: $password, Photo: $photo")
             } else {
@@ -184,5 +215,69 @@ class RestrictionRegister : AppCompatActivity() {
         val intent = Intent(this, MainActivity::class.java)
         intent.putExtra("bundleRegister", bundle)
         startActivity(intent)
+    }
+
+    private fun insertUserMongo(personDto: PersonDto){
+        Log.d("CallPersons", personDto.toString())
+        val call = personsRepository.insertPerson(personDto)
+        call.enqueue(object : retrofit2.Callback<ResponseBody> {
+            override fun onResponse(
+                call: retrofit2.Call<ResponseBody>,
+                response: retrofit2.Response<ResponseBody>
+            ) {
+                if(response.code() == 200) {
+                    notification(personDto.nickname)
+                }
+                Log.d("CallPersons", response.code().toString())
+            }
+
+            override fun onFailure(call: retrofit2.Call<ResponseBody>, t: Throwable) {
+                Log.e("CallPersonsError", t.message.toString())
+            }
+        })
+    }
+
+    fun formatDate(dateOfBirth: String): String? {
+        val inputDateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.US)
+        return try {
+            val parsedDate: Date? = inputDateFormat.parse(dateOfBirth)
+            if (parsedDate != null) {
+                val outputDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US)
+                outputDateFormat.timeZone = TimeZone.getTimeZone("UTC")
+                outputDateFormat.format(parsedDate)
+            } else {
+                null
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+
+    private fun notification(username: String){
+        val intentAndroid = Intent(this, Notification::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(this,0,intentAndroid, PendingIntent.FLAG_IMMUTABLE)
+        val builder = NotificationCompat.Builder(this,"channel_id")
+            .setSmallIcon(R.drawable.icontext_lets_snack)
+            .setContentTitle("Let's Snack")
+            .setContentText("Parabéns ${username}, seu cadastro foi realizado com sucesso!")
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setAutoCancel(true)
+            .setContentIntent(pendingIntent)
+
+        val channel = NotificationChannel("channel_id", "Let's Snack" +
+                "", NotificationManager.IMPORTANCE_HIGH)
+
+        val notificationManager = this.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.createNotificationChannel(channel)
+        val notificationManagerCompat = NotificationManagerCompat.from(this)
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            return
+        }
+        notificationManagerCompat.notify(1, builder.build())
     }
 }

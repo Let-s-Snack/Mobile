@@ -45,7 +45,7 @@ public class HomeFragment extends Fragment {
     private RecyclerView recyclerViewTrendingRecipes;
     private RecyclerView recyclerViewRecommendedRecipes;
     private RecyclerView recyclerViewMoreCommentsRecipes;
-    private PersonsRepository personsRepository = new PersonsRepository();
+    private PersonsRepository personsRepository = null;
     private RecipesRepository recipesRepository = new RecipesRepository();
 
     public HomeFragment() {
@@ -67,7 +67,7 @@ public class HomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
-
+        personsRepository = new PersonsRepository(requireContext());
         recyclerViewTrendingRecipes = binding.recyclerTrendingRecipes;
         recyclerViewTrendingRecipes.setLayoutManager(new GridLayoutManager(getContext(), 1, LinearLayoutManager.HORIZONTAL, false ));
 
