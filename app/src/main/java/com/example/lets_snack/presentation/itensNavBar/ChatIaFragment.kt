@@ -60,6 +60,7 @@ class ChatIaFragment : Fragment() {
             }
         }
         loadMessages(false)
+        checkAndCreateChatIfNeeded()
 
         binding.messageInput.setEndIconOnClickListener {
             val messageText = binding.messageInputText.text.toString()
@@ -78,6 +79,29 @@ class ChatIaFragment : Fragment() {
         _binding = null
     }
 
+    private fun checkAndCreateChatIfNeeded() {
+        val counterDocRef = firestore.collection("counters").document(currentUser?.email!!)
+
+        counterDocRef.get()
+            .addOnSuccessListener { documentSnapshot ->
+                if (documentSnapshot.exists()) {
+                    Log.d("Firestore", "Contador já existe, não precisa criar novo chat.")
+                    loadMessages(false) // Apenas carrega as mensagens existentes
+                } else {
+                    Log.d("Firestore", "Contador não encontrado, criando novo chat.")
+                    // Chama o método para criar o novo chat
+                    createNewChat {
+                        loadMessages(true) // Carrega as mensagens após a criação
+                    }
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.e("Firestore", "Erro ao acessar o documento do contador: ", exception)
+                createNewChat {
+                    loadMessages(true)
+                }
+            }
+    }
     private fun send(prompt: String) {
         val url = "https://api.openai.com/v1/chat/completions"
         val apiKey = "sk-KCi9J_ZRAwbP0j7quEU7u-X3dPd85fHfykAr3YLkplT3BlbkFJIsDEI8JSuT2ztk6orRr9IoM6iu1wMX5kaSJltkNooA"
@@ -212,6 +236,9 @@ class ChatIaFragment : Fragment() {
                 }
             }
             .addOnFailureListener { exception ->
+                createNewChat {
+                    loadMessages(isLast)
+                }
                 Log.e("Firestore", "Erro ao acessar o documento do contador: ", exception)
             }
     }
@@ -228,12 +255,11 @@ class ChatIaFragment : Fragment() {
                 transaction.set(counterDocRef, mapOf("count" to 1))
             }
 
-            if (currentCount != 0L) {
+
                 firestore.collection(currentUser?.email!!).document("chat${currentCount}")
                     .collection("messages").add(
-                        MessageDto("GPT", "Seja bem-vindo!")
+                        MessageDto("GPT", "Oi! Seja muito bem-vindo ao nosso chat! \uD83C\uDF4A\uD83D\uDC9B Estamos super felizes em ter você por aqui. Vamos conversar e compartilhar boas vibes!")
                     )
-            }
             currentCount + 1
         }
             .addOnSuccessListener {
