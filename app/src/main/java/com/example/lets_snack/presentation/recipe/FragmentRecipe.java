@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Handler;
-import android.util.JsonReader;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,22 +27,20 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.lets_snack.R;
-import com.example.lets_snack.data.remote.api.PersonsService;
-import com.example.lets_snack.data.remote.api.RecipesService;
 import com.example.lets_snack.data.remote.dto.CommentDto;
 import com.example.lets_snack.data.remote.dto.IngredientDto;
 import com.example.lets_snack.data.remote.dto.MessageDto;
 import com.example.lets_snack.data.remote.dto.RecipeDto;
 import com.example.lets_snack.data.remote.dto.SendCommentDto;
+import com.example.lets_snack.data.remote.repository.rest.PersonsRepository;
+import com.example.lets_snack.data.remote.repository.rest.RecipesRepository;
 import com.example.lets_snack.databinding.FragmentRecipeBinding;
 import com.example.lets_snack.presentation.adapter.CommentAdapter;
 import com.example.lets_snack.presentation.adapter.IngredientsAdapter;
 import com.example.lets_snack.presentation.adapter.StepAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.gson.Gson;
 
-import java.io.StringReader;
 import java.util.List;
 
 import retrofit2.Call;
@@ -66,8 +63,11 @@ public class FragmentRecipe extends Fragment {
     private View whiteOverlayScreen;
     private ImageView imageError;
     private TextView textError;
+    private
     FirebaseAuth autentication = FirebaseAuth.getInstance();
-    FirebaseUser user = autentication.getCurrentUser();
+    private FirebaseUser user = autentication.getCurrentUser();
+    private RecipesRepository recipesRepository = new RecipesRepository();
+    private PersonsRepository personsRepository = new PersonsRepository();
 
     private Retrofit retrofit;
     public FragmentRecipe() {
@@ -142,18 +142,7 @@ public class FragmentRecipe extends Fragment {
 
     //carregando receita
     public void loadRecipe(String recipeId) {
-        String baseUrl = "https://spring-mongo-6c8h.onrender.com";
-
-        // Configurar acesso da API
-        retrofit = new Retrofit.Builder()
-                .baseUrl(baseUrl)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        // Chamada da API
-        RecipesService recipesApi = retrofit.create(RecipesService.class);
-
-        Call<RecipeDto> apiCall = recipesApi.findRecipeById(recipeId, user.getEmail());
+        Call<RecipeDto> apiCall = recipesRepository.findRecipeById(recipeId, user.getEmail());
         apiCall.enqueue(new Callback<RecipeDto>() {
             @Override
             public void onResponse(Call<RecipeDto> call, Response<RecipeDto> response) {
@@ -180,7 +169,7 @@ public class FragmentRecipe extends Fragment {
                             handler.removeCallbacks(apiCallRunnable);
                         }
 
-                        //define a nova tarefa para ser executada após 5 segundos
+                        //define a nova tarefa para ser executada após 1 segundo
                         apiCallRunnable = new Runnable() {
                             @Override
                             public void run() {
@@ -190,7 +179,7 @@ public class FragmentRecipe extends Fragment {
                             }
                         };
 
-                        // Agenda a tarefa após o atraso definido
+                        //agenda a tarefa após o atraso definido
                         handler.postDelayed(apiCallRunnable, DELAY_MILLIS);
                     }
                 });
@@ -282,19 +271,8 @@ public class FragmentRecipe extends Fragment {
     }
 
     public void sendComment(int rate, String commentDescription) {
-        String baseUrl = "https://spring-mongo-6c8h.onrender.com";
-        // Configurar acesso da API
-        retrofit = new Retrofit.Builder()
-                .baseUrl(baseUrl)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        // Chamada da API
-        RecipesService recipesApi = retrofit.create(RecipesService.class);
-
         SendCommentDto comment = new SendCommentDto(user.getEmail(), rate, commentDescription);
-
-        Call<MessageDto> apiCall = recipesApi.insertComment(getArguments().getString("id"), comment);
+        Call<MessageDto> apiCall = recipesRepository.insertComment(getArguments().getString("id"), comment);
         apiCall.enqueue(new Callback<MessageDto>() {
             @Override
             public void onResponse(Call<MessageDto> call, Response<MessageDto> response) {
@@ -316,18 +294,7 @@ public class FragmentRecipe extends Fragment {
     }
 
     public void likeRecipe() {
-        String baseUrl = "https://spring-mongo-6c8h.onrender.com";
-
-        // Configurar acesso da API
-        retrofit = new Retrofit.Builder()
-                .baseUrl(baseUrl)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        // Chamada da API
-        PersonsService personsApi = retrofit.create(PersonsService.class);
-
-        Call<MessageDto> apiCall = personsApi.likeRecipe(getArguments().getString("id"), user.getEmail());
+        Call<MessageDto> apiCall = personsRepository.likeRecipe(getArguments().getString("id"), user.getEmail());
         apiCall.enqueue(new Callback<MessageDto>() {
             @Override
             public void onResponse(Call<MessageDto> call, Response<MessageDto> response) {
@@ -341,18 +308,7 @@ public class FragmentRecipe extends Fragment {
     }
 
     public void saveRecipeIngredients() {
-        String baseUrl = "https://spring-mongo-6c8h.onrender.com";
-
-        // Configurar acesso da API
-        retrofit = new Retrofit.Builder()
-                .baseUrl(baseUrl)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        // Chamada da API
-        PersonsService personsApi = retrofit.create(PersonsService.class);
-
-        Call<MessageDto> apiCall = personsApi.saveRecipeIngredients(getArguments().getString("id"), "leticia@gmail.com");
+        Call<MessageDto> apiCall = personsRepository.saveRecipeIngredients(getArguments().getString("id"), "leticia@gmail.com");
         apiCall.enqueue(new Callback<MessageDto>() {
             @Override
             public void onResponse(Call<MessageDto> call, Response<MessageDto> response) {

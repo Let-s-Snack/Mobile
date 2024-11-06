@@ -2,11 +2,8 @@ package com.example.lets_snack.presentation.recipesFeed;
 
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
-import static com.bumptech.glide.load.resource.drawable.DrawableDecoderCompat.getDrawable;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.core.content.ContextCompat;
@@ -24,15 +21,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.lets_snack.R;
-import com.example.lets_snack.data.remote.api.CategoriesService;
-import com.example.lets_snack.data.remote.api.PersonsService;
-import com.example.lets_snack.data.remote.api.RecipesService;
-import com.example.lets_snack.data.remote.dto.CategoryDto;
 import com.example.lets_snack.data.remote.dto.MessageDto;
 import com.example.lets_snack.data.remote.dto.RecipeDto;
+import com.example.lets_snack.data.remote.repository.rest.PersonsRepository;
+import com.example.lets_snack.data.remote.repository.rest.RecipesRepository;
 import com.example.lets_snack.databinding.FragmentRecipesFeedBinding;
-import com.example.lets_snack.databinding.FragmentSearchBinding;
-import com.example.lets_snack.presentation.adapter.CategoryAdapter;
 import com.example.lets_snack.presentation.adapter.RecipeAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -45,19 +38,18 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class FragmentRecipesFeed extends Fragment {
 
     private FragmentRecipesFeedBinding binding;
     private RecyclerView recyclerView;
-    private Retrofit retrofit;
     private ProgressBar loading;
     private ImageView imageError;
     private TextView textError;
-    FirebaseAuth autentication = FirebaseAuth.getInstance();
-    FirebaseUser user = autentication.getCurrentUser();
+    private FirebaseAuth autentication = FirebaseAuth.getInstance();
+    private FirebaseUser user = autentication.getCurrentUser();
+    private RecipesRepository recipesRepository = new RecipesRepository();
+    private PersonsRepository personsRepository = new PersonsRepository();
 
     public FragmentRecipesFeed() {
         // Required empty public constructor
@@ -153,17 +145,7 @@ public class FragmentRecipesFeed extends Fragment {
     }
 
     public void likedScreenCall() {
-        String baseUrl = "https://spring-mongo-6c8h.onrender.com";
-
-        // Configurar acesso da API
-        retrofit = new Retrofit.Builder()
-                .baseUrl(baseUrl)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        // Chamada da API
-        PersonsService personsApi = retrofit.create(PersonsService.class);
-        Call<ResponseBody> apiCall = personsApi.findWishlistByUserEmail(user.getEmail());
+        Call<ResponseBody> apiCall = personsRepository.findWishlistByUserEmail(user.getEmail());
 
         // Executar chamada
         apiCall.enqueue(new Callback<ResponseBody>() {
@@ -220,17 +202,9 @@ public class FragmentRecipesFeed extends Fragment {
     }
 
     public void categoryRecipesCall(String restrictionId) {
-        String baseUrl = "https://spring-mongo-6c8h.onrender.com";
-
-        // Configurar acesso da API
-        retrofit = new Retrofit.Builder()
-                .baseUrl(baseUrl)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
 
         // Chamada da API
-        RecipesService recipesApi = retrofit.create(RecipesService.class);
-        Call<ResponseBody> apiCall = recipesApi.findRecipesByRestrictions(restrictionId,user.getEmail());
+        Call<ResponseBody> apiCall = recipesRepository.findRecipesByRestrictions(restrictionId, user.getEmail());
 
         // Executar chamada
         apiCall.enqueue(new Callback<ResponseBody>() {
@@ -288,17 +262,9 @@ public class FragmentRecipesFeed extends Fragment {
 
 
     public void recipesByNameCall(String recipeName) {
-        String baseUrl = "https://spring-mongo-6c8h.onrender.com";
-
-        //configurar acesso da API
-        retrofit = new Retrofit.Builder()
-                .baseUrl(baseUrl)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
 
         //chamada da API
-        RecipesService recipesApi = retrofit.create(RecipesService.class);
-        Call<ResponseBody> apiCall = recipesApi.findRecipesByName(recipeName,user.getEmail());
+        Call<ResponseBody> apiCall = recipesRepository.findRecipesByName(recipeName,user.getEmail());
 
         //executar chamada
         apiCall.enqueue(new Callback<ResponseBody>() {

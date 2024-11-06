@@ -17,6 +17,7 @@ public class RecipeDto {
     private boolean isFavorite;
     private Float rating;
     private Date creationDate;
+    private String message;
 
 
     private void RecipeDto(){}
@@ -89,7 +90,7 @@ public class RecipeDto {
         return isFavorite;
     }
 
-    public void setFavorite(boolean favorite) {
+    public void setIsFavorite(boolean favorite) {
         isFavorite = favorite;
     }
 
@@ -109,6 +110,14 @@ public class RecipeDto {
         this.creationDate = creationDate;
     }
 
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
     @Override
     public String toString() {
         return "RecipeDto{" +
@@ -125,6 +134,7 @@ public class RecipeDto {
                 ", creationDate=" + creationDate +
                 ", rating=" + rating +
                 ", isFavorite=" + isFavorite +
+                ", message='" + message + '\'' +
                 '}';
     }
 }
