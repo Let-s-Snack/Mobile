@@ -6,6 +6,17 @@
     android:layout_height="match_parent"
     tools:context=".presentation.register.RegisterActivity">
 
+    <ImageButton
+        android:id="@+id/return_btn_photo_register"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="32dp"
+        android:background="@android:color/transparent"
+        android:onClick="finishScreen"
+        android:src="@drawable/arrow_back"
+        app:layout_constraintStart_toStartOf="@+id/guideline2"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="164dp"
@@ -153,5 +164,18 @@
         app:layout_constraintEnd_toStartOf="@+id/guideline"
         app:layout_constraintStart_toStartOf="@+id/login_enter_btn"
         app:layout_constraintTop_toTopOf="@+id/login_enter_btn" />
+
+    <TextView
+        android:id="@+id/step"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="24dp"
+        android:text="3/4"
+        android:textColor="@color/cinza_claro"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toStartOf="@+id/guideline"
+        app:layout_constraintTop_toTopOf="parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

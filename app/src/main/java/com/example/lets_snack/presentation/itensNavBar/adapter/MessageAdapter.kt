@@ -15,8 +15,9 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.lets_snack.R
 import com.example.lets_snack.data.remote.dto.MessageDto
+import com.example.lets_snack.data.remote.dto.MessageDtoChat
 
-class MessageAdapter(private val messages: MutableList<MessageDto>, private val currentUser: String) :
+class MessageAdapter(private val messages: MutableList<MessageDtoChat>, private val currentUser: String) :
     RecyclerView.Adapter<MessageAdapter.MessageViewHolder>() {
     private val usernameColorMap = HashMap<String, Int>()
     private var isLast = false
@@ -87,12 +88,12 @@ class MessageAdapter(private val messages: MutableList<MessageDto>, private val 
         return messages.size
     }
 
-    fun addMessage(message: MessageDto) {
+    fun addMessage(message: MessageDtoChat) {
         messages.add(message)
         notifyItemInserted(messages.size - 1)
     }
 
-    fun updateMessages(newMessages: List<MessageDto>, isLast: Boolean) {
+    fun updateMessages(newMessages: List<MessageDtoChat>, isLast: Boolean) {
         messages.clear()
         messages.addAll(newMessages)
         notifyDataSetChanged()

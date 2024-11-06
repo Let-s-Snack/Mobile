@@ -84,4 +84,8 @@ public class ForgetPasswordActivity extends BaseActivity {
             }
         });
     }
+
+    public void finishScreen(View view) {
+        finish();
+    }
 }

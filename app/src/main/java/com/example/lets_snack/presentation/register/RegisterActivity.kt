@@ -7,6 +7,7 @@ import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.example.lets_snack.presentation.register.personData.PersonDataRegisterActivity
 import com.example.lets_snack.R
 import com.example.lets_snack.databinding.ActivityRegisterBinding
@@ -53,7 +54,7 @@ class RegisterActivity : BaseActivity() {
                             }
                     }
                     else{
-                        Toast.makeText(this, "Usuário já existe", Toast.LENGTH_SHORT).show()
+                        binding.textInputLayoutEmailLogin.error = "Esse e-mail está em uso"
                     }
                 }
             }
@@ -230,4 +231,6 @@ class RegisterActivity : BaseActivity() {
                 }
             }
     }
+
+    fun finishScreen(view: View) {}
 }

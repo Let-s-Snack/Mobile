@@ -8,7 +8,19 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-    <androidx.constraintlayout.widget.Guideline
+
+        <ImageButton
+            android:id="@+id/return_btn_data_register"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginTop="32dp"
+            android:background="@android:color/transparent"
+            android:onClick="finishScreen"
+            android:src="@drawable/arrow_back"
+            app:layout_constraintStart_toStartOf="@+id/guideline2"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -118,9 +130,8 @@
             android:textSize="16dp" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <!-- Ingredientes Restritos Input -->
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/textInputLayout4"
+        android:id="@+id/type_restriction5"
         style="@style/CustomTextInputTheme"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -130,49 +141,10 @@
         app:layout_constraintTop_toBottomOf="@+id/textInputLayoutEmailLogin">
 
         <MultiAutoCompleteTextView
-            android:id="@+id/ingredients_input"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:dropDownAnchor="@id/type_restriction"
-            android:dropDownWidth="match_parent"
-            android:dropDownHeight="wrap_content"
-            android:fontFamily="@font/poppins_semi_bold"
-            android:hint="Ingredientes restritos"
-            android:inputType="none"
-            android:minHeight="56dp"
-            android:padding="16dp"
-            android:textSize="16sp"
-            tools:ignore="MissingClass" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.chip.ChipGroup
-        android:id="@+id/chipGroup2"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:padding="4dp"
-        app:chipSpacing="8dp"
-        app:layout_constraintEnd_toStartOf="@+id/guideline"
-        app:layout_constraintStart_toStartOf="@+id/guideline2"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayout4"
-        app:singleLine="false"
-        app:singleSelection="false" />
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/type_restriction5"
-        style="@style/CustomTextInputTheme"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        app:layout_constraintEnd_toStartOf="@+id/guideline"
-        app:layout_constraintStart_toStartOf="@+id/guideline2"
-        app:layout_constraintTop_toBottomOf="@+id/chipGroup2">
-
-        <MultiAutoCompleteTextView
             android:id="@+id/type_restriction_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:dropDownAnchor="@id/type_restriction"
+            android:dropDownAnchor="@id/type_restriction5"
             android:dropDownWidth="match_parent"
             android:dropDownHeight="wrap_content"
             android:fontFamily="@font/poppins_semi_bold"
@@ -198,30 +170,31 @@
         app:singleLine="false"
         app:singleSelection="false" />
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/gender_input"
-        style="@style/CustomTextInputTheme"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        app:layout_constraintEnd_toStartOf="@+id/guideline"
-        app:layout_constraintStart_toStartOf="@+id/guideline2"
-        app:layout_constraintTop_toBottomOf="@+id/chipGroup">
-
-        <com.google.android.material.textfield.MaterialAutoCompleteTextView
-            android:id="@+id/gender_input_text"
-            android:layout_width="match_parent"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/gender_input"
+            style="@style/CustomTextInputTheme"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:dropDownAnchor="@id/gender_input"
-            android:dropDownWidth="match_parent"
-            android:dropDownHeight="wrap_content"
-            android:fontFamily="@font/poppins_semi_bold"
-            android:hint="Gênero"
-            android:inputType="none"
-            android:minHeight="56dp"
-            android:padding="16dp"
-            android:textSize="16sp" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:layout_marginTop="16dp"
+            app:layout_constraintEnd_toStartOf="@+id/guideline"
+            app:layout_constraintStart_toStartOf="@+id/guideline2"
+            app:layout_constraintTop_toBottomOf="@+id/chipGroup">
+
+            <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                android:id="@+id/gender_input_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:dropDownAnchor="@id/gender_input"
+                android:dropDownWidth="match_parent"
+                android:dropDownHeight="wrap_content"
+                android:fontFamily="@font/poppins_semi_bold"
+                android:hint="Gênero"
+                android:inputType="none"
+                android:minHeight="56dp"
+                android:padding="16dp"
+                android:textSize="16sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/login_enter_btn"
@@ -231,11 +204,25 @@
             android:layout_marginBottom="16dp"
             android:background="@drawable/background_principal_button_selector"
             android:enabled="true"
-            android:text="Entrar"
+            android:text="Salvar"
             android:textColor="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/guideline"
             app:layout_constraintStart_toStartOf="@+id/guideline2"
             app:layout_constraintTop_toBottomOf="@+id/gender_input" />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:indeterminateTint="#FFFFFF"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/login_enter_btn"
+            app:layout_constraintEnd_toStartOf="@+id/guideline"
+            app:layout_constraintStart_toStartOf="@+id/login_enter_btn"
+            app:layout_constraintTop_toTopOf="@+id/login_enter_btn" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

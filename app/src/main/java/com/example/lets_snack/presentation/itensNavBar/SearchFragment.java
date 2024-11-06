@@ -3,47 +3,54 @@ package com.example.lets_snack.presentation.itensNavBar;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
+import com.example.lets_snack.presentation.MainActivity;
 import com.example.lets_snack.R;
+import com.example.lets_snack.data.remote.dto.CategoryDto;
+import com.example.lets_snack.data.remote.dto.MessageDto;
+import com.example.lets_snack.data.remote.repository.rest.RestrictionsRepository;
+import com.example.lets_snack.databinding.FragmentSearchBinding;
+import com.example.lets_snack.presentation.adapter.CategoryAdapter;
+import com.example.lets_snack.presentation.recipesFeed.FragmentRecipesFeed;
+import com.google.gson.Gson;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link SearchFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.util.Arrays;
+import java.util.List;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+
 public class SearchFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private FragmentSearchBinding binding;
+    private RecyclerView recyclerView;
+    private Retrofit retrofit;
+    private ProgressBar loading;
+    private ImageView imageError;
+    private TextView textError;
+    private RestrictionsRepository restrictionsRepository = new RestrictionsRepository();
 
     public SearchFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment SearchFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static SearchFragment newInstance(String param1, String param2) {
+    public static SearchFragment newInstance() {
         SearchFragment fragment = new SearchFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -51,16 +58,107 @@ public class SearchFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        //fazendo logout
+        recyclerView = binding.recyclerCategories;
+        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2, LinearLayoutManager.VERTICAL, false ));
+        //chamar api para co    locar as categorias
+        loadCategories();
+
+        loading = binding.loadingCategories;
+        loading.setVisibility(View.VISIBLE);
+
+        imageError = binding.imageErrorCategory;
+
+        textError = binding.textErrorCategory;
+
+        binding.searchInputText.setOnEditorActionListener((v, actionId, event) -> {
+            // Captura o texto inserido e inicia a ação de busca
+            if(binding.searchInputText.getText().toString().isEmpty()) {
+                return false;
+            }
+            Bundle bundle = new Bundle();
+            bundle.putString("recipeName", binding.searchInputText.getText().toString());
+
+            //chamando fragment de recipe feed
+            FragmentTransaction transaction = ((MainActivity) binding.getRoot().getContext()).getSupportFragmentManager().beginTransaction();
+            FragmentRecipesFeed fragmentRecipesFeed = new FragmentRecipesFeed();
+            fragmentRecipesFeed.setArguments(bundle);
+            transaction.replace(R.id.mainContainer, fragmentRecipesFeed);
+            transaction.addToBackStack(null);
+            transaction.commit();
+            return true;
+        });
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_search, container, false);
-        return view;
+        // Inflate the layout using View Binding
+        binding = FragmentSearchBinding.inflate(inflater, container, false);
+        return binding.getRoot();
+    }
+
+    public void loadCategories() {
+
+        // Chamada da API
+        Call<ResponseBody> apiCall = restrictionsRepository.getRestrictions2();
+
+        // Executar chamada
+        apiCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    try {
+                        // Analisar a resposta com Gson
+                        Gson gson = new Gson();
+                        String responseBodyString = response.body().string();
+
+                        // Tentar parsear como um array
+                        if (responseBodyString.startsWith("[")) {
+                            List<CategoryDto> categories = Arrays.asList(gson.fromJson(responseBodyString, CategoryDto[].class));
+                            recyclerView.setAdapter(new CategoryAdapter(categories));
+                            loading.setVisibility(View.INVISIBLE);
+
+                            if (categories.isEmpty()) {
+                                imageError.setVisibility(View.VISIBLE);
+                                imageError.setImageResource(R.drawable.neneca_confusa);
+                                textError.setVisibility(View.VISIBLE);
+                                textError.setText("Nenhuma categoria encontrada!");
+                            }
+                        } else {
+                            // Caso contrário, parsear como um objeto com mensagem
+                            MessageDto messageResponse = gson.fromJson(responseBodyString, MessageDto.class);
+                            loading.setVisibility(View.INVISIBLE);
+                            imageError.setVisibility(View.VISIBLE);
+                            imageError.setImageResource(R.drawable.neneca_confusa);
+                            textError.setVisibility(View.VISIBLE);
+                            textError.setText(messageResponse.getMessage());
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        loading.setVisibility(View.INVISIBLE);
+                        imageError.setVisibility(View.VISIBLE);
+                        imageError.setImageResource(R.drawable.neneca_triste);
+                        textError.setVisibility(View.VISIBLE);
+                        textError.setText("Erro ao processar resposta.");
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable throwable) {
+                // Chamar imagem de erro
+                loading.setVisibility(View.INVISIBLE);
+                imageError.setVisibility(View.VISIBLE);
+                imageError.setImageResource(R.drawable.neneca_triste);
+                textError.setVisibility(View.VISIBLE);
+                textError.setText(throwable.getLocalizedMessage());
+            }
+        });
     }
 }

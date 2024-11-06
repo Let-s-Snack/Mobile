@@ -12,4 +12,6 @@ class RestrictionsRepository {
 
     //chama a função exampleFunService, que está no nosso service
     fun getRestrictions() = interfaceService.restrictions
+    fun getRestrictions2() = interfaceService.restrictions2
+
 }

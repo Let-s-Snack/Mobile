@@ -9,6 +9,8 @@
     <string name="link_cadastre_se"><u>Cadastre-se</u></string>
     <string name="entre_aqui"><u>Entre aqui</u></string>
     <string name="termos"><u>Termos de uso</u></string>
+    <string name="avaliar"><u>Avaliar</u></string>
+    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_main">MainActivity</string>
 </resources>

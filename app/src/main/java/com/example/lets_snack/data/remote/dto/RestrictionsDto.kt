@@ -7,6 +7,4 @@ data class RestrictionsDto(
     @SerializedName("id") val id: String,
     @SerializedName("name") val name: String,
     @SerializedName("description") val description: String,
-    @SerializedName("urlPhoto") val urlPhoto: String,
-    @SerializedName("creationDate") val creationDate: Date
-)
+    @SerializedName("urlPhoto") val urlPhoto: String)

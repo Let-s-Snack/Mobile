@@ -12,6 +12,9 @@
         <item name="android:statusBarColor">
             @color/laranja_forte
         </item>
+        <item name="android:navigationBarColor">
+            @android:color/transparent
+        </item>
     </style>
 
     <style name="FullScrren" parent="Base.Theme.LetsSnack">

@@ -11,7 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.lets_snack.BuildConfig
 import com.example.lets_snack.constants.LetsSnackConstants
-import com.example.lets_snack.data.remote.dto.MessageDto
+import com.example.lets_snack.data.remote.dto.MessageDtoChat
 import com.example.lets_snack.databinding.FragmentChatIaBinding
 import com.example.lets_snack.presentation.itensNavBar.adapter.MessageAdapter
 import com.google.firebase.auth.FirebaseAuth
@@ -63,7 +63,7 @@ class ChatIaFragment : Fragment() {
             val messageText = binding.messageInputText.text.toString()
             if (messageText.isNotEmpty()) {
                 Log.d("NameUser", currentUser?.displayName.toString())
-                saveMessages(MessageDto(currentUser?.displayName.toString(), messageText),false)
+                saveMessages(MessageDtoChat(currentUser?.displayName.toString(), messageText),false)
                 binding.messageInputText.text?.clear()
                 send(messageText)
             }
@@ -146,7 +146,7 @@ class ChatIaFragment : Fragment() {
                 Log.d("content",content)
                 Log.d("content", content)
                 Handler(Looper.getMainLooper()).post {
-                    saveMessages(MessageDto("GPT", content),true)
+                    saveMessages(MessageDtoChat("GPT", content),true)
                 }
             }
 
@@ -157,7 +157,7 @@ class ChatIaFragment : Fragment() {
     }
 
 
-    private fun saveMessageToChat(currentCount: Long, message: MessageDto, isLast: Boolean) {
+    private fun saveMessageToChat(currentCount: Long, message: MessageDtoChat, isLast: Boolean) {
         // Salva a mensagem no chat com base no contador atual
         chatCollectionRef.document("chat${currentCount - 1}").collection("messages")
             .add(message)
@@ -189,9 +189,9 @@ class ChatIaFragment : Fragment() {
                                 return@addSnapshotListener
                             }
 
-                            val messagesList = mutableListOf<MessageDto>()
+                            val messagesList = mutableListOf<MessageDtoChat>()
                             for (doc in snapshots!!) {
-                                val message = doc.toObject(MessageDto::class.java)
+                                val message = doc.toObject(MessageDtoChat::class.java)
                                 messagesList.add(message)
                             }
 
@@ -215,7 +215,7 @@ class ChatIaFragment : Fragment() {
             }
     }
 
-    private fun saveMessages(message: MessageDto, isLast: Boolean) {
+    private fun saveMessages(message: MessageDtoChat, isLast: Boolean) {
         val counterDocRef = firestore.collection("counters").document(currentUser?.email!!)
 
         // Verifica se o documento do contador existe
@@ -255,7 +255,7 @@ class ChatIaFragment : Fragment() {
 
                 firestore.collection(currentUser?.email!!).document("chat${currentCount}")
                     .collection("messages").add(
-                        MessageDto("GPT", "Oi! Seja muito bem-vindo ao nosso chat! \uD83C\uDF4A\uD83D\uDC9B Estamos super felizes em ter você por aqui. Vamos conversar e compartilhar boas vibes!")
+                        MessageDtoChat("GPT", "Oi! Seja muito bem-vindo ao nosso chat! \uD83C\uDF4A\uD83D\uDC9B Estamos super felizes em ter você por aqui. Vamos conversar e compartilhar boas vibes!")
                     )
             currentCount + 1
         }

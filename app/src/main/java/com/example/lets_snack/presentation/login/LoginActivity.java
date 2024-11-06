@@ -9,7 +9,7 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 
-import com.example.lets_snack.MainActivity;
+import com.example.lets_snack.presentation.MainActivity;
 import com.example.lets_snack.databinding.ActivityLoginBinding;
 import com.example.lets_snack.presentation.BaseActivity;
 import com.example.lets_snack.presentation.login.forgetPassword.ForgetPasswordActivity;
@@ -103,6 +103,9 @@ public class LoginActivity extends BaseActivity {
         binding.loginEnterBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                binding.progressBar.setVisibility(View.VISIBLE);
+                binding.loginEnterBtn.setText("");
+                binding.loginEnterBtn.setEnabled(false);
                 String email = binding.emailInput.getText().toString().trim();
                 String password = binding.passwordInput.getText().toString().trim();
                 if(email != null && password != null){

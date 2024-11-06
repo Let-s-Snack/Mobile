@@ -29,5 +29,8 @@ enum class LetsSnackConstants(val value: String) {
         Esquentar de novo: Para esquentar, coloque o pão no forno a 180°C por uns 5 a 10 minutos. Isso devolve a crocância da casca.
 
         Seguindo essas dicas, o pão francês vai durar mais e ficar gostoso por mais tempo!"
-    """.trimIndent())
+    """.trimIndent()),
+    BASE_URL_SQL("http://ec2-52-20-248-152.compute-1.amazonaws.com:8080/"),
+    EMAIL_TOKEN("userservice.restrictpage@germinare.org.br"),
+    PASSWORD_TOKEN("restrictpage123")
 }

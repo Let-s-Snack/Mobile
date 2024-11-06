@@ -10,12 +10,15 @@ class LetsSnackRetrofitBuilder {
     //isso facilita o nosso acesso, seria a mesma coisa de ter que iniciailizar uma outra classe para ele
     //dessa maneira não é necessário você inicializar a classe LetsSnackRetrofitBuilder para acessar o retrofit
     companion object {
-        val gson = GsonBuilder().setLenient().setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create()
-        // o by lazy faz com que a instância seja criada uma vez só.
         val retrofit: Retrofit by lazy {
+            // Criando uma instância de Gson com setLenient habilitado
+            val gson = GsonBuilder()
+                .setLenient()
+                .create()
+
             Retrofit.Builder()
                 .baseUrl(LetsSnackConstants.BASE_URL.value)
-                .addConverterFactory(GsonConverterFactory.create(gson))
+                .addConverterFactory(GsonConverterFactory.create(gson)) // Passando o Gson personalizado
                 .build()
         }
     }

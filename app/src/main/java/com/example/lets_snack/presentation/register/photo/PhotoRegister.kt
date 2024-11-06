@@ -165,4 +165,8 @@ class PhotoRegister : BaseActivity() {
         }
         return uri
     }
+
+    fun finishScreen(view: View) {
+        finish()
+    }
 }
