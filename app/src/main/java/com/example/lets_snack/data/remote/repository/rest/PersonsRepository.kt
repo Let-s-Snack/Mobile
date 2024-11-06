@@ -12,13 +12,13 @@ class PersonsRepository(context: Context) {
     val retrofit = LetsSnackRetrofitBuilder.retrofit
 
     val interfaceService = retrofit.create(LetsSnackService::class.java)
-    fun insertPerson(personDto: PersonDto) = interfaceService.insertPerson(tokenRepository.verifyTokenIsValid(),personDto)
+    suspend fun insertPerson(personDto: PersonDto) = interfaceService.insertPerson(tokenRepository.verifyTokenIsValid(),personDto)
 
     fun listPersonByEmail(email: String) = interfaceService.listPersonByEmail(email)
 
     fun listPersonByUsername(username: String) = interfaceService.listPersonByUsername(username)
 
-    fun updatePerson(email: String, personDto: PersonDtoUpdate) = interfaceService.updatePerson(tokenRepository.verifyTokenIsValid(),email, personDto)
+    suspend fun updatePerson(email: String, personDto: PersonDtoUpdate) = interfaceService.updatePerson(tokenRepository.verifyTokenIsValid(),email, personDto)
 
     fun findWishlistByUserEmail(personEmail: String) = interfaceService.findWishlistByUserEmail(personEmail)
 

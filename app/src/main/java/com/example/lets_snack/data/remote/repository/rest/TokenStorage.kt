@@ -38,13 +38,11 @@ class TokenStorage(private val context: Context) {
         return (currentTimeMillis - tokenTimestamp) > threeMinutesInMillis
     }
 
-    // Mova a lógica de geração de token para o TokenRepository
-    fun verifyTokenIsValid(tokenRepository: TokenRepository): String? {
+    suspend fun verifyTokenIsValid(tokenRepository: TokenRepository): String? {
         val token = getToken()
-         if (token != null && !isTokenExpired()) {
-             return token
+        if (token != null && !isTokenExpired()) {
+            return token
         }
-        return tokenRepository.generateAndValidToken()
-
+        return tokenRepository.generateAndValidToken() // Agora chamamos a função suspensa
     }
 }
