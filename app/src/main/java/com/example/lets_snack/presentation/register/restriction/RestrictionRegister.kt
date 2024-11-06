@@ -22,7 +22,7 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.children
 import androidx.lifecycle.lifecycleScope
-import com.example.lets_snack.MainActivity
+import com.example.lets_snack.presentation.MainActivity
 import com.example.lets_snack.R
 import com.example.lets_snack.data.remote.dto.PersonDto
 import com.example.lets_snack.data.remote.dto.RestrcitionID
@@ -30,6 +30,7 @@ import com.example.lets_snack.data.remote.dto.RestrictionsDto
 import com.example.lets_snack.data.remote.repository.rest.PersonsRepository
 import com.example.lets_snack.data.remote.repository.rest.RestrictionsRepository
 import com.example.lets_snack.databinding.ActivityRestrictionRegisterBinding
+import com.example.lets_snack.presentation.BaseActivity
 import com.example.lets_snack.presentation.Notification
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
@@ -42,7 +43,7 @@ import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
 
-class RestrictionRegister : AppCompatActivity() {
+class RestrictionRegister : BaseActivity() {
     private lateinit var binding: ActivityRestrictionRegisterBinding
     private val restrictionsRepository = RestrictionsRepository()
     private val personsRepository = PersonsRepository(this)

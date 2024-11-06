@@ -27,13 +27,25 @@
             android:name=".presentation.profile.RestrictArea"
             android:exported="false" />
         <activity
+            android:name=".presentation.InternetError"
+            android:exported="false" />
+        <activity
+            android:name=".presentation.MainActivity"
+            android:exported="false"
+            android:label="@string/title_activity_main"
+            android:screenOrientation="locked"
+            android:windowSoftInputMode="adjustPan"
+            android:theme="@style/Theme.LetsSnack" />
+
+        <activity
+            android:name=".presentation.profile.EditData"
+            android:exported="false" />
+        <activity
             android:name=".presentation.register.photo.PhotoRegister"
             android:exported="false"
             android:screenOrientation="locked"
             android:windowSoftInputMode="adjustPan" />
-        <activity
-            android:name=".presentation.profile.EditData"
-            android:exported="false" />
+
         <activity
             android:name=".presentation.register.RegisterActivity"
             android:exported="false"
@@ -51,18 +63,13 @@
         <activity
             android:name=".presentation.login.forgetPassword.ForgetPasswordActivity"
             android:exported="false"
-            android:screenOrientation="locked"
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".presentation.register.restriction.RestrictionRegister"
             android:exported="false"
             android:screenOrientation="locked"
             android:windowSoftInputMode="adjustPan" />
-        <activity
-            android:name=".MainActivity"
-            android:exported="false"
-            android:screenOrientation="locked"
-            android:windowSoftInputMode="adjustPan" />
+
         <activity
             android:name=".presentation.login.LoginActivity"
             android:exported="false"

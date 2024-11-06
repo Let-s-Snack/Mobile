@@ -25,6 +25,34 @@
         <item name="boxCornerRadiusBottomEnd">10dp</item>
     </style>
 
+    <style name="CustomTextInputSendMessage" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Cor da borda (sempre laranja) -->
+        <item name="boxStrokeColor">@color/laranja_forte</item>
+        <item name="hintTextColor">@color/cinza</item>
+
+        <!-- Cor da borda quando o campo está focado -->
+
+        <!-- Cor da borda quando o campo está em estado de erro -->
+        <item name="boxStrokeErrorColor">@color/laranja_forte</item>
+
+        <!-- Cor de fundo -->
+        <item name="boxBackgroundColor">@color/white</item>
+
+        <!-- Raio dos cantos da borda -->
+        <item name="boxCornerRadiusTopStart">10dp</item>
+        <item name="boxCornerRadiusTopEnd">10dp</item>
+        <item name="boxCornerRadiusBottomStart">10dp</item>
+        <item name="boxCornerRadiusBottomEnd">10dp</item>
+        <item name="cursorColor">@color/cinza</item>
+
+        <!-- Cor do hint (texto sugerido) -->
+        <item name="android:textColorHint">@color/cinza_claro</item>
+
+        <!-- Definição do cursor (caso esteja usando um personalizado) -->
+        <item name="android:textCursorDrawable">@drawable/cursor_drawable</item>
+    </style>
+
+
     <style name="CustomDatePickerDialog" parent="Theme.AppCompat.Light.Dialog">
         <item name="colorAccent">@color/laranja</item>
         <item name="android:textColor">@color/laranja</item>

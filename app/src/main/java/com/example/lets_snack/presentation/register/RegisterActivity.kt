@@ -6,14 +6,16 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.lets_snack.presentation.register.personData.PersonDataRegisterActivity
 import com.example.lets_snack.R
 import com.example.lets_snack.databinding.ActivityRegisterBinding
+import com.example.lets_snack.presentation.BaseActivity
 import com.example.lets_snack.presentation.login.LoginActivity
 import com.google.firebase.auth.FirebaseAuth
 
-class RegisterActivity : AppCompatActivity() {
+class RegisterActivity : BaseActivity() {
 
     private lateinit var binding: ActivityRegisterBinding
 

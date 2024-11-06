@@ -28,7 +28,8 @@
         <item name="android:layout_width">30dp</item>
         <item name="android:width">30dp</item>
         <item name="android:background">@drawable/rounded_background</item>
-        <item name="android:layout_margin">240dp</item> <!-- Adiciona a margem ao redor do dropdown -->
+        <item name="android:layout_margin">240dp
+        </item> <!-- Adiciona a margem ao redor do dropdown -->
     </style>
 
     <style name="CustomTextInputTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
@@ -48,6 +49,25 @@
         <item name="boxCornerRadiusBottomStart">10dp</item>
         <item name="boxCornerRadiusBottomEnd">10dp</item>
     </style>
+
+    <style name="CustomTextInputSendMessage" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Cor da borda (sempre laranja) -->
+        <item name="boxStrokeColor">@color/laranja_forte</item>
+
+        <item name="boxStrokeErrorColor">@color/laranja_forte</item>
+
+        <item name="boxBackgroundColor">@color/white</item>
+        <item name="hintTextColor">@color/cinza</item>
+        <item name="boxCornerRadiusTopStart">10dp</item>
+        <item name="boxCornerRadiusTopEnd">10dp</item>
+        <item name="boxCornerRadiusBottomStart">10dp</item>
+        <item name="boxCornerRadiusBottomEnd">10dp</item>
+        <item name="cursorColor">@color/cinza</item>
+        <item name="android:textColorHint">@color/cinza_claro</item>
+
+        <item name="android:textCursorDrawable">@drawable/cursor_drawable</item>
+    </style>
+
 
     <style name="CustomDatePickerDialog" parent="Theme.AppCompat.Light.Dialog">
         <item name="colorAccent">@color/laranja</item>

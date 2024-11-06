@@ -2,7 +2,6 @@ package com.example.lets_snack.presentation.adapter;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,10 +14,9 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.example.lets_snack.MainActivity;
+import com.example.lets_snack.presentation.MainActivity;
 import com.example.lets_snack.R;
 import com.example.lets_snack.data.remote.dto.CategoryDto;
-import com.example.lets_snack.data.remote.dto.RestrictionsDto;
 import com.example.lets_snack.presentation.recipesFeed.FragmentRecipesFeed;
 
 import java.util.List;

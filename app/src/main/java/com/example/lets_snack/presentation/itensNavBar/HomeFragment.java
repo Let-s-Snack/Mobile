@@ -11,8 +11,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
-import com.example.lets_snack.MainActivity;
+import com.example.lets_snack.presentation.MainActivity;
 import com.example.lets_snack.R;
 import com.example.lets_snack.data.remote.callbacks.RecipeCallback;
 import com.example.lets_snack.data.remote.callbacks.RecipesCallback;

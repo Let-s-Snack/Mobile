@@ -7,7 +7,6 @@ import android.app.PendingIntent
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -28,6 +27,7 @@ import com.example.lets_snack.data.remote.dto.RestrictionsDto
 import com.example.lets_snack.data.remote.repository.rest.PersonsRepository
 import com.example.lets_snack.data.remote.repository.rest.RestrictionsRepository
 import com.example.lets_snack.databinding.ActivityEditDataBinding
+import com.example.lets_snack.presentation.BaseActivity
 import com.example.lets_snack.presentation.Notification
 import com.example.lets_snack.presentation.profile.photo.PhotoEditData
 import com.example.lets_snack.presentation.transform.RoundedTransformation
@@ -38,7 +38,7 @@ import com.google.firebase.auth.UserProfileChangeRequest
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.launch
 
-class EditData : AppCompatActivity() {
+class EditData : BaseActivity() {
     private lateinit var binding: ActivityEditDataBinding
     private val restrictionsRepository = RestrictionsRepository()
     private val personsRepository = PersonsRepository(this)
