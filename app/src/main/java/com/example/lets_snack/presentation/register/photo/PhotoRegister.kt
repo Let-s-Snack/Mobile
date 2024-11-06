@@ -165,4 +165,8 @@ class PhotoRegister : AppCompatActivity() {
         }
         return uri
     }
+
+    fun finishScreen(view: View) {
+        finish()
+    }
 }

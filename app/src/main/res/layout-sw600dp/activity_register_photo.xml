@@ -8,8 +8,8 @@
 
     <ImageButton
         android:id="@+id/return_btn_photo_register"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
         android:layout_marginTop="32dp"
         android:background="@android:color/transparent"
         android:onClick="finishScreen"
@@ -55,7 +55,7 @@
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/login_enter_btn"
         android:layout_width="0dp"
-        android:layout_height="40dp"
+        android:layout_height="50dp"
         android:layout_marginTop="11dp"
         android:layout_marginBottom="84dp"
         android:background="@drawable/background_principal_button_selector"
@@ -81,7 +81,7 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
 
             <TextView
                 android:id="@+id/titlePhoto"
@@ -100,9 +100,9 @@
             <FrameLayout
                 android:id="@+id/frameLayout"
                 android:layout_width="wrap_content"
-                android:layout_height="100dp"
+                android:layout_height="160dp"
                 android:layout_marginStart="32dp"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="56dp"
                 android:layout_marginEnd="32dp"
                 android:background="@drawable/background_dialog"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -120,32 +120,36 @@
             </FrameLayout>
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/photoBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
-                android:background="@drawable/background_principal_button_enabled"
-                android:text="Foto"
-                android:textColor="@color/white"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/galleryBtn"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/frameLayout" />
-
-            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/galleryBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_width="120dp"
+                android:layout_height="62dp"
+                android:layout_marginTop="64dp"
                 android:layout_marginBottom="16dp"
                 android:background="@drawable/background_principal_button_enabled"
                 android:text="Galeria"
                 android:textColor="@color/white"
+                android:textSize="14sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/photoBtn"
-                app:layout_constraintTop_toBottomOf="@+id/frameLayout" />
+                app:layout_constraintTop_toBottomOf="@+id/frameLayout"
+                app:layout_constraintVertical_bias="0.497" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/photoBtn"
+                android:layout_width="120dp"
+                android:layout_height="62dp"
+                android:layout_marginTop="64dp"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/background_principal_button_enabled"
+                android:text="Foto"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/galleryBtn"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/frameLayout"
+                app:layout_constraintVertical_bias="0.497" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

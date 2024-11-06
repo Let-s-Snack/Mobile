@@ -229,4 +229,6 @@ class RegisterActivity : AppCompatActivity() {
                 }
             }
     }
+
+    fun finishScreen(view: View) {}
 }

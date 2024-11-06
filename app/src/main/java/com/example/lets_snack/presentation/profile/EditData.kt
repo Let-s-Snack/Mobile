@@ -480,6 +480,4 @@ class EditData : AppCompatActivity() {
             }
         })
     }
-
-
 }

@@ -11,8 +11,8 @@
 
         <ImageButton
             android:id="@+id/return_btn_data_register"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
             android:layout_marginTop="32dp"
             android:background="@android:color/transparent"
             android:onClick="finishScreen"
@@ -44,17 +44,17 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/profile_default" />
 
-    <ImageView
-        android:id="@+id/circle_pencil"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="132dp"
-        android:layout_marginEnd="110dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/circle_pencil" />
+        <ImageView
+            android:id="@+id/circle_pencil"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="132dp"
+            android:layout_marginEnd="220dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/circle_pencil" />
 
-    <TextView
+        <TextView
         android:id="@+id/update_photo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -152,7 +152,7 @@
             android:inputType="none"
             android:minHeight="56dp"
             android:padding="16dp"
-            android:textSize="16sp"
+            android:textSize="10sp"
             tools:ignore="MissingClass" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -192,7 +192,7 @@
                 android:inputType="none"
                 android:minHeight="56dp"
                 android:padding="16dp"
-                android:textSize="16sp" />
+                android:textSize="10sp" />
         </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -224,5 +224,12 @@
             app:layout_constraintEnd_toStartOf="@+id/guideline"
             app:layout_constraintStart_toStartOf="@+id/login_enter_btn"
             app:layout_constraintTop_toTopOf="@+id/login_enter_btn" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline10"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_begin="172dp" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
