@@ -20,7 +20,7 @@ import com.example.lets_snack.data.remote.dto.MessageDtoChat
 class MessageAdapter(private val messages: MutableList<MessageDtoChat>, private val currentUser: String) :
     RecyclerView.Adapter<MessageAdapter.MessageViewHolder>() {
     private val usernameColorMap = HashMap<String, Int>()
-    private var isLast = false
+    private var isLast:Boolean? = null
 
     inner class MessageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val messageTextView: TextView = itemView.findViewById(R.id.message_text)
@@ -43,6 +43,7 @@ class MessageAdapter(private val messages: MutableList<MessageDtoChat>, private 
         holder.messageTextView.layoutParams = layoutParams
         if (message.username == currentUser) {
             // Define o texto formatado no TextView
+            holder.messageTextView.visibility = View.VISIBLE
             holder.messageTextView.text = message.message
 //            holder.recyclerView.scrollToPosition(messages.size - 1)
             layoutParams.gravity = Gravity.END
@@ -63,17 +64,19 @@ class MessageAdapter(private val messages: MutableList<MessageDtoChat>, private 
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
             )
             Log.d("isLastMessage", "${isLast}")
-            if (isLast) {
+            if (isLast == true) {
                 if (position == messages.size - 1) {
                     holder.messageTextView.visibility = View.INVISIBLE
                     animateTextTyping(holder.recyclerView, holder.messageTextView, message.message)
                     isLast = false
                 }
                 else {
+                    holder.messageTextView.visibility = View.VISIBLE
                     holder.messageTextView.text = message.message
                 }
             }
             else{
+                holder.messageTextView.visibility = View.VISIBLE
                 holder.messageTextView.text = message.message
             }
 
@@ -94,10 +97,10 @@ class MessageAdapter(private val messages: MutableList<MessageDtoChat>, private 
     }
 
     fun updateMessages(newMessages: List<MessageDtoChat>, isLast: Boolean) {
+        this.isLast = isLast
         messages.clear()
         messages.addAll(newMessages)
         notifyDataSetChanged()
-        this.isLast = isLast
     }
 
     private fun getColorFromString(text: String): Int {

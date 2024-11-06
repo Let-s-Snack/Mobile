@@ -25,7 +25,7 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import okio.IOException
 import org.json.JSONArray
-import org.json.JSONObject
+import org.json.JSONObject;
 
 class ChatIaFragment : Fragment() {
 
@@ -56,7 +56,6 @@ class ChatIaFragment : Fragment() {
                 loadMessages(true)
             }
         }
-        loadMessages(false)
         checkAndCreateChatIfNeeded()
 
         binding.messageInput.setEndIconOnClickListener {
@@ -65,7 +64,6 @@ class ChatIaFragment : Fragment() {
                 Log.d("NameUser", currentUser?.displayName.toString())
                 saveMessages(MessageDtoChat(currentUser?.displayName.toString(), messageText),false)
                 binding.messageInputText.text?.clear()
-                send(messageText)
             }
         }
         return binding.root
@@ -146,7 +144,7 @@ class ChatIaFragment : Fragment() {
                 Log.d("content",content)
                 Log.d("content", content)
                 Handler(Looper.getMainLooper()).post {
-                    saveMessages(MessageDtoChat("GPT", content),true)
+                    saveApiMessages(MessageDtoChat("GPT", content),true)
                 }
             }
 
@@ -164,6 +162,20 @@ class ChatIaFragment : Fragment() {
             .addOnSuccessListener {
                 Log.d("Firestore", "Mensagem salva com sucesso!")
                 loadMessages(isLast)
+                send(message.message)
+            }
+            .addOnFailureListener { e ->
+                Log.w("Firestore", "Erro ao salvar mensagem", e)
+            }
+    }
+
+    private fun saveMessageToApi(currentCount: Long, message: MessageDtoChat, isLast: Boolean) {
+        // Salva a mensagem no chat com base no contador atual
+        chatCollectionRef.document("chat${currentCount - 1}").collection("messages")
+            .add(message)
+            .addOnSuccessListener {
+                Log.d("Firestore", "Mensagem salva com sucesso!")
+                loadMessages(true)
             }
             .addOnFailureListener { e ->
                 Log.w("Firestore", "Erro ao salvar mensagem", e)
@@ -224,17 +236,44 @@ class ChatIaFragment : Fragment() {
                 if (documentSnapshot.exists()) {
                     // Se o contador existir, obtemos o valor e salvamos a mensagem no chat
                     val currentCount = documentSnapshot.getLong("count") ?: 0
-                    saveMessageToChat(currentCount, message, isLast)
+                    saveMessageToChat(currentCount, message, false)
                 } else {
                     // Caso o contador não exista, cria um novo chat e aguarda a criação antes de carregar as mensagens
                     createNewChat {
                         loadMessages(isLast)
                     }
                 }
+
             }
             .addOnFailureListener { exception ->
                 createNewChat {
                     loadMessages(isLast)
+                }
+                Log.e("Firestore", "Erro ao acessar o documento do contador: ", exception)
+            }
+    }
+
+    private fun saveApiMessages(message: MessageDtoChat, isLast: Boolean) {
+        val counterDocRef = firestore.collection("counters").document(currentUser?.email!!)
+
+        // Verifica se o documento do contador existe
+        counterDocRef.get()
+            .addOnSuccessListener { documentSnapshot ->
+                if (documentSnapshot.exists()) {
+                    // Se o contador existir, obtemos o valor e salvamos a mensagem no chat
+                    val currentCount = documentSnapshot.getLong("count") ?: 0
+                    saveMessageToApi(currentCount, message, true)
+                } else {
+                    // Caso o contador não exista, cria um novo chat e aguarda a criação antes de carregar as mensagens
+                    createNewChat {
+                        loadMessages(true)
+                    }
+                }
+
+            }
+            .addOnFailureListener { exception ->
+                createNewChat {
+                    loadMessages(true)
                 }
                 Log.e("Firestore", "Erro ao acessar o documento do contador: ", exception)
             }
@@ -267,6 +306,4 @@ class ChatIaFragment : Fragment() {
                 Log.e("Firestore", "Erro ao criar chat e atualizar contador: ", exception)
             }
     }
-
-
 }
