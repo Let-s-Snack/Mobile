@@ -14,12 +14,8 @@ import com.example.lets_snack.constants.LetsSnackConstants
 import com.example.lets_snack.data.remote.dto.MessageDto
 import com.example.lets_snack.databinding.FragmentChatIaBinding
 import com.example.lets_snack.presentation.itensNavBar.adapter.MessageAdapter
-import com.google.android.gms.tasks.Task
-import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.QuerySnapshot
-import com.google.firebase.firestore.Source
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.MediaType.Companion.toMediaType
