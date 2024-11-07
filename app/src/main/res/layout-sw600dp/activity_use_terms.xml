@@ -248,6 +248,7 @@
             android:layout_marginTop="32dp"
             android:background="@android:color/transparent"
             android:src="@drawable/arrow_back"
+            android:onClick="finishScreen"
             app:layout_constraintEnd_toStartOf="@+id/guideline4"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/guideline3"

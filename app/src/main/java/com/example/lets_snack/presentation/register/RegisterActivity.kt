@@ -232,5 +232,7 @@ class RegisterActivity : BaseActivity() {
             }
     }
 
-    fun finishScreen(view: View) {}
+    fun finishScreen(view: View) {
+        finish()
+    }
 }
