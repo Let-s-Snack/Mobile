@@ -90,8 +90,7 @@ public class FragmentRecipe extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        recipesRepository = new RecipesRepository(requireContext());
-        personsRepository = new PersonsRepository(requireContext());
+
         //inicializando recyclers
         recyclerViewIngredients = binding.recipeIngredientsRecycle;
         recyclerViewIngredients.setLayoutManager(new GridLayoutManager(getContext(), 2, LinearLayoutManager.VERTICAL, false ));
@@ -125,7 +124,8 @@ public class FragmentRecipe extends Fragment {
                              Bundle savedInstanceState) {
         //criando binding
         binding = FragmentRecipeBinding.inflate(inflater, container, false);
-
+        recipesRepository = new RecipesRepository(requireContext());
+        personsRepository = new PersonsRepository(requireContext());
         //setando botão de voltar
         binding.recipeReturnBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -137,6 +137,7 @@ public class FragmentRecipe extends Fragment {
         //verificando se o id da receita foi passado
         if(getArguments().getString("id") != null){
             //chamando api para pegar receita
+            System.out.println("id: "+getArguments().getString("id"));
             loadRecipe(getArguments().getString("id"));
         }
 
@@ -145,91 +146,98 @@ public class FragmentRecipe extends Fragment {
 
     //carregando receita
     public void loadRecipe(String recipeId) {
-        Call<RecipeDto> apiCall = recipesRepository.findRecipeById(recipeId, user.getEmail());
-        apiCall.enqueue(new Callback<RecipeDto>() {
-            @Override
-            public void onResponse(Call<RecipeDto> call, Response<RecipeDto> response) {
-                RecipeDto recipes = response.body();
-                whiteOverlayScreen.setVisibility(View.INVISIBLE);
-                loading.setVisibility(View.INVISIBLE);
-                scrollView.setSmoothScrollingEnabled(true);
-                //carregar os dados
-                if (recipes != null) {
+        if(recipeId != null && user.getEmail() != null) {
+            Call<RecipeDto> apiCall = recipesRepository.findRecipeById(recipeId, user.getEmail());
+            apiCall.enqueue(new Callback<RecipeDto>() {
+                @Override
+                public void onResponse(Call<RecipeDto> call, Response<RecipeDto> response) {
+                    whiteOverlayScreen.setVisibility(View.INVISIBLE);
+                    loading.setVisibility(View.INVISIBLE);
+                    scrollView.setSmoothScrollingEnabled(true);
+                    //carregar os dados
+                    if (response.isSuccessful()) {
+                        RecipeDto recipes = response.body();
+                        if (recipes != null) {
+                            binding.recipeScreenName.setText(recipes.getName());
+                            Glide.with(getContext())
+                                    .load(recipes.getUrlPhoto()).centerCrop().into(binding.recipeScreenImage);
+                            if (recipes.getRating() != null) {
+                                binding.recipeScreenRatingbar.setRating(recipes.getRating());
+                            }
+                            binding.recipeScreenLikeButton.setChecked(recipes.getIsFavorite());
+                            binding.recipeDescription.setText(recipes.getDescription());
+                            binding.recipeBtnEvaluate.setOnClickListener(v -> evaluationModal());
 
+                            binding.recipeScreenLikeButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    //cancela qualquer chamada de API agendada anterior
+                                    if (apiCallRunnable != null) {
+                                        handler.removeCallbacks(apiCallRunnable);
+                                    }
 
-                    binding.recipeScreenName.setText(recipes.getName());
-                    Glide.with(getContext())
-                            .load(recipes.getUrlPhoto()).centerCrop().into(binding.recipeScreenImage);
-                    if (recipes.getRating() != null) {
-                        binding.recipeScreenRatingbar.setRating(recipes.getRating());
-                    }
-                    binding.recipeScreenLikeButton.setChecked(recipes.getIsFavorite());
-                    binding.recipeDescription.setText(recipes.getDescription());
-                    binding.recipeBtnEvaluate.setOnClickListener(v -> evaluationModal());
+                                    //define a nova tarefa para ser executada após 1 segundo
+                                    apiCallRunnable = new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            if (recipes.getIsFavorite() != binding.recipeScreenLikeButton.isChecked()) {
+                                                likeRecipe();
+                                            }
+                                        }
+                                    };
 
-                    binding.recipeScreenLikeButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            //cancela qualquer chamada de API agendada anterior
-                            if (apiCallRunnable != null) {
-                                handler.removeCallbacks(apiCallRunnable);
+                                    //agenda a tarefa após o atraso definido
+                                    handler.postDelayed(apiCallRunnable, DELAY_MILLIS);
+                                }
+                            });
+
+                            binding.recipeBtnSaveIngredients.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    saveRecipeIngredients();
+                                }
+                            });
+
+                            List<String> steps = recipes.getPreparationMethods();
+                            if (steps != null && steps.size() > 0) {
+                                recyclerViewSteps.setAdapter(new StepAdapter(steps));
                             }
 
-                            //define a nova tarefa para ser executada após 1 segundo
-                            apiCallRunnable = new Runnable() {
-                                @Override
-                                public void run() {
-                                    if (recipes.getIsFavorite() != binding.recipeScreenLikeButton.isChecked()) {
-                                        likeRecipe();
-                                    }
-                                }
-                            };
+                            List<CommentDto> comments = recipes.getComents();
+                            if (comments != null && comments.size() > 0) {
+                                binding.recipeRateText.setText(String.format("%.1f", recipes.getRating()) + "/5" + " (" + comments.size() + " avaliações)");
+                                recyclerViewComments.setAdapter(new CommentAdapter(comments));
+                                binding.imageEmptyComments.setVisibility(View.INVISIBLE);
+                                binding.textEmptyComment.setVisibility(View.INVISIBLE);
+                            } else {
+                                binding.recipeRateText.setText("0/5" + " (0 avaliações)");
+                                binding.imageEmptyComments.setVisibility(View.VISIBLE);
+                                binding.textEmptyComment.setVisibility(View.VISIBLE);
+                            }
 
-                            //agenda a tarefa após o atraso definido
-                            handler.postDelayed(apiCallRunnable, DELAY_MILLIS);
+                            List<IngredientDto> ingredients = recipes.getIngredients();
+                            if (ingredients != null && ingredients.size() > 0) {
+                                recyclerViewIngredients.setAdapter(new IngredientsAdapter(ingredients));
+                            }
+
                         }
-                    });
-
-                    binding.recipeBtnSaveIngredients.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            saveRecipeIngredients();
-                        }
-                    });
-
-                    List<String> steps = recipes.getPreparationMethods();
-                    if (steps != null && steps.size() > 0) {
-                        recyclerViewSteps.setAdapter(new StepAdapter(steps));
-                    }
-
-                    List<CommentDto> comments = recipes.getComents();
-                    if (comments != null && comments.size() > 0) {
-                        binding.recipeRateText.setText(String.format("%.1f", recipes.getRating()) + "/5" + " (" + comments.size() + " avaliações)");
-                        recyclerViewComments.setAdapter(new CommentAdapter(comments));
-                        binding.imageEmptyComments.setVisibility(View.INVISIBLE);
-                        binding.textEmptyComment.setVisibility(View.INVISIBLE);
                     } else {
-                        binding.recipeRateText.setText("0/5" + " (0 avaliações)");
-                        binding.imageEmptyComments.setVisibility(View.VISIBLE);
-                        binding.textEmptyComment.setVisibility(View.VISIBLE);
+                        //tratamento para o caso de resposta com erro, por exemplo:
+                        imageError.setVisibility(View.VISIBLE);
+                        imageError.setImageResource(R.drawable.neneca_triste);
+                        textError.setVisibility(View.VISIBLE);
                     }
-
-                    List<IngredientDto> ingredients = recipes.getIngredients();
-                    if (ingredients != null && ingredients.size() > 0) {
-                        recyclerViewIngredients.setAdapter(new IngredientsAdapter(ingredients));
-                    }
-
                 }
-            }
 
-            @Override
-            public void onFailure(Call<RecipeDto> call, Throwable throwable) {
-                loading.setVisibility(View.INVISIBLE);
-                imageError.setVisibility(View.VISIBLE);
-                imageError.setImageResource(R.drawable.neneca_triste);
-                textError.setVisibility(View.VISIBLE);
-            }
-        });
+                @Override
+                public void onFailure(Call<RecipeDto> call, Throwable throwable) {
+                    loading.setVisibility(View.INVISIBLE);
+                    imageError.setVisibility(View.VISIBLE);
+                    imageError.setImageResource(R.drawable.neneca_triste);
+                    textError.setVisibility(View.VISIBLE);
+                }
+            });
+        }
     }
 
     public void evaluationModal() {
