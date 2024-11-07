@@ -17,6 +17,8 @@ import com.example.lets_snack.data.remote.dto.PersonDtoResponse
 import com.example.lets_snack.data.remote.repository.rest.PersonsRepository
 import com.example.lets_snack.databinding.ActivityPersonDataRegisterBinding
 import com.example.lets_snack.presentation.login.LoginActivity
+import com.example.lets_snack.presentation.register.restriction.RestrictionRegister
+import com.example.lets_snack.presentation.useTerms.UseTerms
 import java.util.Calendar
 
 class PersonDataRegisterActivity : AppCompatActivity() {
@@ -44,6 +46,10 @@ class PersonDataRegisterActivity : AppCompatActivity() {
 
         genderInput.setOnItemClickListener { _, _, _, _ ->
             updateButtonState()
+        }
+
+        binding.useTerms.setOnClickListener{
+            startUseTermsActivity()
         }
 
         binding.registerText.setOnClickListener {
@@ -204,6 +210,11 @@ class PersonDataRegisterActivity : AppCompatActivity() {
                 override fun afterTextChanged(s: Editable?) {}
             })
         }
+    }
+
+    private fun startUseTermsActivity(){
+        val intent = Intent(this, UseTerms::class.java)
+        startActivity(intent)
     }
 
     private fun startLoginActivity(){

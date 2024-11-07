@@ -2,6 +2,7 @@ package com.example.lets_snack.presentation.useTerms;
 
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageButton;
 
 import com.example.lets_snack.R;
@@ -15,5 +16,9 @@ public class UseTerms extends BaseActivity {
         setContentView(R.layout.activity_use_terms);
 
         ((ImageButton) findViewById(R.id.return_btn)).setOnClickListener(v -> finish());
+    }
+
+    public void finishScreen(View view) {
+        finish();
     }
 }
