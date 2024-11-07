@@ -9,6 +9,7 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 
+import com.example.lets_snack.presentation.IA;
 import com.example.lets_snack.presentation.MainActivity;
 import com.example.lets_snack.databinding.ActivityLoginBinding;
 import com.example.lets_snack.presentation.BaseActivity;
@@ -48,12 +49,16 @@ public class LoginActivity extends BaseActivity {
         binding.registerText.setOnClickListener(v -> {
             Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
             startActivity(intent);
-            finish();
         });
 
         //ir para a tela de esqueceu a senha
         binding.forgotPasswordText.setOnClickListener(v -> {
             Intent intent = new Intent(LoginActivity.this, ForgetPasswordActivity.class);
+            startActivity(intent);
+        });
+
+        binding.linkWebIa.setOnClickListener(v -> {
+            Intent intent = new Intent(LoginActivity.this, IA.class);
             startActivity(intent);
         });
     }
@@ -103,7 +108,7 @@ public class LoginActivity extends BaseActivity {
         binding.loginEnterBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                binding.progressBar.setVisibility(View.VISIBLE);
+                //binding.progressBar.setVisibility(View.VISIBLE);
                 binding.loginEnterBtn.setText("");
                 binding.loginEnterBtn.setEnabled(false);
                 String email = binding.emailInput.getText().toString().trim();

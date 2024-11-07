@@ -14,22 +14,14 @@ public class RecipeDto {
     private List<CommentDto> coments;
     private List<String> preparationMethods;
     private List<Object> brokenRestrictions;
-    private Boolean isFavorite;       // Alterado para Boolean
-    private Float rating;             // Certifique-se de que seja Float e não float
+    private boolean isFavorite;
+    private Float rating;
     private Date creationDate;
-    private Boolean isDeleted;        // Novo campo adicionado
-    private Integer commentCount;     // Novo campo adicionado
+    private Boolean isDeleted;
+    private Integer commentCount;
     private String message;
 
     private void RecipeDto(){}
-
-    public Boolean getFavorite() {
-        return isFavorite;
-    }
-
-    public void setFavorite(Boolean favorite) {
-        isFavorite = favorite;
-    }
 
     public Boolean getDeleted() {
         return isDeleted;
@@ -111,14 +103,6 @@ public class RecipeDto {
         this.brokenRestrictions = brokenRestrictions;
     }
 
-    public boolean getIsFavorite() {
-        return isFavorite;
-    }
-
-    public void setIsFavorite(boolean favorite) {
-        isFavorite = favorite;
-    }
-
     public Float getRating() {
         return rating;
     }
@@ -141,6 +125,14 @@ public class RecipeDto {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public boolean getIsFavorite() {
+        return isFavorite;
+    }
+
+    public void setIsFavorite(boolean favorite) {
+        isFavorite = favorite;
     }
 
     @Override

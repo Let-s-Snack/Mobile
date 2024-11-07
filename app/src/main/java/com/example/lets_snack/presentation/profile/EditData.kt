@@ -489,4 +489,8 @@ class EditData : BaseActivity() {
             }
         })
     }
+
+    fun finishScreen(view: View) {
+        finish()
+    }
 }
