@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.lets_snack.presentation.MainActivity;
 import com.example.lets_snack.R;
 import com.example.lets_snack.data.remote.callbacks.RecipeCallback;
@@ -74,8 +75,8 @@ public class HomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         recipesRepository = new RecipesRepository(requireContext());
-        binding = FragmentHomeBinding.inflate(inflater, container, false);
         personsRepository = new PersonsRepository(requireContext());
+        binding = FragmentHomeBinding.inflate(inflater, container, false);
         recyclerViewTrendingRecipes = binding.recyclerTrendingRecipes;
         recyclerViewTrendingRecipes.setLayoutManager(new GridLayoutManager(getContext(), 1, LinearLayoutManager.HORIZONTAL, false ));
 
