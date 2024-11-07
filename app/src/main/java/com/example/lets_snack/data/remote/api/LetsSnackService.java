@@ -1,5 +1,6 @@
 package com.example.lets_snack.data.remote.api;
 
+import com.example.lets_snack.data.remote.dto.CheckedUserDto;
 import com.example.lets_snack.data.remote.dto.PersonDto;
 import com.example.lets_snack.data.remote.dto.PersonDtoResponse;
 import com.example.lets_snack.data.remote.dto.PersonDtoResponseEmail;
@@ -7,6 +8,7 @@ import com.example.lets_snack.data.remote.dto.PersonDtoUpdate;
 import com.example.lets_snack.data.remote.dto.MessageDto;
 import com.example.lets_snack.data.remote.dto.RecipeDto;
 import com.example.lets_snack.data.remote.dto.RestrictionsDto;
+import com.example.lets_snack.data.remote.dto.ShoppingListDto;
 import com.example.lets_snack.data.remote.dto.TokenRequestDto;
 import com.example.lets_snack.data.remote.dto.TokenResponseDto;
 import com.example.lets_snack.data.remote.dto.UserDto;
@@ -67,6 +69,13 @@ public interface LetsSnackService {
 
     @PUT("persons/saveRecipesIngredients")
     Call<MessageDto> saveRecipeIngredients(@Header("Authorization") String token, @Query("recipesId") String recipesId, @Query("personsEmail") String personsEmail);
+
+    @PUT("persons/checkIngredients/{personsEmail}")
+    Call<ShoppingListDto> checkIngredients(@Header("Authorization") String token, @Path("personsEmail") String personsEmail, @Body CheckedUserDto checkedUserDto);
+
+    @GET("/persons/personsShoppingList/{email}")
+    Call<List<ShoppingListDto>> getShoppingListByUserEmail(@Path("email") String personEmail);
+
 
     @GET("persons/personDirectionWeek/{email}")
     Call<RecipeDto> getWeekRecipeByEmail(@Path("email") String personEmail);

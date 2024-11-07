@@ -18,6 +18,7 @@ import com.example.lets_snack.databinding.FragmentProfileBinding;
 import com.example.lets_snack.presentation.login.LoginActivity;
 import com.example.lets_snack.presentation.profile.EditData;
 import com.example.lets_snack.presentation.profile.RestrictArea;
+import com.example.lets_snack.presentation.profile.SaveIngredient;
 import com.example.lets_snack.presentation.transform.RoundedTransformation;
 import com.example.lets_snack.presentation.useTerms.UseTerms;
 import com.google.firebase.auth.FirebaseAuth;
@@ -94,6 +95,14 @@ public class ProfileFragment extends Fragment {
                 Intent intent = new Intent(getContext(), LoginActivity.class);
                 startActivity(intent);
                 getActivity().finish();
+            }
+        });
+
+        binding.saveIngredients.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), SaveIngredient.class);
+                startActivity(intent);
             }
         });
 
