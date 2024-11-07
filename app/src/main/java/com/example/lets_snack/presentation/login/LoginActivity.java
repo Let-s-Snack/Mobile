@@ -9,6 +9,7 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 
+import com.example.lets_snack.presentation.IA;
 import com.example.lets_snack.presentation.MainActivity;
 import com.example.lets_snack.databinding.ActivityLoginBinding;
 import com.example.lets_snack.presentation.BaseActivity;
@@ -54,6 +55,11 @@ public class LoginActivity extends BaseActivity {
         //ir para a tela de esqueceu a senha
         binding.forgotPasswordText.setOnClickListener(v -> {
             Intent intent = new Intent(LoginActivity.this, ForgetPasswordActivity.class);
+            startActivity(intent);
+        });
+
+        binding.linkWebIa.setOnClickListener(v -> {
+            Intent intent = new Intent(LoginActivity.this, IA.class);
             startActivity(intent);
         });
     }
