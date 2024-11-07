@@ -3,9 +3,12 @@ package com.example.lets_snack.data.remote.repository.rest
 import android.content.Context
 import com.example.lets_snack.data.remote.api.LetsSnackService
 import com.example.lets_snack.data.remote.callbacks.MessageCallback
+import com.example.lets_snack.data.remote.callbacks.ShoppingListCallback
 import com.example.lets_snack.data.remote.callbacks.UserCallback
+import com.example.lets_snack.data.remote.dto.CheckedUserDto
 import com.example.lets_snack.data.remote.dto.PersonDto
 import com.example.lets_snack.data.remote.dto.PersonDtoUpdate
+import com.example.lets_snack.data.remote.dto.ShoppingListDto
 import com.example.lets_snack.data.remote.dto.UserDto
 import com.example.lets_snack.data.remote.retrofit.LetsSnackRetrofitBuilder
 import kotlinx.coroutines.CoroutineScope
@@ -28,6 +31,37 @@ class PersonsRepository(context: Context) {
     suspend fun updatePerson(email: String, personDto: PersonDtoUpdate) = interfaceService.updatePerson(tokenRepository.verifyTokenIsValid(),email, personDto)
 
     fun findWishlistByUserEmail(personEmail: String) = interfaceService.findWishlistByUserEmail(personEmail)
+
+    fun getShoppingListByUserEmail(personEmail: String) = interfaceService.getShoppingListByUserEmail(personEmail)
+
+    fun checkIngredients(personEmail: String, checkedUserDto: CheckedUserDto, callback: ShoppingListCallback) {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val token = tokenRepository.verifyTokenIsValid()
+
+                val response = interfaceService.checkIngredients(token, personEmail, checkedUserDto).execute()
+
+                if (response.isSuccessful) {
+                    val message = response.body()
+                    withContext(Dispatchers.Main) {
+                        if (message != null) {
+                            callback.onSuccess(message)
+                        } else {
+                            callback.onFailure(Throwable("Response body is null")) // Falha no corpo da resposta
+                        }
+                    }
+                } else {
+                    withContext(Dispatchers.Main) {
+                        callback.onFailure(Throwable("Erro na resposta: ${response.errorBody()?.string()}")) // Erro na resposta
+                    }
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    callback.onMessage(e.toString()) // Exceção - chama o callback com a mensagem de erro
+                }
+            }
+        }
+    }
 
     fun likeRecipe(recipesId: String, personsEmail: String, callback: MessageCallback) {
         CoroutineScope(Dispatchers.IO).launch {
