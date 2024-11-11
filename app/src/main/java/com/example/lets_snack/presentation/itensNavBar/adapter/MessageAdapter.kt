@@ -16,11 +16,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.lets_snack.R
 import com.example.lets_snack.data.remote.dto.MessageDto
 import com.example.lets_snack.data.remote.dto.MessageDtoChat
+import com.example.lets_snack.data.remote.dto.MessageUi
 
-class MessageAdapter(private val messages: MutableList<MessageDtoChat>, private val currentUser: String) :
+class MessageAdapter(private val messages: MutableList<MessageUi>, private val currentUser: String) :
     RecyclerView.Adapter<MessageAdapter.MessageViewHolder>() {
-    private val usernameColorMap = HashMap<String, Int>()
-    private var isLast:Boolean? = null
 
     inner class MessageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val messageTextView: TextView = itemView.findViewById(R.id.message_text)
@@ -42,10 +41,8 @@ class MessageAdapter(private val messages: MutableList<MessageDtoChat>, private 
         )
         holder.messageTextView.layoutParams = layoutParams
         if (message.username == currentUser) {
-            // Define o texto formatado no TextView
             holder.messageTextView.visibility = View.VISIBLE
             holder.messageTextView.text = message.message
-//            holder.recyclerView.scrollToPosition(messages.size - 1)
             layoutParams.gravity = Gravity.END
             holder.messageTextView.gravity = Gravity.START
             val marginLayoutParams = holder.messageTextView.layoutParams as ViewGroup.MarginLayoutParams
@@ -53,32 +50,9 @@ class MessageAdapter(private val messages: MutableList<MessageDtoChat>, private 
             holder.messageTextView.setBackgroundResource(R.drawable.message_send)
         }
         else {
-            val username = message.username
-            val usernameColor = usernameColorMap.getOrPut(username) {getColorFromString(username) }
 
-            val spannableString = SpannableString(message.username + "\n" + message.message)
-            spannableString.setSpan(
-                ForegroundColorSpan(usernameColor),
-                0,
-                username.length,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
-            Log.d("isLastMessage", "${isLast}")
-            if (isLast == true) {
-                if (position == messages.size - 1) {
-                    holder.messageTextView.visibility = View.INVISIBLE
-                    animateTextTyping(holder.recyclerView, holder.messageTextView, message.message)
-                    isLast = false
-                }
-                else {
-                    holder.messageTextView.visibility = View.VISIBLE
-                    holder.messageTextView.text = message.message
-                }
-            }
-            else{
-                holder.messageTextView.visibility = View.VISIBLE
-                holder.messageTextView.text = message.message
-            }
+            holder.messageTextView.visibility = View.VISIBLE
+            holder.messageTextView.text = message.message
 
             layoutParams.gravity = Gravity.START
             val marginLayoutParams = holder.messageTextView.layoutParams as ViewGroup.MarginLayoutParams
@@ -91,20 +65,10 @@ class MessageAdapter(private val messages: MutableList<MessageDtoChat>, private 
         return messages.size
     }
 
-    fun addMessage(message: MessageDtoChat) {
-        messages.add(message)
-        notifyItemInserted(messages.size - 1)
-    }
-
-    fun updateMessages(newMessages: List<MessageDtoChat>, isLast: Boolean) {
-        this.isLast = isLast
+    fun updateMessages(newMessages: List<MessageUi>) {
         messages.clear()
         messages.addAll(newMessages)
         notifyDataSetChanged()
-    }
-
-    private fun getColorFromString(text: String): Int {
-        return Color.rgb(243, 140, 52)
     }
 
     private fun animateTextTyping(recyclerView: RecyclerView, textView: TextView, message: String, delay: Long = 10) {
