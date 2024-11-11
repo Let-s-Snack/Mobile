@@ -23,16 +23,12 @@ android {
     }
 
     buildTypes {
-        getByName("release") {
-            buildConfigField("String", "API_KEY", project.findProperty("API_KEY") as String)
+        release {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-        }
-        getByName("debug") {
-            buildConfigField("String", "API_KEY", project.findProperty("API_KEY") as String)
         }
     }
     compileOptions {
