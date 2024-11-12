@@ -72,7 +72,7 @@ public interface LetsSnackService {
     Call<MessageDto> saveRecipeIngredients(@Header("Authorization") String token, @Query("recipesId") String recipesId, @Query("personsEmail") String personsEmail);
 
     @PUT("persons/checkIngredients/{personsEmail}")
-    Call<ShoppingListDto> checkIngredients(@Header("Authorization") String token, @Path("personsEmail") String personsEmail, @Body CheckedUserDto checkedUserDto);
+    Call<ShoppingListDto> checkIngredients(@Header("Authorization") String token, @Path("personsEmail") String personsEmail, @Body List<CheckedUserDto> checkedUserDto);
 
     @GET("/persons/personsShoppingList/{email}")
     Call<List<ShoppingListDto>> getShoppingListByUserEmail(@Path("email") String personEmail);
