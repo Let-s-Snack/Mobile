@@ -1,25 +1,22 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.LetsSnack" parent="Theme.Material3.Light.NoActionBar">
-        <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
         <item name="android:windowBackground">@color/background_app_color</item>
         <item name="android:windowTranslucentStatus">
             false
         </item>
+        <item name="android:dropDownListViewStyle">@style/CustomDropDownListViewStyle</item>
+
         <item name="android:statusBarColor">
-            @color/transparente
+            @color/laranja_forte
         </item>
     </style>
     <style name="CustomTextInputTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <!-- Defina aqui a cor desejada para o accent -->
         <item name="colorAccent">@color/cinza</item>
         <item name="hintTextColor">@color/cinza</item>
         <item name="android:textColorHint">@color/cinza</item>
         <item name="boxStrokeColor">@color/cinza</item>
-        <!-- Defina aqui a cor de fundo -->
         <item name="boxBackgroundColor">@color/laranja_pastel</item>
-        <!-- Defina aqui o raio do canto -->
         <item name="boxCornerRadiusTopStart">10dp</item>
         <item name="android:textCursorDrawable">@drawable/cursor_drawable</item>
         <item name="cursorColor">@color/cinza</item>
@@ -27,4 +24,50 @@
         <item name="boxCornerRadiusBottomStart">10dp</item>
         <item name="boxCornerRadiusBottomEnd">10dp</item>
     </style>
+
+    <style name="CustomTextInputSendMessage" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Cor da borda (sempre laranja) -->
+        <item name="boxStrokeColor">@color/laranja_forte</item>
+        <item name="hintTextColor">@color/cinza</item>
+
+        <!-- Cor da borda quando o campo está focado -->
+
+        <!-- Cor da borda quando o campo está em estado de erro -->
+        <item name="boxStrokeErrorColor">@color/laranja_forte</item>
+
+        <!-- Cor de fundo -->
+        <item name="boxBackgroundColor">@color/white</item>
+
+        <!-- Raio dos cantos da borda -->
+        <item name="boxCornerRadiusTopStart">10dp</item>
+        <item name="boxCornerRadiusTopEnd">10dp</item>
+        <item name="boxCornerRadiusBottomStart">10dp</item>
+        <item name="boxCornerRadiusBottomEnd">10dp</item>
+        <item name="cursorColor">@color/cinza</item>
+
+        <!-- Cor do hint (texto sugerido) -->
+        <item name="android:textColorHint">@color/cinza_claro</item>
+
+        <!-- Definição do cursor (caso esteja usando um personalizado) -->
+        <item name="android:textCursorDrawable">@drawable/cursor_drawable</item>
+    </style>
+
+
+    <style name="CustomDatePickerDialog" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorAccent">@color/laranja</item>
+        <item name="android:textColor">@color/laranja</item>
+    </style>
+
+    <style name="CustomDropDownListViewStyle" parent="android:Widget.ListView">
+        <item name="android:dividerHeight">0dp</item>
+        <item name="android:elevation">4dp</item>
+        <item name="android:padding">12dp</item>
+        <item name="android:background">@drawable/rounded_background</item>
+    </style>
+
+    <style name="CustomDatePickerButton" parent="@android:style/Widget.Material.Button">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:background">@color/laranja</item>
+    </style>
+
 </resources>

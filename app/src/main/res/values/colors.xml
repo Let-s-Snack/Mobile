@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <color name="white">#FAFAFA</color>
     <color name="laranja_pastel">#FFF3E0</color>
     <color name="laranja_forte">#EF5B23</color>
     <color name="laranja">#F38C34</color>
@@ -12,4 +12,5 @@
     <color name="background_app_color">#F8F8F8</color>
     <color name="transparente">#00000000</color>
     <color name="azul_link">#0066FF</color>
+    <color name="linha_cinza">#EAEAEA</color>
 </resources>

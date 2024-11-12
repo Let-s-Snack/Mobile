@@ -1,49 +1,74 @@
 package com.example.lets_snack.presentation.itensNavBar;
 
+import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+
+import android.app.Dialog;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
+import com.example.lets_snack.presentation.MainActivity;
 import com.example.lets_snack.R;
+import com.example.lets_snack.data.remote.callbacks.RecipeCallback;
+import com.example.lets_snack.data.remote.callbacks.RecipesCallback;
+import com.example.lets_snack.data.remote.dto.CommentDto;
+import com.example.lets_snack.data.remote.dto.IngredientDto;
+import com.example.lets_snack.data.remote.dto.MessageDto;
+import com.example.lets_snack.data.remote.dto.RecipeDto;
+import com.example.lets_snack.data.remote.repository.rest.PersonsRepository;
+import com.example.lets_snack.data.remote.repository.rest.RecipesRepository;
+import com.example.lets_snack.databinding.FragmentHomeBinding;
+import com.example.lets_snack.presentation.adapter.CommentAdapter;
+import com.example.lets_snack.presentation.adapter.IngredientsAdapter;
+import com.example.lets_snack.presentation.adapter.RecipeAdapter;
+import com.example.lets_snack.presentation.adapter.RecipeHorizontalAdapter;
+import com.example.lets_snack.presentation.adapter.StepAdapter;
+import com.example.lets_snack.presentation.recipe.FragmentRecipe;
+import com.example.lets_snack.presentation.transform.RoundedTransformation;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.gson.Gson;
+import com.squareup.picasso.Picasso;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link HomeFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class HomeFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private FragmentHomeBinding binding;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private FirebaseAuth autentication = FirebaseAuth.getInstance();
+    private FirebaseUser user = autentication.getCurrentUser();
+    private RecyclerView recyclerViewTrendingRecipes;
+    private RecyclerView recyclerViewRecommendedRecipes;
+    private RecyclerView recyclerViewMoreCommentsRecipes;
+    private PersonsRepository personsRepository = null;
+    private RecipesRepository recipesRepository = null;
 
     public HomeFragment() {
-        // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment HomeFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static HomeFragment newInstance(String param1, String param2) {
+    public static HomeFragment newInstance() {
         HomeFragment fragment = new HomeFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -51,16 +76,288 @@ public class HomeFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_home, container, false);
-        return view;
+        recipesRepository = new RecipesRepository(requireContext());
+        personsRepository = new PersonsRepository(requireContext());
+        binding = FragmentHomeBinding.inflate(inflater, container, false);
+        recyclerViewTrendingRecipes = binding.recyclerTrendingRecipes;
+        recyclerViewTrendingRecipes.setLayoutManager(new GridLayoutManager(getContext(), 1, LinearLayoutManager.HORIZONTAL, false ));
+
+        recyclerViewRecommendedRecipes = binding.recyclerRecommendedRecipes;
+        recyclerViewRecommendedRecipes.setLayoutManager(new GridLayoutManager(getContext(), 1, LinearLayoutManager.HORIZONTAL, false ));
+
+
+        recyclerViewMoreCommentsRecipes = binding.recyclerMoreCommentsRecipes;
+        recyclerViewMoreCommentsRecipes.setLayoutManager(new GridLayoutManager(getContext(), 1, LinearLayoutManager.HORIZONTAL, false ));
+
+        if (user != null) {
+            binding.nameUser.setText("Olá, "+ user.getDisplayName());
+            if (user.getPhotoUrl() != null) {
+
+                Picasso.get()
+                        .load(user.getPhotoUrl())
+                        .resize(300, 300)
+                        .centerCrop() // Centraliza e corta a imagem
+                        .placeholder(R.drawable.profile_default)
+                        .transform(new RoundedTransformation(180, 0) )
+                        .into(binding.imageUser);
+            } else {
+                binding.imageUser.setImageResource(R.drawable.profile_default);
+            }
+        }
+
+        weekRecipeCall();
+        trendingRecipesCall();
+        recommendedRecipesCall();
+        mostCommentedRecipesCall();
+        return binding.getRoot();
+    }
+
+    public void weekRecipeCall() {
+        Call<RecipeDto> apiCall = personsRepository.getWeekRecipeByEmail(user.getEmail());
+        apiCall.enqueue(new Callback<RecipeDto>() {
+            @Override
+            public void onResponse(Call<RecipeDto> call, Response<RecipeDto> response) {
+                RecipeDto recipes = response.body();
+                //carregar os dados
+                if (recipes != null) {
+                    binding.weekRecipeName.setText(recipes.getName());
+                    Glide.with(getContext())
+                            .asBitmap()
+                            .load(recipes.getUrlPhoto())
+                            .centerCrop()
+                            .circleCrop().into(binding.weekRecipePhoto);
+                    binding.weekRecipeDescription.setText(recipes.getDescription());
+                    binding.weekRecipeCard.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Bundle bundle = new Bundle();
+                            bundle.putString("id", recipes.getId());
+
+                            //chamando fragment de recipe feed
+                            FragmentTransaction transaction = ((MainActivity) v.getContext()).getSupportFragmentManager().beginTransaction();
+                            FragmentRecipe fragmentRecipe = new FragmentRecipe();
+                            fragmentRecipe.setArguments(bundle);
+                            transaction.replace(R.id.mainContainer, fragmentRecipe);
+                            transaction.addToBackStack(null);
+                            transaction.commit();
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onFailure(Call<RecipeDto> call, Throwable throwable) {
+                warningModal("Erro", "Nenhuma receita da semana encontrada!");
+            }
+        });
+    }
+
+
+
+    public void trendingRecipesCall() {
+        Call<ResponseBody> apiCall = recipesRepository.getTrendingRecipesByEmail(user.getEmail());
+
+        // Executar chamada
+        apiCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    try {
+                        // Analisar a resposta com Gson
+                        Gson gson = new Gson();
+                        String responseBodyString = response.body().string();
+
+                        // Tentar parsear como um array
+                        if (responseBodyString.startsWith("[")) {
+                            List<RecipeDto> recipes = Arrays.asList(gson.fromJson(responseBodyString, RecipeDto[].class));
+                            recyclerViewTrendingRecipes.setAdapter(new RecipeHorizontalAdapter(recipes));
+                            binding.trendingRecipesLoading.setVisibility(View.INVISIBLE);
+
+                            if (recipes.isEmpty()) {
+                                binding.trendingRecipeErrorImg.setVisibility(View.VISIBLE);
+                                binding.trendingRecipeErrorImg.setImageResource(R.drawable.neneca_confusa);
+                                binding.trendingRecipeErrorText.setVisibility(View.VISIBLE);
+                                binding.trendingRecipeErrorText.setText("Nenhuma receita encontrada!");
+                            }
+                        } else {
+                            // Caso contrário, parsear como um objeto com mensagem
+                            MessageDto messageResponse = gson.fromJson(responseBodyString, MessageDto.class);
+                            binding.trendingRecipesLoading.setVisibility(View.INVISIBLE);
+                            binding.trendingRecipeErrorImg.setVisibility(View.VISIBLE);
+                            binding.trendingRecipeErrorImg.setImageResource(R.drawable.neneca_confusa);
+                            binding.trendingRecipeErrorText.setVisibility(View.VISIBLE);
+                            binding.trendingRecipeErrorText.setText(messageResponse.getMessage());
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        binding.trendingRecipesLoading.setVisibility(View.INVISIBLE);
+                        binding.trendingRecipeErrorImg.setVisibility(View.VISIBLE);
+                        binding.trendingRecipeErrorImg.setImageResource(R.drawable.neneca_triste);
+                        binding.trendingRecipeErrorText.setVisibility(View.VISIBLE);
+                        binding.trendingRecipeErrorText.setText("Erro ao processar resposta.");
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable throwable) {
+                // Chamar imagem de erro
+                binding.trendingRecipesLoading.setVisibility(View.INVISIBLE);
+                binding.trendingRecipeErrorImg.setVisibility(View.VISIBLE);
+                binding.trendingRecipeErrorImg.setImageResource(R.drawable.neneca_triste);
+                binding.trendingRecipeErrorText.setVisibility(View.VISIBLE);
+                binding.trendingRecipeErrorText.setText(throwable.getLocalizedMessage());
+            }
+        });
+    }
+
+    public void recommendedRecipesCall() {
+        Call<ResponseBody> apiCall = recipesRepository.getRecommendedRecipesByEmail(user.getEmail());
+
+        // Executar chamada
+        apiCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    try {
+                        // Analisar a resposta com Gson
+                        Gson gson = new Gson();
+                        String responseBodyString = response.body().string();
+
+                        // Tentar parsear como um array
+                        if (responseBodyString.startsWith("[")) {
+                            List<RecipeDto> recipes = Arrays.asList(gson.fromJson(responseBodyString, RecipeDto[].class));
+                            recyclerViewRecommendedRecipes.setAdapter(new RecipeHorizontalAdapter(recipes));
+                            binding.recommendedRecipesLoading.setVisibility(View.INVISIBLE);
+
+                            if (recipes.isEmpty()) {
+                                binding.recommendedRecipesErrorImg.setVisibility(View.VISIBLE);
+                                binding.recommendedRecipesErrorImg.setImageResource(R.drawable.neneca_confusa);
+                                binding.recommendedRecipesErrorText.setVisibility(View.VISIBLE);
+                                binding.recommendedRecipesErrorText.setText("Nenhuma receita encontrada!");
+                            }
+                        } else {
+                            // Caso contrário, parsear como um objeto com mensagem
+                            MessageDto messageResponse = gson.fromJson(responseBodyString, MessageDto.class);
+                            binding.recommendedRecipesLoading.setVisibility(View.INVISIBLE);
+                            binding.recommendedRecipesErrorImg.setVisibility(View.VISIBLE);
+                            binding.recommendedRecipesErrorImg.setImageResource(R.drawable.neneca_confusa);
+                            binding.recommendedRecipesErrorText.setVisibility(View.VISIBLE);
+                            binding.recommendedRecipesErrorText.setText(messageResponse.getMessage());
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        binding.recommendedRecipesLoading.setVisibility(View.INVISIBLE);
+                        binding.recommendedRecipesErrorImg.setVisibility(View.VISIBLE);
+                        binding.recommendedRecipesErrorImg.setImageResource(R.drawable.neneca_triste);
+                        binding.recommendedRecipesErrorText.setVisibility(View.VISIBLE);
+                        binding.recommendedRecipesErrorText.setText("Erro ao processar resposta.");
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable throwable) {
+                // Chamar imagem de erro
+                binding.recommendedRecipesLoading.setVisibility(View.INVISIBLE);
+                binding.recommendedRecipesErrorImg.setVisibility(View.VISIBLE);
+                binding.recommendedRecipesErrorImg.setImageResource(R.drawable.neneca_triste);
+                binding.recommendedRecipesErrorText.setVisibility(View.VISIBLE);
+                binding.recommendedRecipesErrorText.setText(throwable.getLocalizedMessage());
+            }
+        });
+    }
+
+    public void mostCommentedRecipesCall() {
+        Call<ResponseBody> apiCall = recipesRepository.getMostCommentedRecipesByEmail(user.getEmail());
+        // Executar chamada
+        apiCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    try {
+                        // Analisar a resposta com Gson
+                        Gson gson = new Gson();
+                        String responseBodyString = response.body().string();
+
+                        // Tentar parsear como um array
+                        if (responseBodyString.startsWith("[")) {
+                            List<RecipeDto> recipes = Arrays.asList(gson.fromJson(responseBodyString, RecipeDto[].class));
+                            recyclerViewMoreCommentsRecipes.setAdapter(new RecipeHorizontalAdapter(recipes));
+                            binding.mostCommentedRecipesLoading.setVisibility(View.INVISIBLE);
+
+                            if (recipes.isEmpty()) {
+                                binding.moreCommentsRecipesImg.setVisibility(View.VISIBLE);
+                                binding.moreCommentsRecipesImg.setImageResource(R.drawable.neneca_confusa);
+                                binding.moreCommentsRecipesText.setVisibility(View.VISIBLE);
+                                binding.moreCommentsRecipesText.setText("Nenhuma receita encontrada!");
+                            }
+                        } else {
+                            // Caso contrário, parsear como um objeto com mensagem
+                            MessageDto messageResponse = gson.fromJson(responseBodyString, MessageDto.class);
+                            binding.mostCommentedRecipesLoading.setVisibility(View.INVISIBLE);
+                            binding.moreCommentsRecipesImg.setVisibility(View.VISIBLE);
+                            binding.moreCommentsRecipesImg.setImageResource(R.drawable.neneca_confusa);
+                            binding.moreCommentsRecipesText.setVisibility(View.VISIBLE);
+                            binding.moreCommentsRecipesText.setText(messageResponse.getMessage());
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+//                        binding.mostCommentedRecipesLoading.setVisibility(View.INVISIBLE);
+//                        binding.moreCommentsRecipesImg.setVisibility(View.VISIBLE);
+//                        binding.moreCommentsRecipesImg.setImageResource(R.drawable.neneca_triste);
+//                        binding.moreCommentsRecipesText.setVisibility(View.VISIBLE);
+//                        binding.moreCommentsRecipesText.setText("Erro ao processar resposta.");
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable throwable) {
+                // Chamar imagem de erro
+                binding.mostCommentedRecipesLoading.setVisibility(View.INVISIBLE);
+                binding.moreCommentsRecipesImg.setVisibility(View.VISIBLE);
+                binding.moreCommentsRecipesImg.setImageResource(R.drawable.neneca_triste);
+                binding.moreCommentsRecipesText.setVisibility(View.VISIBLE);
+                binding.moreCommentsRecipesText.setText(throwable.getLocalizedMessage());
+            }
+        });
+    }
+
+    public void warningModal(String titleText, String descriptionText) {
+        // Usando Dialog
+        Dialog descriptionCard = new Dialog(getContext());
+        descriptionCard.setContentView(R.layout.description_modal);
+        descriptionCard.getWindow().setLayout(WRAP_CONTENT, WRAP_CONTENT);
+        descriptionCard.getWindow().setBackgroundDrawable(
+                ContextCompat.getDrawable(getContext(), R.drawable.background_dialog)
+        );
+
+
+        //Inicializar os componentes da caixaMsg
+        TextView title = descriptionCard.findViewById(R.id.description_title_modal);
+        TextView description = descriptionCard.findViewById(R.id.description_text_modal);
+        ImageButton closeModal = descriptionCard.findViewById(R.id.description_modal_close);
+
+        title.setText(titleText);
+        description.setText(descriptionText);
+        closeModal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                descriptionCard.dismiss();
+            }
+        });
+        descriptionCard.show();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 }

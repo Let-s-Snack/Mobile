@@ -8,13 +8,15 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import com.example.lets_snack.presentation.itensNavBar.ChatIaFragment
+//import com.example.lets_snack.presentation.itensNavBar.ChatIaFragment
 import com.example.lets_snack.presentation.itensNavBar.HomeFragment
 import com.example.lets_snack.presentation.itensNavBar.LikesFragment
 import com.example.lets_snack.presentation.itensNavBar.ProfileFragment
 import com.example.lets_snack.R
 import com.example.lets_snack.presentation.itensNavBar.SearchFragment
 import com.example.lets_snack.databinding.FragmentMenuBinding
+import com.example.lets_snack.presentation.itensNavBar.ChatIaFragment
+import com.example.lets_snack.presentation.recipesFeed.FragmentRecipesFeed
 
 class NavFragment : Fragment() {
     private var _binding: FragmentMenuBinding? = null
@@ -26,8 +28,8 @@ class NavFragment : Fragment() {
     private val homeFragment =
         HomeFragment()
 
-    private val likesFragment =
-        LikesFragment()
+    private val recipesFeedFragment =
+        FragmentRecipesFeed()
 
     private val profileFragment =
         ProfileFragment()
@@ -78,9 +80,9 @@ class NavFragment : Fragment() {
             }
 
             // Apply animation and margin to the selected button and text
-            animateTranslationY(selectedBtn, selectedBtn.translationY, -14f)
+            animateTranslationY(selectedBtn, selectedBtn.translationY, -12f)
             selectedText.visibility = View.VISIBLE
-            animateTranslationY(selectedText, selectedText.translationY, -14f)
+            animateTranslationY(selectedText, selectedText.translationY, -12f)
             selectedBtn.setImageResource(getSelectedIcon(selectedBtn))
         }
 
@@ -119,8 +121,15 @@ class NavFragment : Fragment() {
             listItens.addAll(listOf(homeBtn, searchBtn, chatIaBtn, userBtn))
             listNames.addAll(listOf(chatHomeText, chatSearchText, chatIaText, chatUserText))
             updateUI(hearthBtn, chatHearthText, listItens, listNames)
+            val bundle = Bundle().apply {
+                //pegar o id do user atual
+                 putString("id", "like_screen")
+            }
+            recipesFeedFragment.apply {
+                arguments = bundle
+            }
             val transaction = parentFragmentManager.beginTransaction()
-            transaction.replace(R.id.mainContainer, likesFragment)
+            transaction.replace(R.id.mainContainer, recipesFeedFragment)
             transaction.commit()
         }
 

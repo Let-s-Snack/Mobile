@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="clip_horizontal|fill_horizontal"
+    app:cardCornerRadius="10dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/card_recipe"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="clip_horizontal|fill_horizontal"
+        android:background="#FFF3E0"
+        android:foregroundGravity="center">
+
+        <ImageView
+            android:id="@+id/recipe_photo"
+            android:layout_width="160dp"
+            android:layout_height="110dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:scaleType="centerCrop"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/recipe_name"
+            android:layout_width="110dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxLines="2"
+            android:textColor="@color/cinza"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/recipe_photo" />
+
+        <CheckBox
+            android:id="@+id/recipe_like_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="44dp"
+            android:background="@null"
+            android:button="@drawable/like_button"
+            android:checked="false"
+            android:enabled="false"
+            app:buttonTint="@null"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/recipe_photo" />
+
+        <RatingBar
+            android:id="@+id/recipe_rating_bar"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="44dp"
+            android:isIndicator="true"
+            android:numStars="1"
+            android:padding="0dp"
+            android:progressTint="#FFCA00"
+            android:rating="1"
+            android:scaleX="0.5"
+            android:scaleY="0.5"
+            android:stepSize="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/recipe_photo" />
+
+        <TextView
+            android:id="@+id/recipe_rate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="-6dp"
+            android:layout_marginTop="60dp"
+            android:text=""
+            android:textSize="12sp"
+            app:layout_constraintStart_toEndOf="@+id/recipe_rating_bar"
+            app:layout_constraintTop_toBottomOf="@+id/recipe_photo" />
+
+        <ImageView
+            android:id="@+id/recipe_card_partner_tag"
+            android:layout_width="15dp"
+            android:layout_height="0dp"
+            android:layout_marginEnd="4dp"
+            android:src="@drawable/swift_foguinho"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@+id/recipe_name"
+            app:layout_constraintEnd_toStartOf="@+id/recipe_name"
+            app:layout_constraintTop_toTopOf="@+id/recipe_name"
+            app:layout_constraintVertical_bias="0.0" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

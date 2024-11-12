@@ -1,0 +1,383 @@
+package com.example.lets_snack.presentation.recipe;
+
+import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+
+import android.app.Dialog;
+import android.os.Bundle;
+
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import android.os.Handler;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.RatingBar;
+import android.widget.ScrollView;
+import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
+import com.example.lets_snack.R;
+import com.example.lets_snack.data.remote.callbacks.MessageCallback;
+import com.example.lets_snack.data.remote.dto.CommentDto;
+import com.example.lets_snack.data.remote.dto.IngredientDto;
+import com.example.lets_snack.data.remote.dto.MessageDto;
+import com.example.lets_snack.data.remote.dto.RecipeDto;
+import com.example.lets_snack.data.remote.dto.SendCommentDto;
+import com.example.lets_snack.data.remote.repository.rest.PersonsRepository;
+import com.example.lets_snack.data.remote.repository.rest.RecipesRepository;
+import com.example.lets_snack.databinding.FragmentRecipeBinding;
+import com.example.lets_snack.presentation.adapter.CommentAdapter;
+import com.example.lets_snack.presentation.adapter.IngredientsAdapter;
+import com.example.lets_snack.presentation.adapter.StepAdapter;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class FragmentRecipe extends Fragment {
+
+    private FragmentRecipeBinding binding;
+    private RecyclerView recyclerViewIngredients;
+    private RecyclerView recyclerViewSteps;
+    private RecyclerView recyclerViewComments;
+    private Handler handler = new Handler();
+    private Runnable apiCallRunnable;
+    private static final int DELAY_MILLIS = 1000; // 1 segundos de atraso
+    private ScrollView scrollView;
+    private ProgressBar loading;
+    private View whiteOverlayScreen;
+    private ImageView imageError;
+    private TextView textError;
+    private
+    FirebaseAuth autentication = FirebaseAuth.getInstance();
+    private FirebaseUser user = autentication.getCurrentUser();
+    private RecipesRepository recipesRepository = null;
+    private PersonsRepository personsRepository = null;
+
+    public FragmentRecipe() {
+        // Required empty public constructor
+    }
+
+    public static FragmentRecipe newInstance() {
+        FragmentRecipe fragment = new FragmentRecipe();
+        Bundle args = new Bundle();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        //inicializando recyclers
+        recyclerViewIngredients = binding.recipeIngredientsRecycle;
+        recyclerViewIngredients.setLayoutManager(new GridLayoutManager(getContext(), 2, LinearLayoutManager.VERTICAL, false ));
+        recyclerViewIngredients.setNestedScrollingEnabled(false);
+
+        recyclerViewSteps = binding.recipeStepsRecycle;
+        recyclerViewSteps.setLayoutManager(new GridLayoutManager(getContext(), 1, LinearLayoutManager.VERTICAL, false ));
+        recyclerViewSteps.setNestedScrollingEnabled(false);
+
+        recyclerViewComments = binding.recipeComentsRecycle;
+        recyclerViewComments.setLayoutManager(new GridLayoutManager(getContext(), 1, LinearLayoutManager.HORIZONTAL, false ));
+
+        scrollView = binding.recipeScrollview;
+
+        loading = binding.loadingRecipe;
+        whiteOverlayScreen = binding.overlayWhiteScreen;
+
+        imageError = binding.imageErrorRecipe;
+        textError = binding.textErrorRecipe;
+
+        //definindo camada de visualização
+        whiteOverlayScreen.setTranslationZ(10);
+        loading.setTranslationZ(11);
+        binding.recipeReturnBtn.setTranslationZ(11);
+        imageError.setTranslationZ(11);
+        textError.setTranslationZ(11);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        //criando binding
+        binding = FragmentRecipeBinding.inflate(inflater, container, false);
+        recipesRepository = new RecipesRepository(requireContext());
+        personsRepository = new PersonsRepository(requireContext());
+        //setando botão de voltar
+        binding.recipeReturnBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().getSupportFragmentManager().popBackStack();
+            }
+        });
+
+        //verificando se o id da receita foi passado
+        if(getArguments().getString("id") != null){
+            //chamando api para pegar receita
+            loadRecipe(getArguments().getString("id"));
+        }
+
+        return binding.getRoot();
+    }
+
+    //carregando receita
+    public void loadRecipe(String recipeId) {
+        if(recipeId != null && user.getEmail() != null) {
+            Call<RecipeDto> apiCall = recipesRepository.findRecipeById(recipeId, user.getEmail());
+            apiCall.enqueue(new Callback<RecipeDto>() {
+                @Override
+                public void onResponse(Call<RecipeDto> call, Response<RecipeDto> response) {
+                    whiteOverlayScreen.setVisibility(View.INVISIBLE);
+                    loading.setVisibility(View.INVISIBLE);
+                    scrollView.setSmoothScrollingEnabled(true);
+                    //carregar os dados
+                    if (response.isSuccessful()) {
+                        RecipeDto recipes = response.body();
+                        if (recipes != null) {
+                            binding.recipeScreenName.setText(recipes.getName());
+                            Glide.with(getContext())
+                                    .load(recipes.getUrlPhoto()).centerCrop().into(binding.recipeScreenImage);
+                            if (recipes.getRating() != null) {
+                                binding.recipeScreenRatingbar.setRating(recipes.getRating());
+                            }
+                            binding.recipeScreenLikeButton.setChecked(recipes.getIsFavorite());
+                            binding.recipeDescription.setText(recipes.getDescription());
+                            binding.recipeBtnEvaluate.setOnClickListener(v -> evaluationModal());
+
+                            binding.recipeScreenLikeButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    //cancela qualquer chamada de API agendada anterior
+                                    if (apiCallRunnable != null) {
+                                        handler.removeCallbacks(apiCallRunnable);
+                                    }
+
+                                    //define a nova tarefa para ser executada após 1 segundo
+                                    apiCallRunnable = new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            if (recipes.getIsFavorite() != binding.recipeScreenLikeButton.isChecked()) {
+                                                likeRecipe();
+                                            }
+                                        }
+                                    };
+
+                                    //agenda a tarefa após o atraso definido
+                                    handler.postDelayed(apiCallRunnable, DELAY_MILLIS);
+                                }
+                            });
+
+                            binding.recipeBtnSaveIngredients.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    saveRecipeIngredients();
+                                }
+                            });
+
+                            List<String> steps = recipes.getPreparationMethods();
+                            if (steps != null && steps.size() > 0) {
+                                recyclerViewSteps.setAdapter(new StepAdapter(steps));
+                            }
+
+                            List<CommentDto> comments = recipes.getComents();
+                            if (comments != null && comments.size() > 0) {
+                                binding.recipeRateText.setText(String.format("%.1f", recipes.getRating()) + "/5" + " (" + comments.size() + " avaliações)");
+                                recyclerViewComments.setAdapter(new CommentAdapter(comments));
+                                binding.imageEmptyComments.setVisibility(View.INVISIBLE);
+                                binding.textEmptyComment.setVisibility(View.INVISIBLE);
+                            } else {
+                                binding.recipeRateText.setText("0/5" + " (0 avaliações)");
+                                binding.imageEmptyComments.setVisibility(View.VISIBLE);
+                                binding.textEmptyComment.setVisibility(View.VISIBLE);
+                            }
+
+                            List<IngredientDto> ingredients = recipes.getIngredients();
+                            if (ingredients != null && ingredients.size() > 0) {
+                                recyclerViewIngredients.setAdapter(new IngredientsAdapter(ingredients));
+                            }
+
+                        }
+                    } else {
+                        //tratamento para o caso de resposta com erro, por exemplo:
+                        imageError.setVisibility(View.VISIBLE);
+                        imageError.setImageResource(R.drawable.neneca_triste);
+                        textError.setVisibility(View.VISIBLE);
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<RecipeDto> call, Throwable throwable) {
+                    loading.setVisibility(View.INVISIBLE);
+                    imageError.setVisibility(View.VISIBLE);
+                    imageError.setImageResource(R.drawable.neneca_triste);
+                    textError.setVisibility(View.VISIBLE);
+                }
+            });
+        }
+    }
+
+    public void evaluationModal() {
+        // Usando Dialog
+        Dialog evaluationCard = new Dialog(getContext());
+        evaluationCard.setContentView(R.layout.rating_modal);
+        evaluationCard.getWindow().setLayout(WRAP_CONTENT, WRAP_CONTENT);
+        evaluationCard.getWindow().setBackgroundDrawable(
+                ContextCompat.getDrawable(getContext(), R.drawable.background_dialog)
+        );
+
+
+        //Inicializar os componentes da caixaMsg
+        RatingBar rate = evaluationCard.findViewById(R.id.rating_bar_modal);
+        EditText commentDescription = evaluationCard.findViewById(R.id.rating_text_modal);
+        ImageButton closeModal = evaluationCard.findViewById(R.id.rating_modal_close);
+        Button submit = evaluationCard.findViewById(R.id.rating_btn_modal);
+
+
+        rate.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+            @Override
+            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+                submit.setEnabled(rate.getRating() > 0);
+                int integerRating = Math.round(rating);
+                ratingBar.setRating(integerRating);
+            }
+        });
+
+        closeModal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                evaluationCard.dismiss();
+            }
+        });
+
+        submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //envio da avaliação
+                sendComment(Math.round(rate.getRating()), commentDescription.getText().toString());
+                evaluationCard.dismiss();
+            }
+        });
+        evaluationCard.show();
+    }
+
+    public void sendComment(int rate, String commentDescription) {
+        SendCommentDto comment = new SendCommentDto(user.getEmail(), rate, commentDescription);
+        recipesRepository.insertComment(
+                getArguments().getString("id"),
+                comment,
+                new MessageCallback() {
+                    @Override
+                    public void onSuccess(MessageDto message) {
+                        // Exibe o modal de sucesso com a mensagem recebida
+                        warningModal("Sucesso", message.getMessage() + "\nComentário inserido com sucesso.");
+                    }
+
+                    @Override
+                    public void onFailure(Throwable throwable) {
+                        // Exibe o modal de erro com a mensagem de erro
+                        warningModal("Erro", throwable.getMessage());
+                    }
+
+                    @Override
+                    public void onMessage(String message) {
+                        // Exibe o modal de erro com a mensagem personalizada (caso tenha)
+                        warningModal("Erro", message);
+                    }
+                }
+        );
+    }
+
+
+    public void likeRecipe() {
+        personsRepository.likeRecipe(
+                getArguments().getString("id"),
+                user.getEmail(),
+                new MessageCallback() {
+                    @Override
+                    public void onSuccess(MessageDto message) {
+                    }
+
+                    @Override
+                    public void onFailure(Throwable throwable) {
+                        warningModal("Erro", throwable.getMessage());
+                    }
+
+                    @Override
+                    public void onMessage(String message) {
+                        warningModal("Erro", message);
+                    }
+                }
+        );
+    }
+
+
+
+    public void saveRecipeIngredients() {
+        personsRepository.saveRecipeIngredients(
+                getArguments().getString("id"),
+                user.getEmail(),
+                new MessageCallback() {
+                    @Override
+                    public void onSuccess(MessageDto message) {
+                        warningModal("Aviso", "Os ingredientes foram salvos em \n" +
+                                "perfil -> ingredientes salvos");
+                    }
+
+                    @Override
+                    public void onFailure(Throwable throwable) {
+                        warningModal("Erro", throwable.getMessage());
+                    }
+
+                    @Override
+                    public void onMessage(String message) {
+                        warningModal("Erro", message);
+                    }
+                }
+        );
+    }
+
+    public void warningModal(String titleText, String descriptionText) {
+        // Usando Dialog
+        Dialog descriptionCard = new Dialog(getContext());
+        descriptionCard.setContentView(R.layout.description_modal);
+        descriptionCard.getWindow().setLayout(WRAP_CONTENT, WRAP_CONTENT);
+        descriptionCard.getWindow().setBackgroundDrawable(
+                ContextCompat.getDrawable(getContext(), R.drawable.background_dialog)
+        );
+
+
+        //Inicializar os componentes da caixaMsg
+        TextView title = descriptionCard.findViewById(R.id.description_title_modal);
+        TextView description = descriptionCard.findViewById(R.id.description_text_modal);
+        ImageButton closeModal = descriptionCard.findViewById(R.id.description_modal_close);
+
+        title.setText(titleText);
+        description.setText(descriptionText);
+        closeModal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                descriptionCard.dismiss();
+            }
+        });
+        descriptionCard.show();
+    }
+}

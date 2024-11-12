@@ -3,6 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="28" />
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="28" />
 
     <application
         android:allowBackup="true"
@@ -13,25 +21,74 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.LetsSnack"
+        android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name=".MainActivity"
+            android:name=".presentation.profile.SaveIngredient"
             android:exported="false" />
+        <activity
+            android:name=".presentation.IA"
+            android:exported="false" />
+        <activity
+            android:name=".presentation.profile.RestrictArea"
+            android:exported="false" />
+        <activity
+            android:name=".presentation.InternetError"
+            android:exported="false" />
+        <activity
+            android:name=".presentation.MainActivity"
+            android:exported="false"
+            android:label="@string/title_activity_main"
+            android:screenOrientation="locked"
+            android:theme="@style/Theme.LetsSnack"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".presentation.profile.EditData"
+            android:screenOrientation="locked"
+            android:exported="false" />
+        <activity
+            android:name=".presentation.register.photo.PhotoRegister"
+            android:exported="false"
+            android:screenOrientation="locked"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".presentation.register.RegisterActivity"
+            android:exported="false"
+            android:screenOrientation="locked"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".presentation.useTerms.UseTerms"
+            android:exported="false"
+            android:screenOrientation="locked"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".presentation.profile.photo.PhotoEditData"
+            android:exported="false"
+            android:screenOrientation="locked"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".presentation.login.forgetPassword.ForgetPasswordActivity"
+            android:exported="false"
+            android:screenOrientation="locked"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".presentation.register.restriction.RestrictionRegister"
+            android:exported="false"
+            android:screenOrientation="locked"
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".presentation.login.LoginActivity"
             android:exported="false"
             android:screenOrientation="locked" />
         <activity
-            android:name=".presentation.register.RegisterActivity"
+            android:name=".presentation.register.personData.PersonDataRegisterActivity"
             android:exported="false"
             android:screenOrientation="locked" />
         <activity
-            android:name=".ExampleImplementation"
-            android:exported="false" />
-        <activity
             android:name=".presentation.splashScreen.SplashScreen"
             android:exported="true"
-            android:screenOrientation="locked">
+            android:screenOrientation="locked"
+            android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
