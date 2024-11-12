@@ -59,7 +59,8 @@ public interface LetsSnackService {
     Call<ResponseBody> findRecipesByName(@Query("recipesName") String recipesName, @Query("personsEmail") String personsEmail);
 
     @PUT("recipes/insertComent/{recipesId}")
-    Call<MessageDto> insertComment(@Header("Authorization") String token, @Header("personsEmail")@Path("recipesId") String recipesId, @Body SendCommentDto comment);
+    Call<MessageDto> insertComment(@Header("Authorization") String token, @Path("recipesId") String recipesId, @Body SendCommentDto comment
+    );
 
     @GET("persons/personWishlist/{email}")
     Call<ResponseBody> findWishlistByUserEmail(@Path("email") String personEmail);
@@ -91,4 +92,10 @@ public interface LetsSnackService {
 
     @GET("adm/listAdmByEmail/{email}")
     Call<UserDto> findAdmByEmail(@Header("Authorization") String token,@Path("email") String email);
+
+    @GET("categories/listAllCategories")
+    Call<ResponseBody> getCategories();
+
+    @GET("categories/listCategoriesById/{id}")
+    Call<ResponseBody> findCategoriesById(@Path("id") String partnerId);
 }

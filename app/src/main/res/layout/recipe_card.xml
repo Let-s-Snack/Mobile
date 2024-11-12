@@ -5,7 +5,6 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="clip_horizontal|fill_horizontal"
-    android:layout_marginBottom="16dp"
     app:cardCornerRadius="10dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -82,6 +81,18 @@
             android:textSize="12sp"
             app:layout_constraintStart_toEndOf="@+id/recipe_rating_bar"
             app:layout_constraintTop_toBottomOf="@+id/recipe_photo" />
+
+        <ImageView
+            android:id="@+id/recipe_card_partner_tag"
+            android:layout_width="15dp"
+            android:layout_height="0dp"
+            android:layout_marginEnd="4dp"
+            android:src="@drawable/swift_foguinho"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@+id/recipe_name"
+            app:layout_constraintEnd_toStartOf="@+id/recipe_name"
+            app:layout_constraintTop_toTopOf="@+id/recipe_name"
+            app:layout_constraintVertical_bias="0.0" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

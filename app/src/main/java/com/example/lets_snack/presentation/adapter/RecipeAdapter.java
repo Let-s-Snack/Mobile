@@ -2,7 +2,6 @@ package com.example.lets_snack.presentation.adapter;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,6 +57,24 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
             holder.rateView.setText("0.0");
         }
 
+        if(position%2 ==0){
+            ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) holder.itemView.getLayoutParams();
+            layoutParams.setMargins(64, 0, 0, 32);
+        }
+        else{
+            ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) holder.itemView.getLayoutParams();
+            layoutParams.setMargins(0, 0, 64, 32);
+        }
+
+        if(recipeDtoList.get(position).getPartner() == 1) {
+            holder.partner.setVisibility(View.VISIBLE);
+        }
+        else if(recipeDtoList.get(position).getPartner() == 2) {
+            holder.partner.setVisibility(View.VISIBLE);
+            holder.partner.setImageResource(R.drawable.germinachef_chapeu);
+        }
+
+
 
         //entrando na tela de busca de receitas pela categoria
         holder.cardView.setOnClickListener(new View.OnClickListener() {
@@ -91,6 +108,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
         RatingBar ratingBarView;
         TextView rateView;
         ConstraintLayout cardView;
+        ImageView partner;
 
         public RecipeViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -100,6 +118,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
             ratingBarView = itemView.findViewById(R.id.recipe_rating_bar);
             rateView = itemView.findViewById(R.id.recipe_rate);
             cardView = itemView.findViewById(R.id.card_recipe);
+            partner = itemView.findViewById(R.id.recipe_card_partner_tag);
         }
     }
 }

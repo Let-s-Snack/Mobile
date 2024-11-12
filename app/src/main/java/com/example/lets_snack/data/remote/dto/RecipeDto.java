@@ -20,6 +20,7 @@ public class RecipeDto {
     private Boolean isDeleted;
     private Integer commentCount;
     private String message;
+    private int partner;
 
     private void RecipeDto(){}
 
@@ -131,8 +132,16 @@ public class RecipeDto {
         return isFavorite;
     }
 
-    public void setIsFavorite(boolean favorite) {
-        isFavorite = favorite;
+    public void setIsFavorite(boolean isFavorite) {
+        isFavorite = isFavorite;
+    }
+
+    public int getPartner() {
+        return partner;
+    }
+
+    public void setPartner(int partner) {
+        partner = partner;
     }
 
     @Override
@@ -152,6 +161,7 @@ public class RecipeDto {
                 ", rating=" + rating +
                 ", isFavorite=" + isFavorite +
                 ", message='" + message + '\'' +
+                ", partners=" + partner +
                 '}';
     }
 }

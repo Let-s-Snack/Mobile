@@ -43,33 +43,44 @@
 
                 <TextView
                     android:id="@+id/week_recipe_description"
-                    android:layout_width="180dp"
+                    android:layout_width="0dp"
                     android:layout_height="0dp"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
                     android:ellipsize="end"
-                    android:maxLines="2"
+                    android:maxLines="3"
                     android:textColor="@color/white"
-                    android:textSize="8dp"
+                    android:textSize="12sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="1.0"
-                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/week_recipe_photo"
                     app:layout_constraintTop_toBottomOf="@+id/week_recipe_name" />
 
                 <TextView
                     android:id="@+id/week_recipe_name"
-                    android:layout_width="180dp"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginEnd="12dp"
                     android:ellipsize="end"
                     android:fontFamily="@font/poppins_semi_bold"
                     android:gravity="center"
                     android:maxLines="2"
                     android:minLines="2"
                     android:textColor="@color/white"
-                    android:textSize="14dp"
+                    android:textSize="16dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="1.0"
                     app:layout_constraintStart_toEndOf="@+id/week_recipe_photo"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/imageView4"
+                    android:layout_width="40dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/swift_logo_texto"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -113,7 +124,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:fontFamily="@font/poppins_semi_bold"
-            android:text="Prato da semana"
+            android:text="Prato da semana Swift"
             android:textColor="@color/black"
             android:textSize="18dp"
             app:layout_constraintEnd_toStartOf="@+id/guideline10"
@@ -153,6 +164,8 @@
             android:id="@+id/recycler_trending_recipes"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:paddingBottom="8dp"
+            android:clipToPadding="false"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView10" />
@@ -189,7 +202,8 @@
             android:id="@+id/recycler_recommended_recipes"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:paddingBottom="2dp"
+            android:paddingBottom="8dp"
+            android:clipToPadding="false"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView28" />
@@ -213,7 +227,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
-            android:paddingBottom="2dp"
+            android:paddingBottom="8dp"
+            android:clipToPadding="false"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -282,6 +297,42 @@
             app:layout_constraintEnd_toStartOf="@+id/guideline10"
             app:layout_constraintStart_toStartOf="@+id/guideline9"
             app:layout_constraintTop_toBottomOf="@+id/more_comments_recipes_img" />
+
+        <ProgressBar
+            android:id="@+id/trending_recipes_loading"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:layout_marginTop="44dp"
+            android:indeterminateTint="@color/laranja_forte"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView10" />
+
+        <ProgressBar
+            android:id="@+id/recommended_recipes_loading"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:layout_marginTop="47dp"
+            android:indeterminateTint="@color/laranja_forte"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView28" />
+
+        <ProgressBar
+            android:id="@+id/most_commented_recipes_loading"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:layout_marginTop="44dp"
+            android:indeterminateTint="@color/laranja_forte"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView29" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
