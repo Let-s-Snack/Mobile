@@ -23,6 +23,7 @@ import android.widget.TextView;
 import com.example.lets_snack.R;
 import com.example.lets_snack.data.remote.dto.MessageDto;
 import com.example.lets_snack.data.remote.dto.RecipeDto;
+import com.example.lets_snack.data.remote.repository.rest.CategoriesRepository;
 import com.example.lets_snack.data.remote.repository.rest.PersonsRepository;
 import com.example.lets_snack.data.remote.repository.rest.RecipesRepository;
 import com.example.lets_snack.databinding.FragmentRecipesFeedBinding;
@@ -50,6 +51,7 @@ public class FragmentRecipesFeed extends Fragment {
     private FirebaseUser user = autentication.getCurrentUser();
     private RecipesRepository recipesRepository = null;
     private PersonsRepository personsRepository = null;
+    private CategoriesRepository categoriesRepository = null;
 
     public FragmentRecipesFeed() {
         // Required empty public constructor
@@ -72,6 +74,7 @@ public class FragmentRecipesFeed extends Fragment {
                              Bundle savedInstanceState) {
         recipesRepository = new RecipesRepository(requireContext());
         personsRepository = new PersonsRepository(requireContext());
+        categoriesRepository = new CategoriesRepository(requireContext());
         // Inflate the layout for this fragment
         binding = FragmentRecipesFeedBinding.inflate(inflater, container, false);
         recyclerView = binding.recyclerRecipes;
@@ -92,7 +95,10 @@ public class FragmentRecipesFeed extends Fragment {
                 TextView titleName = binding.recipesFeedTitle;
                 titleName.setText("Curtidas");
                 likedScreenCall();
-            }else{
+            } else if (getArguments().getString("isPartner") == "true") {
+                binding.infoCategory.setVisibility(View.INVISIBLE);
+                partnerScreenCall(getArguments().getString("id"));
+            } else{
                 String categoryName = getArguments().getString("category", "Sem nome");
                 binding.recipesFeedTitle.setText(categoryName);
                 //chamando a API para pegar as receitas por categoria
@@ -104,7 +110,7 @@ public class FragmentRecipesFeed extends Fragment {
         binding.returnBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getActivity().getOnBackPressedDispatcher().onBackPressed();
+                getActivity().getSupportFragmentManager().popBackStack();
             }
         });
 
@@ -269,6 +275,63 @@ public class FragmentRecipesFeed extends Fragment {
         Call<ResponseBody> apiCall = recipesRepository.findRecipesByName(recipeName,user.getEmail());
 
         //executar chamada
+        apiCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    try {
+                        // Analisar a resposta com Gson
+                        Gson gson = new Gson();
+                        String responseBodyString = response.body().string();
+
+                        // Tentar parsear como um array
+                        if (responseBodyString.startsWith("[")) {
+                            List<RecipeDto> recipes = Arrays.asList(gson.fromJson(responseBodyString, RecipeDto[].class));
+                            recyclerView.setAdapter(new RecipeAdapter(recipes));
+                            loading.setVisibility(View.INVISIBLE);
+
+                            if (recipes.isEmpty()) {
+                                imageError.setVisibility(View.VISIBLE);
+                                imageError.setImageResource(R.drawable.neneca_confusa);
+                                textError.setVisibility(View.VISIBLE);
+                                textError.setText("Nenhuma receita encontrada!");
+                            }
+                        } else {
+                            // Caso contrário, parsear como um objeto com mensagem
+                            MessageDto messageResponse = gson.fromJson(responseBodyString, MessageDto.class);
+                            loading.setVisibility(View.INVISIBLE);
+                            imageError.setVisibility(View.VISIBLE);
+                            imageError.setImageResource(R.drawable.neneca_confusa);
+                            textError.setVisibility(View.VISIBLE);
+                            textError.setText(messageResponse.getMessage());
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        loading.setVisibility(View.INVISIBLE);
+                        imageError.setVisibility(View.VISIBLE);
+                        imageError.setImageResource(R.drawable.neneca_triste);
+                        textError.setVisibility(View.VISIBLE);
+                        textError.setText("Erro ao processar resposta.");
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable throwable) {
+                // Chamar imagem de erro
+                loading.setVisibility(View.INVISIBLE);
+                imageError.setVisibility(View.VISIBLE);
+                imageError.setImageResource(R.drawable.neneca_triste);
+                textError.setVisibility(View.VISIBLE);
+                textError.setText(throwable.getLocalizedMessage());
+            }
+        });
+    }
+
+    public void partnerScreenCall(String partnerId) {
+        Call<ResponseBody> apiCall = categoriesRepository.findCategoriesById(partnerId);
+
+        // Executar chamada
         apiCall.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {

@@ -64,12 +64,14 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="16dp"
-        android:padding="4dp"
+        android:layout_gravity="center"
+        android:gravity="center_horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/guideline8"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@+id/guideline7"
-        app:layout_constraintTop_toBottomOf="@+id/recipes_feed_title" />
+        app:layout_constraintTop_toBottomOf="@+id/recipes_feed_title"
+        tools:listitem="@layout/recipe_card" />
 
     <ProgressBar
         android:id="@+id/loading_recipes_feed"

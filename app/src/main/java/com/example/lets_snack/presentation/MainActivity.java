@@ -1,5 +1,6 @@
 package com.example.lets_snack.presentation;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
@@ -32,6 +33,12 @@ public class MainActivity extends BaseActivity {
         transactionNav.replace(R.id.navbarContainer, navFragment);
         transactionNav.commit();
 
+//         Desativa o botão de voltar
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                // Deixe vazio para bloquear o botão de voltar do dispositivo
+            }
+        });
     }
-
 }

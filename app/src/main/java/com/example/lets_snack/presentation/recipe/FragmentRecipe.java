@@ -23,7 +23,6 @@ import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.lets_snack.R;
@@ -47,8 +46,6 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class FragmentRecipe extends Fragment {
 
@@ -70,7 +67,6 @@ public class FragmentRecipe extends Fragment {
     private RecipesRepository recipesRepository = null;
     private PersonsRepository personsRepository = null;
 
-    private Retrofit retrofit;
     public FragmentRecipe() {
         // Required empty public constructor
     }
@@ -130,14 +126,13 @@ public class FragmentRecipe extends Fragment {
         binding.recipeReturnBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getActivity().getOnBackPressedDispatcher().onBackPressed();
+                getActivity().getSupportFragmentManager().popBackStack();
             }
         });
 
         //verificando se o id da receita foi passado
         if(getArguments().getString("id") != null){
             //chamando api para pegar receita
-            System.out.println("id: "+getArguments().getString("id"));
             loadRecipe(getArguments().getString("id"));
         }
 
@@ -323,12 +318,12 @@ public class FragmentRecipe extends Fragment {
 
                     @Override
                     public void onFailure(Throwable throwable) {
-
+                        warningModal("Erro", throwable.getMessage());
                     }
 
                     @Override
                     public void onMessage(String message) {
-
+                        warningModal("Erro", message);
                     }
                 }
         );
@@ -343,16 +338,18 @@ public class FragmentRecipe extends Fragment {
                 new MessageCallback() {
                     @Override
                     public void onSuccess(MessageDto message) {
+                        warningModal("Aviso", "Os ingredientes foram salvos em \n" +
+                                "perfil -> ingredientes salvos");
                     }
 
                     @Override
                     public void onFailure(Throwable throwable) {
-
+                        warningModal("Erro", throwable.getMessage());
                     }
 
                     @Override
                     public void onMessage(String message) {
-
+                        warningModal("Erro", message);
                     }
                 }
         );

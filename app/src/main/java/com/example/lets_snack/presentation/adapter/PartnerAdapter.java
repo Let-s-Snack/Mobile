@@ -14,18 +14,18 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.example.lets_snack.presentation.MainActivity;
 import com.example.lets_snack.R;
 import com.example.lets_snack.data.remote.dto.CategoryDto;
+import com.example.lets_snack.presentation.MainActivity;
 import com.example.lets_snack.presentation.recipesFeed.FragmentRecipesFeed;
 
 import java.util.List;
 
-public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder> {
+public class PartnerAdapter extends RecyclerView.Adapter<PartnerAdapter.CategoryViewHolder> {
     List<CategoryDto> categoryDtoList;
     int count = 0;
 
-    public CategoryAdapter(List<CategoryDto> categories) {
+    public PartnerAdapter(List<CategoryDto> categories) {
         this.categoryDtoList = categories;
     }
 
@@ -75,7 +75,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
             public void onClick(View v) {
                 Bundle bundle = new Bundle();
                 bundle.putString("category", categoryDtoList.get(position).getName());
-                bundle.putString("description", categoryDtoList.get(position).getDescription());
+                bundle.putString("isPartner", "true");
                 bundle.putString("id", String.valueOf(categoryDtoList.get(position).getId()));
 
                 //chamando fragment de recipe feed

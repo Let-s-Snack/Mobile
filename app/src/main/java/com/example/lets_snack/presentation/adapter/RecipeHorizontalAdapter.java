@@ -66,6 +66,14 @@ public class RecipeHorizontalAdapter extends RecyclerView.Adapter<RecipeHorizont
             layoutParams.setMargins(0, 0, 32, 0);
         }
 
+        if(recipeDtoList.get(position).getPartner() == 1) {
+            holder.partner.setVisibility(View.VISIBLE);
+        }
+        else if(recipeDtoList.get(position).getPartner() == 2) {
+            holder.partner.setVisibility(View.VISIBLE);
+            holder.partner.setImageResource(R.drawable.germinachef_chapeu);
+        }
+
         //entrando na tela de busca de receitas pela categoria
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -98,6 +106,7 @@ public class RecipeHorizontalAdapter extends RecyclerView.Adapter<RecipeHorizont
         RatingBar ratingBarView;
         TextView rateView;
         ConstraintLayout cardView;
+        ImageView partner;
 
         public RecipeViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -107,6 +116,7 @@ public class RecipeHorizontalAdapter extends RecyclerView.Adapter<RecipeHorizont
             ratingBarView = itemView.findViewById(R.id.recipe_rating_bar);
             rateView = itemView.findViewById(R.id.recipe_rate);
             cardView = itemView.findViewById(R.id.card_recipe);
+            partner = itemView.findViewById(R.id.recipe_card_partner_tag);
         }
     }
 }

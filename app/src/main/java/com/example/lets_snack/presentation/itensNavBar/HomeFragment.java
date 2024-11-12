@@ -1,10 +1,17 @@
 package com.example.lets_snack.presentation.itensNavBar;
 
+import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+
+import android.app.Dialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.TextView;
+
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -116,9 +123,6 @@ public class HomeFragment extends Fragment {
             @Override
             public void onResponse(Call<RecipeDto> call, Response<RecipeDto> response) {
                 RecipeDto recipes = response.body();
-//                whiteOverlayScreen.setVisibility(View.INVISIBLE);
-//                loading.setVisibility(View.INVISIBLE);
-//                scrollView.setSmoothScrollingEnabled(true);
                 //carregar os dados
                 if (recipes != null) {
                     binding.weekRecipeName.setText(recipes.getName());
@@ -148,10 +152,7 @@ public class HomeFragment extends Fragment {
 
             @Override
             public void onFailure(Call<RecipeDto> call, Throwable throwable) {
-//                loading.setVisibility(View.INVISIBLE);
-//                imageError.setVisibility(View.VISIBLE);
-//                imageError.setImageResource(R.drawable.neneca_triste);
-//                textError.setVisibility(View.VISIBLE);
+                warningModal("Erro", "Nenhuma receita da semana encontrada!");
             }
         });
     }
@@ -175,7 +176,7 @@ public class HomeFragment extends Fragment {
                         if (responseBodyString.startsWith("[")) {
                             List<RecipeDto> recipes = Arrays.asList(gson.fromJson(responseBodyString, RecipeDto[].class));
                             recyclerViewTrendingRecipes.setAdapter(new RecipeHorizontalAdapter(recipes));
-//                            loading.setVisibility(View.INVISIBLE);
+                            binding.trendingRecipesLoading.setVisibility(View.INVISIBLE);
 
                             if (recipes.isEmpty()) {
                                 binding.trendingRecipeErrorImg.setVisibility(View.VISIBLE);
@@ -186,7 +187,7 @@ public class HomeFragment extends Fragment {
                         } else {
                             // Caso contrário, parsear como um objeto com mensagem
                             MessageDto messageResponse = gson.fromJson(responseBodyString, MessageDto.class);
-//                            loading.setVisibility(View.INVISIBLE);
+                            binding.trendingRecipesLoading.setVisibility(View.INVISIBLE);
                             binding.trendingRecipeErrorImg.setVisibility(View.VISIBLE);
                             binding.trendingRecipeErrorImg.setImageResource(R.drawable.neneca_confusa);
                             binding.trendingRecipeErrorText.setVisibility(View.VISIBLE);
@@ -194,7 +195,7 @@ public class HomeFragment extends Fragment {
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
-//                        loading.setVisibility(View.INVISIBLE);
+                        binding.trendingRecipesLoading.setVisibility(View.INVISIBLE);
                         binding.trendingRecipeErrorImg.setVisibility(View.VISIBLE);
                         binding.trendingRecipeErrorImg.setImageResource(R.drawable.neneca_triste);
                         binding.trendingRecipeErrorText.setVisibility(View.VISIBLE);
@@ -206,7 +207,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable throwable) {
                 // Chamar imagem de erro
-//                loading.setVisibility(View.INVISIBLE);
+                binding.trendingRecipesLoading.setVisibility(View.INVISIBLE);
                 binding.trendingRecipeErrorImg.setVisibility(View.VISIBLE);
                 binding.trendingRecipeErrorImg.setImageResource(R.drawable.neneca_triste);
                 binding.trendingRecipeErrorText.setVisibility(View.VISIBLE);
@@ -232,7 +233,7 @@ public class HomeFragment extends Fragment {
                         if (responseBodyString.startsWith("[")) {
                             List<RecipeDto> recipes = Arrays.asList(gson.fromJson(responseBodyString, RecipeDto[].class));
                             recyclerViewRecommendedRecipes.setAdapter(new RecipeHorizontalAdapter(recipes));
-//                            loading.setVisibility(View.INVISIBLE);
+                            binding.recommendedRecipesLoading.setVisibility(View.INVISIBLE);
 
                             if (recipes.isEmpty()) {
                                 binding.recommendedRecipesErrorImg.setVisibility(View.VISIBLE);
@@ -243,7 +244,7 @@ public class HomeFragment extends Fragment {
                         } else {
                             // Caso contrário, parsear como um objeto com mensagem
                             MessageDto messageResponse = gson.fromJson(responseBodyString, MessageDto.class);
-//                            loading.setVisibility(View.INVISIBLE);
+                            binding.recommendedRecipesLoading.setVisibility(View.INVISIBLE);
                             binding.recommendedRecipesErrorImg.setVisibility(View.VISIBLE);
                             binding.recommendedRecipesErrorImg.setImageResource(R.drawable.neneca_confusa);
                             binding.recommendedRecipesErrorText.setVisibility(View.VISIBLE);
@@ -251,7 +252,7 @@ public class HomeFragment extends Fragment {
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
-//                        loading.setVisibility(View.INVISIBLE);
+                        binding.recommendedRecipesLoading.setVisibility(View.INVISIBLE);
                         binding.recommendedRecipesErrorImg.setVisibility(View.VISIBLE);
                         binding.recommendedRecipesErrorImg.setImageResource(R.drawable.neneca_triste);
                         binding.recommendedRecipesErrorText.setVisibility(View.VISIBLE);
@@ -263,7 +264,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable throwable) {
                 // Chamar imagem de erro
-//                loading.setVisibility(View.INVISIBLE);
+                binding.recommendedRecipesLoading.setVisibility(View.INVISIBLE);
                 binding.recommendedRecipesErrorImg.setVisibility(View.VISIBLE);
                 binding.recommendedRecipesErrorImg.setImageResource(R.drawable.neneca_triste);
                 binding.recommendedRecipesErrorText.setVisibility(View.VISIBLE);
@@ -274,7 +275,6 @@ public class HomeFragment extends Fragment {
 
     public void mostCommentedRecipesCall() {
         Call<ResponseBody> apiCall = recipesRepository.getMostCommentedRecipesByEmail(user.getEmail());
-
         // Executar chamada
         apiCall.enqueue(new Callback<ResponseBody>() {
             @Override
@@ -289,7 +289,7 @@ public class HomeFragment extends Fragment {
                         if (responseBodyString.startsWith("[")) {
                             List<RecipeDto> recipes = Arrays.asList(gson.fromJson(responseBodyString, RecipeDto[].class));
                             recyclerViewMoreCommentsRecipes.setAdapter(new RecipeHorizontalAdapter(recipes));
-//                            loading.setVisibility(View.INVISIBLE);
+                            binding.mostCommentedRecipesLoading.setVisibility(View.INVISIBLE);
 
                             if (recipes.isEmpty()) {
                                 binding.moreCommentsRecipesImg.setVisibility(View.VISIBLE);
@@ -300,7 +300,7 @@ public class HomeFragment extends Fragment {
                         } else {
                             // Caso contrário, parsear como um objeto com mensagem
                             MessageDto messageResponse = gson.fromJson(responseBodyString, MessageDto.class);
-//                            loading.setVisibility(View.INVISIBLE);
+                            binding.mostCommentedRecipesLoading.setVisibility(View.INVISIBLE);
                             binding.moreCommentsRecipesImg.setVisibility(View.VISIBLE);
                             binding.moreCommentsRecipesImg.setImageResource(R.drawable.neneca_confusa);
                             binding.moreCommentsRecipesText.setVisibility(View.VISIBLE);
@@ -308,11 +308,11 @@ public class HomeFragment extends Fragment {
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
-//                        loading.setVisibility(View.INVISIBLE);
-                        binding.moreCommentsRecipesImg.setVisibility(View.VISIBLE);
-                        binding.moreCommentsRecipesImg.setImageResource(R.drawable.neneca_triste);
-                        binding.moreCommentsRecipesText.setVisibility(View.VISIBLE);
-                        binding.moreCommentsRecipesText.setText("Erro ao processar resposta.");
+//                        binding.mostCommentedRecipesLoading.setVisibility(View.INVISIBLE);
+//                        binding.moreCommentsRecipesImg.setVisibility(View.VISIBLE);
+//                        binding.moreCommentsRecipesImg.setImageResource(R.drawable.neneca_triste);
+//                        binding.moreCommentsRecipesText.setVisibility(View.VISIBLE);
+//                        binding.moreCommentsRecipesText.setText("Erro ao processar resposta.");
                     }
                 }
             }
@@ -320,13 +320,39 @@ public class HomeFragment extends Fragment {
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable throwable) {
                 // Chamar imagem de erro
-//                loading.setVisibility(View.INVISIBLE);
+                binding.mostCommentedRecipesLoading.setVisibility(View.INVISIBLE);
                 binding.moreCommentsRecipesImg.setVisibility(View.VISIBLE);
                 binding.moreCommentsRecipesImg.setImageResource(R.drawable.neneca_triste);
                 binding.moreCommentsRecipesText.setVisibility(View.VISIBLE);
                 binding.moreCommentsRecipesText.setText(throwable.getLocalizedMessage());
             }
         });
+    }
+
+    public void warningModal(String titleText, String descriptionText) {
+        // Usando Dialog
+        Dialog descriptionCard = new Dialog(getContext());
+        descriptionCard.setContentView(R.layout.description_modal);
+        descriptionCard.getWindow().setLayout(WRAP_CONTENT, WRAP_CONTENT);
+        descriptionCard.getWindow().setBackgroundDrawable(
+                ContextCompat.getDrawable(getContext(), R.drawable.background_dialog)
+        );
+
+
+        //Inicializar os componentes da caixaMsg
+        TextView title = descriptionCard.findViewById(R.id.description_title_modal);
+        TextView description = descriptionCard.findViewById(R.id.description_text_modal);
+        ImageButton closeModal = descriptionCard.findViewById(R.id.description_modal_close);
+
+        title.setText(titleText);
+        description.setText(descriptionText);
+        closeModal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                descriptionCard.dismiss();
+            }
+        });
+        descriptionCard.show();
     }
 
     @Override

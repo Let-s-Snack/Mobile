@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -34,11 +35,22 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
     @Override
     public void onBindViewHolder(@NonNull IngredientViewHolder holder, @SuppressLint("RecyclerView") int position) {
         holder.nameView.setText(ingredientsDtoList.get(position).getName());
-        String quantity =ingredientsDtoList.get(position).getQuantity();
+        String quantity = ingredientsDtoList.get(position).getQuantity();
         if (Double.parseDouble(quantity) == Math.floor(Double.parseDouble(quantity))) {
             quantity =  String.valueOf(Math.round(Double.parseDouble(quantity)));
         }
-        holder.descriptionView.setText("(" + quantity + " " + ingredientsDtoList.get(position).getMeditionType() + ")");
+
+        if(Integer.parseInt(quantity) > 0 && quantity != null) {
+            holder.descriptionView.setText("(" + quantity + " " + ingredientsDtoList.get(position).getMeditionType() + ")");
+        }
+        else{
+            holder.descriptionView.setText("(" + ingredientsDtoList.get(position).getMeditionType() + ")");
+        }
+
+        if(ingredientsDtoList.get(position).isSwift() == true){
+            System.out.println("isSwift: " + ingredientsDtoList.get(position).isSwift());
+            holder.isSwiftIngredient.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -50,10 +62,12 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
 
         TextView descriptionView;
         TextView nameView;
+        ImageView isSwiftIngredient;
         public IngredientViewHolder(@NonNull View itemView) {
             super(itemView);
             nameView = itemView.findViewById(R.id.ingredient_component_name);
             descriptionView = itemView.findViewById(R.id.ingredient_component_medition);
+            isSwiftIngredient = itemView.findViewById(R.id.ingredient_component_isSwift);
         }
     }
 }
