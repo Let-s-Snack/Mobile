@@ -44,6 +44,7 @@
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".presentation.profile.EditData"
+            android:screenOrientation="locked"
             android:exported="false" />
         <activity
             android:name=".presentation.register.photo.PhotoRegister"
@@ -53,6 +54,7 @@
         <activity
             android:name=".presentation.register.RegisterActivity"
             android:exported="false"
+            android:screenOrientation="locked"
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".presentation.useTerms.UseTerms"
@@ -67,6 +69,7 @@
         <activity
             android:name=".presentation.login.forgetPassword.ForgetPasswordActivity"
             android:exported="false"
+            android:screenOrientation="locked"
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".presentation.register.restriction.RestrictionRegister"
