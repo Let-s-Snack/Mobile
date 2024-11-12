@@ -46,28 +46,23 @@ class ShoppingListCheckBoxAdapter(
             ingredient.isChecked = isChecked
         }
 
-        // Verifica se é o último item e define a visibilidade do botão
+
         if (position == ingredients.size - 1) {
             holder.saveButton.visibility =
-                View.VISIBLE // Torna o botão visível apenas no último item
+                View.VISIBLE
         } else {
             holder.saveButton.visibility = View.GONE // Torna o botão invisível nos outros itens
         }
 
-        // Ação do botão de salvar
         holder.saveButton.setOnClickListener {
             val personsRepository = PersonsRepository(it.context)
             holder.saveButton.setOnClickListener {
                 val currentUserEmail = FirebaseAuth.getInstance().currentUser?.email ?: ""
                 val checkedUserDto = CheckedUserDto(recipeId, ingredients, "")
 
-                // Chama o repositório e passa o callback para tratar a resposta
                 personsRepository.checkIngredients(currentUserEmail, checkedUserDto, object :
                     ShoppingListCallback {
                     override fun onSuccess(recipes: ShoppingListDto) {
-                        // Lógica em caso de sucesso
-                        // Você pode atualizar a UI ou exibir uma mensagem de sucesso
-                        // Exemplo: Toast ou Snackbar
                         Toast.makeText(it.context, "Ingredientes salvos com sucesso", Toast.LENGTH_LONG).show()
                     }
 
