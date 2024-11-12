@@ -34,7 +34,7 @@ class PersonsRepository(context: Context) {
 
     fun getShoppingListByUserEmail(personEmail: String) = interfaceService.getShoppingListByUserEmail(personEmail)
 
-    fun checkIngredients(personEmail: String, checkedUserDto: CheckedUserDto, callback: ShoppingListCallback) {
+    fun checkIngredients(personEmail: String, checkedUserDto: List<CheckedUserDto>, callback: ShoppingListCallback) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val token = tokenRepository.verifyTokenIsValid()

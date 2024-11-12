@@ -36,7 +36,6 @@ class ShoppingListCheckBoxAdapter(
         return IngredientViewHolder(view)
     }
 
-    // Vincula os dados a cada item da lista
     override fun onBindViewHolder(holder: IngredientViewHolder, position: Int) {
         val ingredient = ingredients[position]
         holder.textItemName.text = ingredient.ingredientName
@@ -59,8 +58,8 @@ class ShoppingListCheckBoxAdapter(
             holder.saveButton.setOnClickListener {
                 val currentUserEmail = FirebaseAuth.getInstance().currentUser?.email ?: ""
                 val checkedUserDto = CheckedUserDto(recipeId, ingredients, "")
-
-                personsRepository.checkIngredients(currentUserEmail, checkedUserDto, object :
+                val mutableList = mutableListOf<CheckedUserDto>(checkedUserDto)
+                personsRepository.checkIngredients(currentUserEmail, mutableList, object :
                     ShoppingListCallback {
                     override fun onSuccess(recipes: ShoppingListDto) {
                         Toast.makeText(it.context, "Ingredientes salvos com sucesso", Toast.LENGTH_LONG).show()
